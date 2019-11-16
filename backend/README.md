@@ -1,0 +1,42 @@
+# Backend
+
+This is the Java backend for Can You Make It.
+
+## Technologies
+
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- Spring Web
+- PostgreSQL
+
+## Conventions
+
+### Dealing with null
+
+- Avoid passing null into a method
+    - Exception when using null to be explicit about the absence of a value and the method is in the same class
+    - Exception when using method overloading as a mechanism to implement optional parameters
+- Use Optional for methods potentially returning null
+- Code dealing with user input or library/framework classes should take care to check for null as needed
+
+### Package encapsulation for components
+
+- Don't make classes in components public unless we need to
+    - Go for package-private when we can, in order to hide the component's internals from the outside world
+- Don't make constructors in component classes public unless we need to
+    - Go for package-private when we can
+- Note that this becomes tricky for "nested" packages, as Java treats them as completely different packages
+    - Additional static checking might be needed in that case
+
+### Dependency injection
+
+Use constructor injection where we can (easier to test, can make dependency fields final, ...)
+
+### App-specific configuration properties
+
+Isolate configuration properties into separate POJOs using `@ConfigurationProperties`
+
+### Input validation
+
+In web part, only validate data types and the presence of propterties. All more complex validations should sit in the components.
