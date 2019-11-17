@@ -34,16 +34,15 @@ class UserAuthenticationService {
         User user = this.repository.findByEmail(loginData.getEmail()).orElseThrow(
                 () -> new InvalidRequestException(signupMessage, InvalidRequestExceptionType.UserNotSignedUp));
 
+        String saltedPasswordHash = user.getSaltedPasswordHash().orElseThrow(
+                () -> new InvalidRequestException(signupMessage, InvalidRequestExceptionType.UserNotSignedUp));
+        
         if (!user.isEmailConfirmed()) {
             throw new InvalidRequestException("Please confirm your email before logging in",
                     InvalidRequestExceptionType.EmailNotConfirmed);
         }
 
         String password = loginData.getPassword();
-
-        String saltedPasswordHash = user.getSaltedPasswordHash().orElseThrow(
-                () -> new InvalidRequestException(signupMessage, InvalidRequestExceptionType.UserNotSignedUp));
-
         this.passwordService.checkPassword(password, saltedPasswordHash);
 
         SessionToken token = this.getNewSessionToken(user);

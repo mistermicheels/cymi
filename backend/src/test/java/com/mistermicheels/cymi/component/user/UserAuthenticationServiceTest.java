@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 
 @ExtendWith(SpringExtension.class)
@@ -61,6 +62,11 @@ public class UserAuthenticationServiceTest {
     @Test
     public void LoginFailsIfUserNotFound() {
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.empty());
+
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> this.service.getSessionDataForLogin(this.validLoginData));
+
+        assertEquals(InvalidRequestExceptionType.UserNotSignedUp, exception.getType().get());
     }
 
     @Test
@@ -68,7 +74,10 @@ public class UserAuthenticationServiceTest {
         User user = new User(this.email);
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.of(user));
 
-        assertThrows(InvalidRequestException.class, () -> this.service.getSessionDataForLogin(this.validLoginData));
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> this.service.getSessionDataForLogin(this.validLoginData));
+
+        assertEquals(InvalidRequestExceptionType.UserNotSignedUp, exception.getType().get());
     }
 
     @Test
@@ -78,6 +87,11 @@ public class UserAuthenticationServiceTest {
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.of(user));
 
         assertThrows(InvalidRequestException.class, () -> this.service.getSessionDataForLogin(this.validLoginData));
+
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> this.service.getSessionDataForLogin(this.validLoginData));
+
+        assertEquals(InvalidRequestExceptionType.EmailNotConfirmed, exception.getType().get());
     }
 
     @Test
