@@ -1,9 +1,11 @@
 # Backend
 
-This is the Java backend for Can You Make It.
+This is the backend for Can You Make It.
 
 ## Technologies
 
+- Java
+- Gradle
 - Spring Boot
 - Spring Data JPA
 - Spring Security
