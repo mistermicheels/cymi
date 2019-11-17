@@ -103,9 +103,9 @@ public class UserSignupServiceTest {
         verify(this.emailServiceMock).send(this.confirmationMessageCaptor.capture());
         ConfirmEmailEmailMessage confirmationMessage = this.confirmationMessageCaptor.getValue();
 
+        assertEquals(this.userId, storedConfirmationToken.getUserId());
         assertEquals(storedConfirmationToken.getId(), confirmationMessage.getEmailConfirmationToken());
-        assertEquals(storedConfirmationToken.getUserId(), confirmationMessage.getUserId());
-        assertEquals(storedConfirmationToken.getUserId(), this.userId);
+        assertEquals(storedConfirmationToken.getUserId(), confirmationMessage.getUserId());        
 
         assertTrue(timeBeforeCall.plusDays(this.emailConfirmationTokenValidityDays)
                 .isBefore(storedConfirmationToken.getExpirationTimestamp()));
