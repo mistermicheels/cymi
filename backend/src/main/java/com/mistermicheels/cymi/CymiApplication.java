@@ -8,12 +8,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.mistermicheels.cymi.config.security.SecurityProperties;
+import com.mistermicheels.cymi.config.web.WebProperties;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {
         // prevent automatic internal redirection to /error page on error
         ErrorMvcAutoConfiguration.class })
-@EnableConfigurationProperties(SecurityProperties.class)
+@EnableConfigurationProperties({ SecurityProperties.class, WebProperties.class })
 @EnableScheduling
 public class CymiApplication {
 

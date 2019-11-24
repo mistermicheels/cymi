@@ -2,6 +2,9 @@ package com.mistermicheels.cymi.web.api.error;
 
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +28,20 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
 
     private final static String INVALID_INPUT_STRUCTURE_MESSAGE = "Invalid input structure";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final ApiErrorFactoryService apiErrorFactoryService;
+
+    @Autowired
+    public ApiResponseEntityExceptionHandler(ApiErrorFactoryService apiErrorFactoryService) {
+        this.apiErrorFactoryService = apiErrorFactoryService;
+    }
+
     @ExceptionHandler(value = { AuthenticationException.class })
     protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception,
             WebRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ApiError apiError = new ApiError(status, exception.getMessage());
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, exception.getMessage(), exception);
         return handleExceptionInternal(exception, apiError, new HttpHeaders(), status, request);
     }
 
@@ -41,7 +53,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         String message = INVALID_INPUT_STRUCTURE_MESSAGE + ": property " + firstError.getField() + " "
                 + firstError.getDefaultMessage();
 
-        ApiError apiError = new ApiError(status, message);
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
         return handleExceptionInternal(exception, apiError, new HttpHeaders(), status, request);
     }
 
@@ -64,7 +76,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
             message = INVALID_INPUT_STRUCTURE_MESSAGE;
         }
 
-        ApiError apiError = new ApiError(status, message);
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
         return handleExceptionInternal(exception, apiError, new HttpHeaders(), status, request);
     }
 
@@ -79,25 +91,32 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         ApiError apiError;
 
         if (exception.getType().isPresent()) {
-            apiError = new ApiError(status, exception.getMessage(), exception.getType().get().name());
+            String type = exception.getType().get().name();
+            apiError = this.apiErrorFactoryService.createApiError(status, exception.getMessage(), exception, type);
         } else {
-            apiError = new ApiError(status, exception.getMessage());
+            apiError = this.apiErrorFactoryService.createApiError(status, exception.getMessage(), exception);
         }
 
         return handleExceptionInternal(exception, apiError, new HttpHeaders(), status, request);
     }
-    
+
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException exception, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-        ApiError apiError = new ApiError(status, exception.getMessage());
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException exception,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, exception.getMessage(), exception);
         return handleExceptionInternal(exception, apiError, new HttpHeaders(), status, request);
     }
 
     @ExceptionHandler(value = { Exception.class })
     protected ResponseEntity<Object> handleAnyOtherException(Exception exception, WebRequest request) {
+        this.logger.error("Internal server error returned", exception);
+
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ApiError apiError = new ApiError(status, "Unknown error, please try again");
+        
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, "Unknown error, please try again",
+                exception);
+        
         return handleExceptionInternal(exception, apiError, new HttpHeaders(), status, request);
     }
+
 }

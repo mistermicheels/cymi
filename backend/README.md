@@ -43,7 +43,9 @@ Use constructor injection where we can (easier to test, can make dependency fiel
 
 ### App-specific configuration properties
 
-Isolate configuration properties into separate POJOs using `@ConfigurationProperties`
+Isolate configuration properties into separate POJOs using `@ConfigurationProperties`.
+
+We use package-private setters. This offers some protection against accidental changes to the properties from within the code, but still provides a simple way to set defaults for the properties and also allow them to be overridden by specifying a value through properties file, environment variable, ...
 
 ### Input validation
 
