@@ -58,4 +58,4 @@ We use package-private setters. This offers some protection against accidental c
 
 ### Input validation
 
-In web part, only validate data types and the presence of propterties. All more complex validations should sit in the components.
+In web part, only validate data types and the presence of properties. All more complex validations should sit in the components.
