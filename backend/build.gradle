@@ -2,6 +2,7 @@ plugins {
   id 'org.springframework.boot' version '2.2.1.RELEASE'
   id 'io.spring.dependency-management' version '1.0.8.RELEASE'
   id 'java'
+  id 'jacoco'
 }
 
 group = 'com.mistermicheels'
@@ -20,17 +21,26 @@ repositories {
 }
 
 dependencies {
+    // if no version number is specified here, it is determined by the Spring Boot plugin
+    // see https://stackoverflow.com/questions/41676534/how-are-some-gradle-dependencies-working-with-no-version-supplied
+    
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
+	
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+	   // required for using JUnit 5
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test {
-  useJUnitPlatform()
+    // required for using JUnit 5
+    useJUnitPlatform()
+    
+    finalizedBy jacocoTestReport
 }

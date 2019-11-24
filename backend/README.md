@@ -12,6 +12,12 @@ This is the backend for Can You Make It.
 - Spring Web
 - PostgreSQL
 
+## Development process
+
+After running the Gradle test task, we have:
+- A test summary at /build/reports/tests/test/index.html
+- A coverage report at /build/reports/jacoco/test/html/index.html
+
 ## Conventions
 
 ### Dealing with null
