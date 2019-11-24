@@ -1,41 +1,50 @@
-# Backend
+# CYMI backend
 
 This is the backend for Can You Make It.
 
 ## Technologies
 
-- Java
-- Gradle
-- Spring Boot
-- Spring Data JPA
-- Spring Security
-- Spring Web
-- PostgreSQL
+-   Java
+-   Gradle
+-   Spring Boot
+-   Spring Data JPA
+-   Spring Security
+-   Spring Web
+-   PostgreSQL
 
 ## Development process
 
+### Formatting
+
+Eclipse is configured to automatically format and clean up files on save. This configuration is committed to version control and sits under `.settings`.
+
+Currently, the Gradle build is not performing any formatting or style checks.
+
+### Tests and coverage
+
 After running the Gradle test task, we have:
-- A test summary at /build/reports/tests/test/index.html
-- A coverage report at /build/reports/jacoco/test/html/index.html
+
+-   A test summary at /build/reports/tests/test/index.html
+-   A coverage report at /build/reports/jacoco/test/html/index.html
 
 ## Conventions
 
 ### Dealing with null
 
-- Avoid passing null into a method
-    - Exception when using null to be explicit about the absence of a value and the method is in the same class
-    - Exception when using method overloading as a mechanism to implement optional parameters
-- Use Optional for methods potentially returning null
-- Code dealing with user input or library/framework classes should take care to check for null as needed
+-   Avoid passing null into a method
+    -   Exception when using null to be explicit about the absence of a value and the method is in the same class
+    -   Exception when using method overloading as a mechanism to implement optional parameters
+-   Use Optional for methods potentially returning null
+-   Code dealing with user input or library/framework classes should take care to check for null as needed
 
 ### Package encapsulation for components
 
-- Don't make classes in components public unless we need to
-    - Go for package-private when we can, in order to hide the component's internals from the outside world
-- Don't make constructors in component classes public unless we need to
-    - Go for package-private when we can
-- Note that this becomes tricky for "nested" packages, as Java treats them as completely different packages
-    - Additional static checking might be needed in that case
+-   Don't make classes in components public unless we need to
+    -   Go for package-private when we can, in order to hide the component's internals from the outside world
+-   Don't make constructors in component classes public unless we need to
+    -   Go for package-private when we can
+-   Note that this becomes tricky for "nested" packages, as Java treats them as completely different packages
+    -   Additional static checking might be needed in that case
 
 ### Dependency injection
 
