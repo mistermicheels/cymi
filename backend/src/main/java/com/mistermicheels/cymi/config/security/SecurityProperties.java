@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class SecurityProperties {
     
-    private final int sessionTokenValidityHours = 8;
+    private final int sessionTokenValidityDays = 7;
     private final String sessionTokenCookieName = "SESSION-TOKEN";
     private final String csrfTokenCookieName = "XSRF-TOKEN";
     private final String csrfTokenHeaderName = "X-XSRF-TOKEN";
@@ -19,8 +19,8 @@ public class SecurityProperties {
     public SecurityProperties() {
     }
 
-    public int getSessionTokenValidityHours() {
-        return sessionTokenValidityHours;
+    public int getSessionTokenValidityDays() {
+        return sessionTokenValidityDays;
     }
 
     public String getSessionTokenCookieName() {

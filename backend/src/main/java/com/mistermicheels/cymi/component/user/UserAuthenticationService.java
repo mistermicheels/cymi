@@ -17,7 +17,7 @@ class UserAuthenticationService {
     private final SessionTokenRepository sessionTokenRepository;
     private final PasswordService passwordService;
     
-    private final int sessionTokenValidityHours;
+    private final int sessionTokenValidityDays;
 
     @Autowired
     UserAuthenticationService(UserRepository repository, SessionTokenRepository sessionTokenRepository,
@@ -25,7 +25,7 @@ class UserAuthenticationService {
         this.repository = repository;
         this.sessionTokenRepository = sessionTokenRepository;
         this.passwordService = passwordService;
-        this.sessionTokenValidityHours = securityProperties.getSessionTokenValidityHours();
+        this.sessionTokenValidityDays = securityProperties.getSessionTokenValidityDays();
     }
 
     public SessionData getSessionDataForLogin(LoginData loginData) {
@@ -55,7 +55,7 @@ class UserAuthenticationService {
     private SessionToken getNewSessionToken(User user) {
         String sessionToken = UUID.randomUUID().toString();
         String csrfToken = UUID.randomUUID().toString();
-        ZonedDateTime expirationTimestamp = ZonedDateTime.now().plusHours(this.sessionTokenValidityHours);
+        ZonedDateTime expirationTimestamp = ZonedDateTime.now().plusDays(this.sessionTokenValidityDays);
         return new SessionToken(sessionToken, user, expirationTimestamp, csrfToken);
     }
 

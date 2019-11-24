@@ -36,7 +36,7 @@ public class UserAuthenticationServiceTest {
     @Mock
     SecurityProperties securityPropertiesMock;
 
-    private final int sessionTokenValidityHours = 8;
+    private final int sessionTokenValidityDays = 7;
 
     private final String email = "email";
     private final String saltedPasswordHash = "saltedPasswordHash";
@@ -53,7 +53,7 @@ public class UserAuthenticationServiceTest {
         doThrow(new InvalidRequestException("Invalid password")).when(this.passwordServiceMock)
                 .checkPassword(this.invalidPassword, this.saltedPasswordHash);
 
-        when(this.securityPropertiesMock.getSessionTokenValidityHours()).thenReturn(this.sessionTokenValidityHours);
+        when(this.securityPropertiesMock.getSessionTokenValidityDays()).thenReturn(this.sessionTokenValidityDays);
 
         this.service = new UserAuthenticationService(this.repositoryMock, this.sessionTokenRepositoryMock,
                 this.passwordServiceMock, this.securityPropertiesMock);
@@ -121,10 +121,10 @@ public class UserAuthenticationServiceTest {
         assertEquals(sessionData.getSessionToken(), storedSessionToken.getId());
         assertEquals(sessionData.getCsrfToken(), storedSessionToken.getCsrfToken());
 
-        assertTrue(timeBeforeCall.plusHours(this.sessionTokenValidityHours)
+        assertTrue(timeBeforeCall.plusDays(this.sessionTokenValidityDays)
                 .isBefore(storedSessionToken.getExpirationTimestamp()));
 
-        assertTrue(timeAferCall.plusHours(this.sessionTokenValidityHours)
+        assertTrue(timeAferCall.plusDays(this.sessionTokenValidityDays)
                 .isAfter(storedSessionToken.getExpirationTimestamp()));
     }
 

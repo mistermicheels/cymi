@@ -20,7 +20,8 @@ class CleanUpExpiredUserTokens {
         this.userTokenCleanupService = userTokenCleanupService;
     }
     
-    
+    // cannot get fixedRateString from injected properties class instance
+    // only constants can be provided
     @Scheduled(fixedRateString = "${app.scheduled.clean_up_expired_tokens_rate_seconds}000")
     public void execute() {
         logger.info("Cleaning up expired user tokens");
