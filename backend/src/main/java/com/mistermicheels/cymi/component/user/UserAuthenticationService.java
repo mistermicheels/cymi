@@ -16,12 +16,13 @@ class UserAuthenticationService {
     private final UserRepository repository;
     private final SessionTokenRepository sessionTokenRepository;
     private final PasswordService passwordService;
-    
+
     private final int sessionTokenValidityDays;
 
     @Autowired
-    UserAuthenticationService(UserRepository repository, SessionTokenRepository sessionTokenRepository,
-            PasswordService passwordService, SecurityProperties securityProperties) {
+    UserAuthenticationService(UserRepository repository,
+            SessionTokenRepository sessionTokenRepository, PasswordService passwordService,
+            SecurityProperties securityProperties) {
         this.repository = repository;
         this.sessionTokenRepository = sessionTokenRepository;
         this.passwordService = passwordService;
@@ -31,12 +32,14 @@ class UserAuthenticationService {
     public SessionData getSessionDataForLogin(LoginData loginData) {
         String signupMessage = "Please sign up first";
 
-        User user = this.repository.findByEmail(loginData.getEmail()).orElseThrow(
-                () -> new InvalidRequestException(signupMessage, InvalidRequestExceptionType.UserNotSignedUp));
+        User user = this.repository.findByEmail(loginData.getEmail())
+                .orElseThrow(() -> new InvalidRequestException(signupMessage,
+                        InvalidRequestExceptionType.UserNotSignedUp));
 
-        String saltedPasswordHash = user.getSaltedPasswordHash().orElseThrow(
-                () -> new InvalidRequestException(signupMessage, InvalidRequestExceptionType.UserNotSignedUp));
-        
+        String saltedPasswordHash = user.getSaltedPasswordHash()
+                .orElseThrow(() -> new InvalidRequestException(signupMessage,
+                        InvalidRequestExceptionType.UserNotSignedUp));
+
         if (!user.isEmailConfirmed()) {
             throw new InvalidRequestException("Please confirm your email before logging in",
                     InvalidRequestExceptionType.EmailNotConfirmed);
@@ -55,7 +58,10 @@ class UserAuthenticationService {
     private SessionToken getNewSessionToken(User user) {
         String sessionToken = UUID.randomUUID().toString();
         String csrfToken = UUID.randomUUID().toString();
-        ZonedDateTime expirationTimestamp = ZonedDateTime.now().plusDays(this.sessionTokenValidityDays);
+
+        ZonedDateTime expirationTimestamp = ZonedDateTime.now()
+                .plusDays(this.sessionTokenValidityDays);
+
         return new SessionToken(sessionToken, user, expirationTimestamp, csrfToken);
     }
 

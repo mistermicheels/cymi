@@ -14,11 +14,11 @@ public class ApiSuccessResponse {
     }
 
     public boolean isSuccess() {
-        return success;
+        return this.success;
     }
 
     public Object getId() {
-        return id;
+        return this.id;
     }
 
 }

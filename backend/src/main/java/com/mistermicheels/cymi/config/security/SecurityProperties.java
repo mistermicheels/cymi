@@ -6,32 +6,32 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app.security")
 @Validated
 public class SecurityProperties {
-    
+
     private int sessionTokenValidityDays = 7;
     private String sessionTokenCookieName = "SESSION-TOKEN";
     private String csrfTokenCookieName = "XSRF-TOKEN";
     private String csrfTokenHeaderName = "X-XSRF-TOKEN";
-    
+
     private int emailConfirmationTokenValidityDays = 7;
 
     public int getSessionTokenValidityDays() {
-        return sessionTokenValidityDays;
+        return this.sessionTokenValidityDays;
     }
 
     public String getSessionTokenCookieName() {
-        return sessionTokenCookieName;
+        return this.sessionTokenCookieName;
     }
 
     public String getCsrfTokenCookieName() {
-        return csrfTokenCookieName;
+        return this.csrfTokenCookieName;
     }
 
     public String getCsrfTokenHeaderName() {
-        return csrfTokenHeaderName;
-    }    
+        return this.csrfTokenHeaderName;
+    }
 
     public int getEmailConfirmationTokenValidityDays() {
-        return emailConfirmationTokenValidityDays;
+        return this.emailConfirmationTokenValidityDays;
     }
 
     void setSessionTokenValidityDays(int sessionTokenValidityDays) {

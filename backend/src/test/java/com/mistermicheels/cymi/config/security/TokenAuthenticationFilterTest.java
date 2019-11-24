@@ -1,13 +1,13 @@
 package com.mistermicheels.cymi.config.security;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,11 +41,14 @@ public class TokenAuthenticationFilterTest {
 
     @BeforeEach
     public void beforeEach() {
-        when(this.securityPropertiesMock.getSessionTokenCookieName()).thenReturn(this.sessionTokenCookieName);
-        when(this.securityPropertiesMock.getCsrfTokenHeaderName()).thenReturn(this.csrfTokenHeaderName);
+        when(this.securityPropertiesMock.getSessionTokenCookieName())
+                .thenReturn(this.sessionTokenCookieName);
+                
+        when(this.securityPropertiesMock.getCsrfTokenHeaderName())
+                .thenReturn(this.csrfTokenHeaderName);
 
-        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(this.requiresAuthenticationRequestMatcherMock,
-                this.securityPropertiesMock);
+        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(
+                this.requiresAuthenticationRequestMatcherMock, this.securityPropertiesMock);
 
         this.filter = spy(filter);
 
@@ -81,12 +84,13 @@ public class TokenAuthenticationFilterTest {
     }
 
     @Test
-    public void FilterSucceedsIfCookieAndHeaderPresent() throws AuthenticationException, IOException, ServletException {
+    public void FilterSucceedsIfCookieAndHeaderPresent()
+            throws AuthenticationException, IOException, ServletException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         Cookie otherCookie = new Cookie(this.sessionTokenCookieName, "someValue");
         request.setCookies(otherCookie);
         request.addHeader(this.csrfTokenHeaderName, "someValue");
-        
+
         this.filter.attemptAuthentication(request, this.response);
     }
 

@@ -34,12 +34,16 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+    public Authentication attemptAuthentication(HttpServletRequest request,
+            HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
         String sessionToken = this.getCookieValue(request, this.sessionTokenCookieName);
         String csrfToken = this.getHeaderValue(request, this.csrfTokenHeaderName);
         SessionData sessionData = new SessionData(sessionToken, csrfToken);
-        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(sessionData, sessionData);
+        
+        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(sessionData,
+                sessionData);
+
         return this.getAuthenticationManager().authenticate(requestAuthentication);
     }
 
@@ -61,7 +65,8 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
 
         Stream<Cookie> cookiesStream = Arrays.stream(cookies);
 
-        Cookie matchingCookie = cookiesStream.filter(cookie -> cookie.getName().equals(name)).findAny()
+        Cookie matchingCookie = cookiesStream.filter(cookie -> cookie.getName().equals(name))
+                .findAny()
                 .orElseThrow(() -> new CustomAuthenticationException(missingCookieMessage));
 
         return matchingCookie.getValue();
@@ -69,12 +74,15 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
 
     private String getHeaderValue(HttpServletRequest request, String name) {
         Optional<String> headerValue = Optional.ofNullable(request.getHeader(name));
-        return headerValue.orElseThrow(() -> new CustomAuthenticationException("Missing " + name + " header"));
+        
+        return headerValue.orElseThrow(
+                () -> new CustomAuthenticationException("Missing " + name + " header"));
     }
 
     @Override
-    protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final FilterChain chain, final Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(final HttpServletRequest request,
+            final HttpServletResponse response, final FilterChain chain,
+            final Authentication authResult) throws IOException, ServletException {
         SecurityContextHolder.getContext().setAuthentication(authResult);
 
         // move on to the next filter in the chain
@@ -82,8 +90,9 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+            HttpServletResponse response, AuthenticationException failed)
+            throws IOException, ServletException {
         // make sure the AuthenticationException is actually thrown from this filter
         throw failed;
     }

@@ -8,11 +8,14 @@ import com.mistermicheels.cymi.io.email.emailMessage.EmailMessage;
 
 @Service
 public class EmailService {
-    
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     public void send(EmailMessage emailMessage) {
-        logger.info("Email to " + emailMessage.getRecipient() + ": [" + emailMessage.getBody() + "]");
+        String message = "Email to " + emailMessage.getRecipient() + ": [" + emailMessage.getBody()
+                + "]";
+
+        this.logger.info(message);
     }
 
 }

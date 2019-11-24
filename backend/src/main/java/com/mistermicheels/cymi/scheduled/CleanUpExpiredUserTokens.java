@@ -10,21 +10,21 @@ import com.mistermicheels.cymi.component.user.UserTokenCleanupService;
 
 @Component
 class CleanUpExpiredUserTokens {
-    
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    private final UserTokenCleanupService userTokenCleanupService;    
+
+    private final UserTokenCleanupService userTokenCleanupService;
 
     @Autowired
     CleanUpExpiredUserTokens(UserTokenCleanupService userTokenCleanupService) {
         this.userTokenCleanupService = userTokenCleanupService;
     }
-    
+
     // cannot get fixedRateString from injected properties class instance
     // only constants are accepted
     @Scheduled(fixedRateString = "${app.scheduled.clean_up_expired_tokens_rate_seconds}000")
     public void execute() {
-        logger.info("Cleaning up expired user tokens");
+        this.logger.info("Cleaning up expired user tokens");
         this.userTokenCleanupService.cleanUpExpiredTokens();
     }
 

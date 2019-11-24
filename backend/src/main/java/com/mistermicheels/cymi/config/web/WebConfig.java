@@ -24,14 +24,14 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     /*
-     * required to use Jackson configuration with @EnableWebMvc
-     * see also https://stackoverflow.com/a/40711797
-     * see also https://stackoverflow.com/a/56630093
+     * required to use Jackson configuration with @EnableWebMvc see also
+     * https://stackoverflow.com/a/40711797 see also
+     * https://stackoverflow.com/a/56630093
      */
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.stream().filter(x -> x instanceof MappingJackson2HttpMessageConverter)
-                .forEach(x -> ((MappingJackson2HttpMessageConverter) x).setObjectMapper(mapper));
+        converters.stream().filter(x -> x instanceof MappingJackson2HttpMessageConverter).forEach(
+                x -> ((MappingJackson2HttpMessageConverter) x).setObjectMapper(this.mapper));
     }
 
     @Override

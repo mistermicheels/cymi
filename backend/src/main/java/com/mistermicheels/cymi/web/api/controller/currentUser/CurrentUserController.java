@@ -1,4 +1,4 @@
-    package com.mistermicheels.cymi.web.api.controller.currentUser;
+package com.mistermicheels.cymi.web.api.controller.currentUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,15 +13,15 @@ import com.mistermicheels.cymi.web.api.output.ApiUser;
 
 @RestController()
 @RequestMapping("current-user")
-public class CurrentUserController {    
-   
+public class CurrentUserController {
+
     private final UserService userService;
-    
+
     @Autowired
     public CurrentUserController(UserService userService) {
         this.userService = userService;
     }
-    
+
     @GetMapping()
     public ApiUser get(@AuthenticationPrincipal CustomUserDetails userDetails) {
         User user = this.userService.findByIdOrThrow(userDetails.getId());

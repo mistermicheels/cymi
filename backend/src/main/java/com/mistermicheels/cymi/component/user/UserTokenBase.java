@@ -17,21 +17,22 @@ import org.springframework.data.domain.Persistable;
 /**
  * Base entity for a token identifying a user. The token serves as ID.
  * 
- * We implement the Persistable interface to make JPA immediately INSERT new tokens instead of performing a SELECT first.
+ * We implement the Persistable interface to make JPA immediately INSERT new
+ * tokens instead of performing a SELECT first.
  */
 @MappedSuperclass
-class UserTokenBase implements Persistable<String>{
+class UserTokenBase implements Persistable<String> {
 
     @Id
     private String id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    
+
     @Column(nullable = false)
-    private ZonedDateTime expirationTimestamp;    
-    
+    private ZonedDateTime expirationTimestamp;
+
     private transient boolean persisted;
 
     UserTokenBase() {
@@ -42,25 +43,26 @@ class UserTokenBase implements Persistable<String>{
         this.user = user;
         this.expirationTimestamp = expirationTimestamp;
     }
-    
+
+    @Override
     public String getId() {
         return this.id;
     }
-    
+
     public User getUser() {
         return this.user;
     }
-    
+
     public Long getUserId() {
         // this will work without retrieving the entire user
         // accessing other fields would cause the user to be fetched
         return this.user.getId();
     }
-    
+
     public ZonedDateTime getExpirationTimestamp() {
         return this.expirationTimestamp;
     }
-    
+
     public boolean hasExpired() {
         return ZonedDateTime.now().isAfter(this.expirationTimestamp);
     }

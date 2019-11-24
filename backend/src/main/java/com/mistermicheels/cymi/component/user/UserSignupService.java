@@ -26,13 +26,16 @@ class UserSignupService {
 
     @Autowired
     UserSignupService(UserRepository repository,
-            EmailConfirmationTokenRepository emailConfirmationTokenRepository, PasswordService passwordService,
-            EmailService emailService, SecurityProperties securityProperties) {
+            EmailConfirmationTokenRepository emailConfirmationTokenRepository,
+            PasswordService passwordService, EmailService emailService,
+            SecurityProperties securityProperties) {
         this.repository = repository;
         this.emailConfirmationTokenRepository = emailConfirmationTokenRepository;
         this.passwordService = passwordService;
         this.emailService = emailService;
-        this.emailConfirmationTokenValidityDays = securityProperties.getEmailConfirmationTokenValidityDays();
+
+        this.emailConfirmationTokenValidityDays = securityProperties
+                .getEmailConfirmationTokenValidityDays();
     }
 
     @Transactional
@@ -47,13 +50,13 @@ class UserSignupService {
 
         // save and flush so the user gets its DB-generated ID
         this.repository.saveAndFlush(user);
-        
-        EmailConfirmationToken emailConfirmationToken = this.getNewEmailConfirmationToken(user);        
+
+        EmailConfirmationToken emailConfirmationToken = this.getNewEmailConfirmationToken(user);
         this.emailConfirmationTokenRepository.save(emailConfirmationToken);
 
-        ConfirmEmailEmailMessage emailMessage = new ConfirmEmailEmailMessage(email, emailConfirmationToken.getId(),
-                user.getId());        
-        
+        ConfirmEmailEmailMessage emailMessage = new ConfirmEmailEmailMessage(email,
+                emailConfirmationToken.getId(), user.getId());
+
         this.emailService.send(emailMessage);
     }
 
@@ -71,7 +74,10 @@ class UserSignupService {
 
     private EmailConfirmationToken getNewEmailConfirmationToken(User user) {
         String token = UUID.randomUUID().toString();
-        ZonedDateTime expirationTimestamp = ZonedDateTime.now().plusDays(this.emailConfirmationTokenValidityDays);
+
+        ZonedDateTime expirationTimestamp = ZonedDateTime.now()
+                .plusDays(this.emailConfirmationTokenValidityDays);
+
         return new EmailConfirmationToken(token, user, expirationTimestamp);
     }
 
@@ -79,7 +85,8 @@ class UserSignupService {
     public void confirmEmail(String emailConfirmationToken, Long userId) {
         String invalidTokenMessage = "Invalid email confirmation token";
 
-        EmailConfirmationToken token = this.emailConfirmationTokenRepository.findByIdWithUser(emailConfirmationToken)
+        EmailConfirmationToken token = this.emailConfirmationTokenRepository
+                .findByIdWithUser(emailConfirmationToken)
                 .orElseThrow(() -> new InvalidRequestException(invalidTokenMessage));
 
         if (token.hasExpired()) {

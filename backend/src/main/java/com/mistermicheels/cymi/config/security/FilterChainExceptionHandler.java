@@ -17,20 +17,20 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
  * in controllers.
  */
 public class FilterChainExceptionHandler extends OncePerRequestFilter {
-    
+
     private final HandlerExceptionResolver resolver;
-    
+
     public FilterChainExceptionHandler(HandlerExceptionResolver resolver) {
         this.resolver = resolver;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            resolver.resolveException(request, response, null, e);
+            this.resolver.resolveException(request, response, null, e);
         }
     }
 

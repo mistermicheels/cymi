@@ -19,7 +19,7 @@ public class ConfirmEmailEmailMessage implements EmailMessage {
 
     @Override
     public String getBody() {
-        return "CONFIRM EMAIL: " + emailConfirmationToken + " " + userId;
+        return "CONFIRM EMAIL: " + this.emailConfirmationToken + " " + this.userId;
     }
 
     public String getEmailConfirmationToken() {

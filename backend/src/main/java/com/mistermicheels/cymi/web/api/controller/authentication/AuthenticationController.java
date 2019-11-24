@@ -24,25 +24,26 @@ import com.mistermicheels.cymi.web.api.output.ApiSuccessResponse;
 public class AuthenticationController {
 
     private final UserService userService;
-    
+
     private final String sessionTokenCookieName;
     private final String csrfTokenCookieName;
-    
+
     @Autowired
-    public AuthenticationController(UserService userService, SecurityProperties securityProperties) {
+    public AuthenticationController(UserService userService,
+            SecurityProperties securityProperties) {
         this.userService = userService;
-        
+
         this.sessionTokenCookieName = securityProperties.getSessionTokenCookieName();
         this.csrfTokenCookieName = securityProperties.getCsrfTokenCookieName();
     }
 
     @PostMapping("sign-up")
-    public ApiSuccessResponse signUp(@Valid @RequestBody SignupInput input) {        
-        LoginData loginData = new LoginData(input.email, input.password);        
-        this.userService.signUpUser(loginData, input.defaultDisplayName);        
+    public ApiSuccessResponse signUp(@Valid @RequestBody SignupInput input) {
+        LoginData loginData = new LoginData(input.email, input.password);
+        this.userService.signUpUser(loginData, input.defaultDisplayName);
         return new ApiSuccessResponse();
     }
-    
+
     @PostMapping("confirm-email")
     public ApiSuccessResponse confirmEmail(@Valid @RequestBody ConfirmEmailInput input) {
         this.userService.confirmEmail(input.token, input.userId);
@@ -50,26 +51,27 @@ public class AuthenticationController {
     }
 
     @PostMapping("log-in")
-    public ApiSuccessResponse logIn(@Valid @RequestBody LoginInput input, HttpServletResponse response) {
+    public ApiSuccessResponse logIn(@Valid @RequestBody LoginInput input,
+            HttpServletResponse response) {
         LoginData loginData = new LoginData(input.email, input.password);
         SessionData sessionData = this.userService.getSessionDataForLogin(loginData);
-        
+
         Cookie sessionTokenCookie = this.getSessionTokenCookie(sessionData.getSessionToken());
         response.addCookie(sessionTokenCookie);
-        
-        Cookie csrfTokenCookie = this.getCsrfTokenCookie(sessionData.getCsrfToken());        
+
+        Cookie csrfTokenCookie = this.getCsrfTokenCookie(sessionData.getCsrfToken());
         response.addCookie(csrfTokenCookie);
-        
+
         return new ApiSuccessResponse();
     }
-    
+
     private Cookie getSessionTokenCookie(String value) {
         Cookie sessionTokenCookie = new Cookie(this.sessionTokenCookieName, value);
         sessionTokenCookie.setPath("/");
         sessionTokenCookie.setHttpOnly(true);
         return sessionTokenCookie;
     }
-    
+
     private Cookie getCsrfTokenCookie(String value) {
         Cookie csrfTokenCookie = new Cookie(this.csrfTokenCookieName, value);
         csrfTokenCookie.setPath("/");
@@ -80,15 +82,15 @@ public class AuthenticationController {
     public ApiSuccessResponse logOut(HttpServletResponse response) {
         // cookies are deleted by setting value to null and Max-Age to 0
         // we must also set the other properties that we set when creating the cookie
-        
+
         Cookie sessionTokenCookie = this.getSessionTokenCookie(null);
         sessionTokenCookie.setMaxAge(0);
         response.addCookie(sessionTokenCookie);
-        
-        Cookie csrfTokenCookie = this.getCsrfTokenCookie(null);  
-        sessionTokenCookie.setMaxAge(0);      
+
+        Cookie csrfTokenCookie = this.getCsrfTokenCookie(null);
+        sessionTokenCookie.setMaxAge(0);
         response.addCookie(csrfTokenCookie);
-        
+
         return new ApiSuccessResponse();
     }
 

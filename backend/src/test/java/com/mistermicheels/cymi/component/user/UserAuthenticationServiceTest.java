@@ -1,7 +1,12 @@
 package com.mistermicheels.cymi.component.user;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -43,8 +48,8 @@ public class UserAuthenticationServiceTest {
     private final String defaultDisplayName = "defaultDisplayName";
     private final String validPassword = "validPassword";
     private final String invalidPassword = "invalidPassword";
-    private final LoginData validLoginData = new LoginData(email, validPassword);
-    private final LoginData invalidLoginData = new LoginData(email, invalidPassword);
+    private final LoginData validLoginData = new LoginData(this.email, this.validPassword);
+    private final LoginData invalidLoginData = new LoginData(this.email, this.invalidPassword);
 
     private UserAuthenticationService service;
 
@@ -53,10 +58,12 @@ public class UserAuthenticationServiceTest {
         doThrow(new InvalidRequestException("Invalid password")).when(this.passwordServiceMock)
                 .checkPassword(this.invalidPassword, this.saltedPasswordHash);
 
-        when(this.securityPropertiesMock.getSessionTokenValidityDays()).thenReturn(this.sessionTokenValidityDays);
+        when(this.securityPropertiesMock.getSessionTokenValidityDays())
+                .thenReturn(this.sessionTokenValidityDays);
 
-        this.service = new UserAuthenticationService(this.repositoryMock, this.sessionTokenRepositoryMock,
-                this.passwordServiceMock, this.securityPropertiesMock);
+        this.service = new UserAuthenticationService(this.repositoryMock,
+                this.sessionTokenRepositoryMock, this.passwordServiceMock,
+                this.securityPropertiesMock);
     }
 
     @Test
@@ -86,7 +93,8 @@ public class UserAuthenticationServiceTest {
         user.signup(this.saltedPasswordHash, this.defaultDisplayName);
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.of(user));
 
-        assertThrows(InvalidRequestException.class, () -> this.service.getSessionDataForLogin(this.validLoginData));
+        assertThrows(InvalidRequestException.class,
+                () -> this.service.getSessionDataForLogin(this.validLoginData));
 
         InvalidRequestException exception = assertThrows(InvalidRequestException.class,
                 () -> this.service.getSessionDataForLogin(this.validLoginData));
@@ -101,7 +109,8 @@ public class UserAuthenticationServiceTest {
         user.confirmEmail();
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.of(user));
 
-        assertThrows(InvalidRequestException.class, () -> this.service.getSessionDataForLogin(this.invalidLoginData));
+        assertThrows(InvalidRequestException.class,
+                () -> this.service.getSessionDataForLogin(this.invalidLoginData));
     }
 
     @Test

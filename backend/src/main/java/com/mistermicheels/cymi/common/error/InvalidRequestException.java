@@ -7,7 +7,8 @@ public class InvalidRequestException extends RuntimeException {
 
     private InvalidRequestExceptionType type;
 
-    public InvalidRequestException(String message, InvalidRequestExceptionType type, Throwable cause) {
+    public InvalidRequestException(String message, InvalidRequestExceptionType type,
+            Throwable cause) {
         super(message, cause);
         this.type = type;
     }

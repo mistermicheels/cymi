@@ -8,10 +8,10 @@ import com.mistermicheels.cymi.common.error.InvalidRequestException;
 @Service
 public class UserService {
 
-    private final UserRepository repository;    
+    private final UserRepository repository;
     private final UserSignupService userSignupService;
     private final UserAuthenticationService userAuthenticationService;
-   
+
     @Autowired
     UserService(UserRepository repository, UserSignupService userSignupService,
             UserAuthenticationService userAuthenticationService) {
@@ -37,8 +37,8 @@ public class UserService {
     }
 
     public User findByIdOrThrow(Long id) {
-        return this.repository.findById(id)
-                .orElseThrow(() -> new InvalidRequestException("There is no user with the specified ID"));
+        return this.repository.findById(id).orElseThrow(
+                () -> new InvalidRequestException("There is no user with the specified ID"));
     }
 
 }

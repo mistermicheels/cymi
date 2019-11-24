@@ -48,7 +48,7 @@ public class User {
     public Long getId() {
         return this.id;
     }
-    
+
     void setIdForTest(Long id) {
         this.id = id;
     }

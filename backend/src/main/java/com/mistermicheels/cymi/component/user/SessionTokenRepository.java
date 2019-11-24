@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 interface SessionTokenRepository extends JpaRepository<SessionToken, String> {
-    
+
     @Transactional
     @Modifying
     @Query("DELETE FROM SessionToken token WHERE CURRENT_TIMESTAMP > token.expirationTimestamp")

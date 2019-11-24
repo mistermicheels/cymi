@@ -22,11 +22,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             new AntPathRequestMatcher("/authentication/**"));
 
     private final AuthenticationProvider provider;
-    private final SecurityProperties securityProperties;    
+    private final SecurityProperties securityProperties;
     private final HandlerExceptionResolver resolver;
 
     @Autowired
-    public SecurityConfig(AuthenticationProvider authenticationProvider, SecurityProperties securityProperties, HandlerExceptionResolver resolver) {
+    public SecurityConfig(AuthenticationProvider authenticationProvider,
+            SecurityProperties securityProperties, HandlerExceptionResolver resolver) {
         super();
         this.provider = authenticationProvider;
         this.securityProperties = securityProperties;
@@ -54,22 +55,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().permitAll();
 
         // use token authentication and pass exceptions to FilterChainExceptionHandler
-        http.addFilterBefore(tokenAuthenticationFilter(), AnonymousAuthenticationFilter.class);
-        http.addFilterBefore(chainExceptionHandler(), TokenAuthenticationFilter.class);
+        http.addFilterBefore(this.tokenAuthenticationFilter(), AnonymousAuthenticationFilter.class);
+        http.addFilterBefore(this.chainExceptionHandler(), TokenAuthenticationFilter.class);
     }
-    
+
     // we do not declare the below filters as beans
     // this prevents them from automatically being registered in the container
     // an alternative would be the use of FilterRegistrationBean
 
     TokenAuthenticationFilter tokenAuthenticationFilter() throws Exception {
-        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(PROTECTED_URLS, this.securityProperties);
-        filter.setAuthenticationManager(authenticationManager());
+        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(PROTECTED_URLS,
+                this.securityProperties);
+
+        filter.setAuthenticationManager(this.authenticationManager());
         return filter;
     }
 
     FilterChainExceptionHandler chainExceptionHandler() {
-        FilterChainExceptionHandler exceptionHandler = new FilterChainExceptionHandler(this.resolver);
+        FilterChainExceptionHandler exceptionHandler = new FilterChainExceptionHandler(
+                this.resolver);
+
         return exceptionHandler;
     }
 

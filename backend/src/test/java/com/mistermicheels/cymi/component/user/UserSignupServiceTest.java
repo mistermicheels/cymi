@@ -53,11 +53,11 @@ public class UserSignupServiceTest {
 
     private final String email = "email";
     private final String password = "password";
-    private final LoginData loginData = new LoginData(email, password);
+    private final LoginData loginData = new LoginData(this.email, this.password);
     private final String defaultDisplayName = "defaultDisplayName";
     private final String emailConfirmationToken = "emailConfirmationToken";
 
-    private User existingWithEmail = new User(email);
+    private User existingWithEmail = new User(this.email);
     private final Long userId = 1L;
     private User userForConfirmationToken;
 
@@ -69,7 +69,7 @@ public class UserSignupServiceTest {
             User user = invocation.getArgument(0);
             user.setIdForTest(this.userId);
             return user;
-        }).when(repositoryMock).saveAndFlush(any());
+        }).when(this.repositoryMock).saveAndFlush(any());
 
         when(this.securityPropertiesMock.getEmailConfirmationTokenValidityDays())
                 .thenReturn(this.emailConfirmationTokenValidityDays);
@@ -77,13 +77,15 @@ public class UserSignupServiceTest {
         this.userForConfirmationToken = new User();
         this.userForConfirmationToken.setIdForTest(this.userId);
 
-        this.service = new UserSignupService(this.repositoryMock, this.emailConfirmationTokenRepositoryMock,
-                this.passwordServiceMock, this.emailServiceMock, this.securityPropertiesMock);
+        this.service = new UserSignupService(this.repositoryMock,
+                this.emailConfirmationTokenRepositoryMock, this.passwordServiceMock,
+                this.emailServiceMock, this.securityPropertiesMock);
     }
 
     @Test
     public void SignupFailsIfEmailAreadyTaken() {
-        when(this.repositoryMock.findByEmail(email)).thenReturn(Optional.of(this.existingWithEmail));
+        when(this.repositoryMock.findByEmail(this.email))
+                .thenReturn(Optional.of(this.existingWithEmail));
 
         assertThrows(InvalidRequestException.class,
                 () -> this.service.signUpUser(this.loginData, this.defaultDisplayName));
@@ -91,21 +93,26 @@ public class UserSignupServiceTest {
 
     @Test
     public void SignupSendsAndStoresEmailConfirmationToken() {
-        when(this.repositoryMock.findByEmail(email)).thenReturn(Optional.empty());
+        when(this.repositoryMock.findByEmail(this.email)).thenReturn(Optional.empty());
 
         ZonedDateTime timeBeforeCall = ZonedDateTime.now();
         this.service.signUpUser(this.loginData, this.defaultDisplayName);
         ZonedDateTime timeAferCall = ZonedDateTime.now();
 
-        verify(this.emailConfirmationTokenRepositoryMock).save(this.confirmationTokenCaptor.capture());
+        verify(this.emailConfirmationTokenRepositoryMock)
+                .save(this.confirmationTokenCaptor.capture());
+
         EmailConfirmationToken storedConfirmationToken = this.confirmationTokenCaptor.getValue();
 
         verify(this.emailServiceMock).send(this.confirmationMessageCaptor.capture());
         ConfirmEmailEmailMessage confirmationMessage = this.confirmationMessageCaptor.getValue();
 
         assertEquals(this.userId, storedConfirmationToken.getUserId());
-        assertEquals(storedConfirmationToken.getId(), confirmationMessage.getEmailConfirmationToken());
-        assertEquals(storedConfirmationToken.getUserId(), confirmationMessage.getUserId());        
+        
+        assertEquals(storedConfirmationToken.getId(),
+                confirmationMessage.getEmailConfirmationToken());
+
+        assertEquals(storedConfirmationToken.getUserId(), confirmationMessage.getUserId());
 
         assertTrue(timeBeforeCall.plusDays(this.emailConfirmationTokenValidityDays)
                 .isBefore(storedConfirmationToken.getExpirationTimestamp()));
@@ -116,7 +123,8 @@ public class UserSignupServiceTest {
 
     @Test
     public void EmailConfirmationFailsForNonExistingToken() {
-        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any())).thenReturn(Optional.empty());
+        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any()))
+                .thenReturn(Optional.empty());
 
         assertThrows(InvalidRequestException.class,
                 () -> this.service.confirmEmail(this.emailConfirmationToken, this.userId));
@@ -125,9 +133,11 @@ public class UserSignupServiceTest {
     @Test
     public void EmailConfirmationFailsForExpiredToken() {
         ZonedDateTime expirationTimestamp = ZonedDateTime.now();
-        EmailConfirmationToken expiredToken = new EmailConfirmationToken(this.emailConfirmationToken,
-                this.userForConfirmationToken, expirationTimestamp);
-        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any())).thenReturn(Optional.of(expiredToken));
+        EmailConfirmationToken expiredToken = new EmailConfirmationToken(
+                this.emailConfirmationToken, this.userForConfirmationToken, expirationTimestamp);
+        
+        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any()))
+                .thenReturn(Optional.of(expiredToken));
 
         assertThrows(InvalidRequestException.class,
                 () -> this.service.confirmEmail(this.emailConfirmationToken, this.userId));
@@ -136,27 +146,29 @@ public class UserSignupServiceTest {
     @Test
     public void EmailConfirmationFailsForTokenWithWrongUser() {
         ZonedDateTime expirationTimestamp = ZonedDateTime.now().plusDays(1);
-        
+
         EmailConfirmationToken validToken = new EmailConfirmationToken(this.emailConfirmationToken,
                 this.userForConfirmationToken, expirationTimestamp);
-        
-        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any())).thenReturn(Optional.of(validToken));
+
+        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any()))
+                .thenReturn(Optional.of(validToken));
 
         assertThrows(InvalidRequestException.class,
                 () -> this.service.confirmEmail(this.emailConfirmationToken, this.userId + 1));
     }
-    
+
     @Test
     public void EmailConfirmationSucceedsForValidInput() {
         ZonedDateTime expirationTimestamp = ZonedDateTime.now().plusDays(1);
-        
+
         EmailConfirmationToken validToken = new EmailConfirmationToken(this.emailConfirmationToken,
                 this.userForConfirmationToken, expirationTimestamp);
-        
-        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any())).thenReturn(Optional.of(validToken));
 
-        assertFalse(this.userForConfirmationToken.isEmailConfirmed());        
-        this.service.confirmEmail(this.emailConfirmationToken, this.userId);        
+        when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any()))
+                .thenReturn(Optional.of(validToken));
+
+        assertFalse(this.userForConfirmationToken.isEmailConfirmed());
+        this.service.confirmEmail(this.emailConfirmationToken, this.userId);
         assertTrue(this.userForConfirmationToken.isEmailConfirmed());
     }
 

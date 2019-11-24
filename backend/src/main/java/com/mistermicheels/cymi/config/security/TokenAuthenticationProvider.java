@@ -14,7 +14,7 @@ import com.mistermicheels.cymi.component.user.UserService;
 @Component
 public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    private final UserService userService;    
+    private final UserService userService;
 
     @Autowired
     public TokenAuthenticationProvider(UserService userService) {
@@ -23,8 +23,10 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
     @Override
     protected UserDetails retrieveUser(String userName,
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-        SessionData sessionData = (SessionData) usernamePasswordAuthenticationToken.getCredentials();
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
+            throws AuthenticationException {
+        SessionData sessionData = (SessionData) usernamePasswordAuthenticationToken
+                .getCredentials();
 
         try {
             Long authenticatedUserId = this.userService.getAuthenticatedUserId(sessionData);
@@ -36,7 +38,8 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
+            throws AuthenticationException {
         // no additional checks needed
         return;
     }
