@@ -29,8 +29,6 @@ public class SessionDataIncoming {
     public void checkValidityAgainstToken(SessionToken token) {
         if (!Objects.equals(this.sessionToken, token.getId())) {
             throw new InvalidRequestException("Invalid session token");
-        } else if (token.hasExpired()) {
-            throw new InvalidRequestException("Expired token");
         }
 
         boolean isValidCsrfToken = !this.isStateChangingRequest

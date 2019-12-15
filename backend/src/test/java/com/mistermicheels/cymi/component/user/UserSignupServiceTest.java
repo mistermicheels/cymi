@@ -51,7 +51,7 @@ public class UserSignupServiceTest {
 
     private final int emailConfirmationTokenValidityDays = 7;
 
-    private final String email = "email";
+    private final String email = "email@email.com";
     private final String password = "password";
     private final LoginData loginData = new LoginData(this.email, this.password);
     private final String defaultDisplayName = "defaultDisplayName";
@@ -108,7 +108,7 @@ public class UserSignupServiceTest {
         ConfirmEmailEmailMessage confirmationMessage = this.confirmationMessageCaptor.getValue();
 
         assertEquals(this.userId, storedConfirmationToken.getUserId());
-        
+
         assertEquals(storedConfirmationToken.getId(),
                 confirmationMessage.getEmailConfirmationToken());
 
@@ -135,7 +135,7 @@ public class UserSignupServiceTest {
         ZonedDateTime expirationTimestamp = ZonedDateTime.now();
         EmailConfirmationToken expiredToken = new EmailConfirmationToken(
                 this.emailConfirmationToken, this.userForConfirmationToken, expirationTimestamp);
-        
+
         when(this.emailConfirmationTokenRepositoryMock.findByIdWithUser(any()))
                 .thenReturn(Optional.of(expiredToken));
 

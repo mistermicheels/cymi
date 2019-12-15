@@ -43,7 +43,7 @@ public class UserAuthenticationServiceTest {
 
     private final int sessionTokenValidityDays = 7;
 
-    private final String email = "email";
+    private final String email = "email@email.com";
     private final String saltedPasswordHash = "saltedPasswordHash";
     private final String defaultDisplayName = "defaultDisplayName";
     private final String validPassword = "validPassword";

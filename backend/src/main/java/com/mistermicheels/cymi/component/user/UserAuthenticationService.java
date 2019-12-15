@@ -72,6 +72,10 @@ class UserAuthenticationService {
         SessionToken token = this.sessionTokenRepository.findById(sessionData.getSessionToken())
                 .orElseThrow(() -> new InvalidRequestException("Invalid session token"));
 
+        if (token.hasExpired()) {
+            throw new InvalidRequestException("Expired token");
+        }
+
         sessionData.checkValidityAgainstToken(token);
 
         return token.getUserId();
