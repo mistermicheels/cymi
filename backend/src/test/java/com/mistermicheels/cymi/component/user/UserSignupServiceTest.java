@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 import com.mistermicheels.cymi.io.email.EmailService;
 import com.mistermicheels.cymi.io.email.emailMessage.ConfirmEmailEmailMessage;
@@ -87,8 +88,10 @@ public class UserSignupServiceTest {
         when(this.repositoryMock.findByEmail(this.email))
                 .thenReturn(Optional.of(this.existingWithEmail));
 
-        assertThrows(InvalidRequestException.class,
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
                 () -> this.service.signUpUser(this.loginData, this.defaultDisplayName));
+
+        assertEquals(InvalidRequestExceptionType.EmailAlreadyTaken, exception.getType().get());
     }
 
     @Test
