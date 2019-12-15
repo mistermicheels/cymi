@@ -1,0 +1,8 @@
+/* this matches the Bootstrap Medium breakpoint */
+@media (min-width: 768px) {
+    /* scroll within card body */
+    .card-body {
+        max-height: calc(100vh - 110px - 2rem);
+        overflow: auto;
+    }
+}

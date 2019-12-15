@@ -1,0 +1,11 @@
+<h1 class="text-center">Email confirmation</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <p *ngIf="!checkInProgress && checkSuccessful">Email confirmation was successful.</p>
+
+        <p *ngIf="!checkInProgress && !checkSuccessful">
+            Email confirmation did not succeed. Your confirmation token might be wrong or expired.
+        </p>
+    </div>
+</div>

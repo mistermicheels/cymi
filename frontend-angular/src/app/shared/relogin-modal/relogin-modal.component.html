@@ -1,0 +1,44 @@
+<div class="modal-header">
+    <h4 class="modal-title">Log in again</h4>
+</div>
+<div class="modal-body">
+    <p>Please log in again to keep going</p>
+
+    <p><strong>Email:</strong> {{ email }}</p>
+
+    <form>
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                placeholder="Password"
+                [(ngModel)]="password"
+                name="password"
+            />
+        </div>
+        <button type="button" class="btn btn-primary" (click)="login()">Submit</button>
+
+        <div
+            class="alert alert-danger mt-3"
+            role="alert"
+            *ngIf="loginErrorType"
+            [ngSwitch]="loginErrorType"
+        >
+            <span *ngSwitchCase="'InvalidPassword'">You have provided an invalid password.</span>
+        </div>
+
+        <div class="alert alert-primary mt-3" role="alert">
+            Not you? Click
+            <a class="alert-link" routerLink="/login" (click)="this.activeModal.dismiss()">here</a>
+            to log in with your own account.
+        </div>
+
+        <div class="alert alert-primary mt-3" role="alert">
+            Don't have an account yet? Click
+            <a class="alert-link" routerLink="/signup" (click)="this.activeModal.dismiss()">here</a>
+            to sign up.
+        </div>
+    </form>
+</div>

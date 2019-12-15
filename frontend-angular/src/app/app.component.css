@@ -1,0 +1,16 @@
+/*
+    this matches the Bootstrap Medium breakpoint that triggers menu collapse
+    we do this because brand centering breaks expand-collapse
+*/
+@media (min-width: 768px) {
+    .navbar-brand-center {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        text-align: center;
+    }
+}
+
+.on-top {
+    z-index: 200;
+}

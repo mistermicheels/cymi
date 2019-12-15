@@ -1,0 +1,67 @@
+<h1 class="text-center">Sign up for a new account</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form>
+            <div class="form-group">
+                <label for="inputEmail">Email address</label>
+                <input
+                    type="email"
+                    class="form-control"
+                    id="inputEmail"
+                    placeholder="Enter email"
+                    [(ngModel)]="email"
+                    name="email"
+                />
+            </div>
+            <div class="form-group">
+                <label for="inputPassword">Password</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="inputPassword"
+                    placeholder="Password"
+                    [(ngModel)]="password"
+                    name="password"
+                />
+            </div>
+            <div class="form-group">
+                <label for="inputDefaultDisplayName">Default display name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputDefaultDisplayName"
+                    aria-describedby="defaultDisplayNameHelp"
+                    placeholder="Default display name"
+                    [(ngModel)]="defaultDisplayName"
+                    name="defaultDisplayName"
+                />
+                <small id="defaultDisplayNameHelp" class="form-text text-muted"
+                    >Your display name describes who you are to other members of the groups you
+                    join. You can still choose another display name when joining a particular
+                    group.</small
+                >
+            </div>
+            <button type="button" class="btn btn-primary" (click)="login()">Submit</button>
+
+            <div
+                class="alert alert-danger mt-3"
+                role="alert"
+                *ngIf="signupErrorType"
+                [ngSwitch]="signupErrorType"
+            >
+                <span *ngSwitchCase="'EmailAlreadyTaken'"
+                    >There is already a user with that email address. Do you want to
+                    <a class="alert-link" routerLink="/login">log in</a> instead?</span
+                >
+            </div>
+
+            <div class="alert alert-primary mt-3" role="alert">
+                Already have an account? Click
+                <a class="alert-link" routerLink="/login">here</a> to log in.
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- some doc under default display name field -->

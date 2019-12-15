@@ -1,1 +1,45 @@
-<h1>{{ title }}</h1>
+<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary">
+    <a class="navbar-brand navbar-brand-center" routerLink="/" (click)="collapseMenu()"
+        >Can You Make It?</a
+    >
+
+    <button
+        class="navbar-toggler navbar-toggler-right"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="!isMenuCollapsed"
+        (click)="toggleMenuCollapsed()"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div
+        class="collapse navbar-collapse"
+        id="navbarSupportedContent"
+        [ngClass]="{ show: !isMenuCollapsed }"
+    >
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item on-top" *ngIf="!isUserLoggedIn">
+                <a class="nav-link" routerLink="/login" (click)="collapseMenu()">Log in</a>
+            </li>
+            <li class="nav-item on-top" *ngIf="!isUserLoggedIn">
+                <a class="nav-link" routerLink="/signup" (click)="collapseMenu()">Sign up</a>
+            </li>
+            <li class="nav-item on-top" *ngIf="isUserLoggedIn">
+                <a class="nav-link" routerLink="/my-account" (click)="collapseMenu()">My account</a>
+            </li>
+            <li class="nav-item on-top" *ngIf="isUserLoggedIn">
+                <button type="button" class="btn btn-outline-light" (click)="logOut()">
+                    Log out
+                </button>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-3 mb-3">
+    <router-outlet></router-outlet>
+</div>
