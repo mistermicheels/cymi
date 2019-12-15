@@ -88,7 +88,7 @@ public class AuthenticationController {
         response.addCookie(sessionTokenCookie);
 
         Cookie csrfTokenCookie = this.getCsrfTokenCookie(null);
-        sessionTokenCookie.setMaxAge(0);
+        csrfTokenCookie.setMaxAge(0);
         response.addCookie(csrfTokenCookie);
 
         return new ApiSuccessResponse();
