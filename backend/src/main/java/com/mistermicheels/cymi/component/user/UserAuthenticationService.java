@@ -46,7 +46,11 @@ class UserAuthenticationService {
         }
 
         String password = loginData.getPassword();
-        this.passwordService.checkPassword(password, saltedPasswordHash);
+
+        if (!this.passwordService.isValidPassword(password, saltedPasswordHash)) {
+            throw new InvalidRequestException("Invalid password",
+                    InvalidRequestExceptionType.InvalidPassword);
+        }
 
         SessionToken token = this.getNewSessionToken(user);
 

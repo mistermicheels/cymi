@@ -10,6 +10,6 @@ package com.mistermicheels.cymi.common.error;
  */
 public enum InvalidRequestExceptionType {
 
-    UserNotSignedUp, EmailNotConfirmed, EmailAlreadyTaken
+    UserNotSignedUp, EmailNotConfirmed, InvalidPassword, EmailAlreadyTaken
 
 }

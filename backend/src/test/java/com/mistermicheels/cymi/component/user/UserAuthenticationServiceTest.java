@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,8 +54,11 @@ public class UserAuthenticationServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        doThrow(new InvalidRequestException("Invalid password")).when(this.passwordServiceMock)
-                .checkPassword(this.invalidPassword, this.saltedPasswordHash);
+        when(this.passwordServiceMock.isValidPassword(this.validPassword, this.saltedPasswordHash))
+                .thenReturn(true);
+
+        when(this.passwordServiceMock.isValidPassword(this.invalidPassword,
+                this.saltedPasswordHash)).thenReturn(false);
 
         when(this.securityPropertiesMock.getSessionTokenValidityDays())
                 .thenReturn(this.sessionTokenValidityDays);
@@ -109,8 +111,10 @@ public class UserAuthenticationServiceTest {
         user.confirmEmail();
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.of(user));
 
-        assertThrows(InvalidRequestException.class,
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
                 () -> this.service.getSessionDataForLogin(this.invalidLoginData));
+
+        assertEquals(InvalidRequestExceptionType.InvalidPassword, exception.getType().get());
     }
 
     @Test
