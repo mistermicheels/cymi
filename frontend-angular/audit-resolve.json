@@ -1,0 +1,14 @@
+{
+    "decisions": {
+        "1426|@angular-devkit/build-angular>copy-webpack-plugin>serialize-javascript": {
+            "decision": "ignore",
+            "madeAt": 1576428595691
+        },
+        "1426|@angular-devkit/build-angular>terser-webpack-plugin>serialize-javascript": {
+            "decision": "ignore",
+            "madeAt": 1576428595691
+        }
+    },
+    "rules": {},
+    "version": 1
+}
