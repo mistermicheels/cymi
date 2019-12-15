@@ -18,6 +18,7 @@ import com.mistermicheels.cymi.web.api.controller.authentication.input.ConfirmEm
 import com.mistermicheels.cymi.web.api.controller.authentication.input.LoginInput;
 import com.mistermicheels.cymi.web.api.controller.authentication.input.SignupInput;
 import com.mistermicheels.cymi.web.api.output.ApiSuccessResponse;
+import com.mistermicheels.cymi.web.api.output.ApiUser;
 
 @RestController()
 @RequestMapping("authentication")
@@ -51,8 +52,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("log-in")
-    public ApiSuccessResponse logIn(@Valid @RequestBody LoginInput input,
-            HttpServletResponse response) {
+    public ApiUser logIn(@Valid @RequestBody LoginInput input, HttpServletResponse response) {
         LoginData loginData = new LoginData(input.email, input.password);
         SessionDataOutgoing sessionData = this.userService.getSessionDataForLogin(loginData);
 
@@ -62,7 +62,7 @@ public class AuthenticationController {
         Cookie csrfTokenCookie = this.getCsrfTokenCookie(sessionData.getCsrfToken());
         response.addCookie(csrfTokenCookie);
 
-        return new ApiSuccessResponse();
+        return new ApiUser(sessionData.getUser());
     }
 
     private Cookie getSessionTokenCookie(String value) {

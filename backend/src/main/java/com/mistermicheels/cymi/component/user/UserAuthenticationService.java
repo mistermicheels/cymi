@@ -51,7 +51,7 @@ class UserAuthenticationService {
         SessionToken token = this.getNewSessionToken(user);
 
         SessionDataOutgoing sessionData = new SessionDataOutgoing(token.getId(),
-                token.getCsrfToken());
+                token.getCsrfToken(), user);
 
         this.sessionTokenRepository.save(token);
 
