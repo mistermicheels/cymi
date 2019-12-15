@@ -14,7 +14,7 @@ Users are required to sign up and confirm their email before being able to log i
 
 A successful login produces a session token (required for every request) and CSRF token (required for every state-changing request). Making a request with an invalid session token (or CSRF token if it's required) triggers a relogin by returning a 401 response.
 
-If users try to access anything they shouldn't have access to (example: a group they don't below to), they are redirected to the home page by returning a 403 response.
+If users try to access anything they shouldn't have access to (example: a group they are not a member of), they are redirected to the home page by returning a 403 response.
 
 ## Conventions
 
