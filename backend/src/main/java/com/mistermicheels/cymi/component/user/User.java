@@ -9,6 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.validator.routines.EmailValidator;
+
+import com.mistermicheels.cymi.common.FieldLengths;
+import com.mistermicheels.cymi.common.error.InvalidRequestException;
+
 @Entity
 @Table(name = "user_account")
 public class User {
@@ -17,7 +22,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String email;
 
     @Column(nullable = false)
@@ -26,18 +31,31 @@ public class User {
     @Column(nullable = true)
     private String saltedPasswordHash;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String defaultDisplayName;
 
     User() {
     }
 
     User(String email) {
+        if (email.length() > FieldLengths.DEFAULT_STRING_LENGTH) {
+            throw new InvalidRequestException("Email should not be longer than "
+                    + FieldLengths.DEFAULT_STRING_LENGTH + " characters");
+        } else if (!EmailValidator.getInstance().isValid(email)) {
+            throw new InvalidRequestException("Please provide a valid email address");
+        }
+
         this.email = email;
     }
 
     public void signup(String saltedPasswordHash, String defaultDisplayName) {
         this.saltedPasswordHash = saltedPasswordHash;
+
+        if (defaultDisplayName.length() > FieldLengths.DEFAULT_STRING_LENGTH) {
+            throw new InvalidRequestException("Default display name should not be longer than "
+                    + FieldLengths.DEFAULT_STRING_LENGTH + " characters");
+        }
+
         this.defaultDisplayName = defaultDisplayName;
     }
 
