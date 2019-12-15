@@ -9,6 +9,7 @@
         "build-prod": "check-audit && npm run lint && npm run test-no-watch && npm run e2e && rimraf dist && ng build --prod",
         "lint": "ng lint && prettier-check \"./@(src|e2e)/**/*@(.ts|.js|.css|.html)\"",
         "test-no-watch": "ng test --watch=false",
+        "resolve-audit": "resolve-audit",
         "e2e": "ng e2e"
     },
     "private": true,
@@ -21,6 +22,8 @@
         "@angular/platform-browser": "~8.2.9",
         "@angular/platform-browser-dynamic": "~8.2.9",
         "@angular/router": "~8.2.9",
+        "@ng-bootstrap/ng-bootstrap": "^5.1.4",
+        "bootstrap": "4.1.1",
         "rxjs": "~6.4.0",
         "tslib": "^1.10.0",
         "zone.js": "~0.9.1"
