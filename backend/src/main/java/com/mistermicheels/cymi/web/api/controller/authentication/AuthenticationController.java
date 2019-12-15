@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mistermicheels.cymi.component.user.LoginData;
-import com.mistermicheels.cymi.component.user.SessionData;
+import com.mistermicheels.cymi.component.user.SessionDataOutgoing;
 import com.mistermicheels.cymi.component.user.UserService;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 import com.mistermicheels.cymi.web.api.controller.authentication.input.ConfirmEmailInput;
@@ -54,7 +54,7 @@ public class AuthenticationController {
     public ApiSuccessResponse logIn(@Valid @RequestBody LoginInput input,
             HttpServletResponse response) {
         LoginData loginData = new LoginData(input.email, input.password);
-        SessionData sessionData = this.userService.getSessionDataForLogin(loginData);
+        SessionDataOutgoing sessionData = this.userService.getSessionDataForLogin(loginData);
 
         Cookie sessionTokenCookie = this.getSessionTokenCookie(sessionData.getSessionToken());
         response.addCookie(sessionTokenCookie);

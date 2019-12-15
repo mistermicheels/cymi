@@ -11,6 +11,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.mistermicheels.cymi.component.user.SessionData;
+import com.mistermicheels.cymi.component.user.SessionDataIncoming;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -38,9 +39,16 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
             HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
         String sessionToken = this.getCookieValue(request, this.sessionTokenCookieName);
-        String csrfToken = this.getHeaderValue(request, this.csrfTokenHeaderName);
-        SessionData sessionData = new SessionData(sessionToken, csrfToken);
-        
+
+        SessionDataIncoming sessionData;
+
+        if (this.isStateChangingRequest(request)) {
+            String csrfToken = this.getHeaderValue(request, this.csrfTokenHeaderName);
+            sessionData = SessionDataIncoming.forStateChangingRequest(sessionToken, csrfToken);
+        } else {
+            sessionData = SessionDataIncoming.forNonStateChangingRequest(sessionToken);
+        }
+
         Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(sessionData,
                 sessionData);
 
@@ -72,9 +80,15 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         return matchingCookie.getValue();
     }
 
+    private boolean isStateChangingRequest(HttpServletRequest request) {
+        return !request.getMethod().equalsIgnoreCase(HttpMethod.GET.toString())
+                && !request.getMethod().equalsIgnoreCase(HttpMethod.HEAD.toString())
+                && !request.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS.toString());
+    }
+
     private String getHeaderValue(HttpServletRequest request, String name) {
         Optional<String> headerValue = Optional.ofNullable(request.getHeader(name));
-        
+
         return headerValue.orElseThrow(
                 () -> new CustomAuthenticationException("Missing " + name + " header"));
     }

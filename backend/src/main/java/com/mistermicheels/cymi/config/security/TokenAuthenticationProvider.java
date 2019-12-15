@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
-import com.mistermicheels.cymi.component.user.SessionData;
+import com.mistermicheels.cymi.component.user.SessionDataIncoming;
 import com.mistermicheels.cymi.component.user.UserService;
 
 @Component
@@ -25,7 +25,7 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
     protected UserDetails retrieveUser(String userName,
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
             throws AuthenticationException {
-        SessionData sessionData = (SessionData) usernamePasswordAuthenticationToken
+        SessionDataIncoming sessionData = (SessionDataIncoming) usernamePasswordAuthenticationToken
                 .getCredentials();
 
         try {

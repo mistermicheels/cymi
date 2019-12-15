@@ -29,7 +29,7 @@ class UserAuthenticationService {
         this.sessionTokenValidityDays = securityProperties.getSessionTokenValidityDays();
     }
 
-    public SessionData getSessionDataForLogin(LoginData loginData) {
+    public SessionDataOutgoing getSessionDataForLogin(LoginData loginData) {
         String signupMessage = "Please sign up first";
 
         User user = this.repository.findByEmail(loginData.getEmail())
@@ -49,7 +49,10 @@ class UserAuthenticationService {
         this.passwordService.checkPassword(password, saltedPasswordHash);
 
         SessionToken token = this.getNewSessionToken(user);
-        SessionData sessionData = new SessionData(token.getId(), token.getCsrfToken());
+
+        SessionDataOutgoing sessionData = new SessionDataOutgoing(token.getId(),
+                token.getCsrfToken());
+
         this.sessionTokenRepository.save(token);
 
         return sessionData;
@@ -65,17 +68,11 @@ class UserAuthenticationService {
         return new SessionToken(sessionToken, user, expirationTimestamp, csrfToken);
     }
 
-    public Long getAuthenticatedUserId(SessionData sessionData) {
+    public Long getAuthenticatedUserId(SessionDataIncoming sessionData) {
         SessionToken token = this.sessionTokenRepository.findById(sessionData.getSessionToken())
                 .orElseThrow(() -> new InvalidRequestException("Invalid session token"));
 
-        if (!sessionData.getSessionToken().equals(token.getId())) {
-            throw new InvalidRequestException("Invalid session token");
-        } else if (!sessionData.getCsrfToken().equals(token.getCsrfToken())) {
-            throw new InvalidRequestException("Invalid CSRF token");
-        } else if (token.hasExpired()) {
-            throw new InvalidRequestException("Expired token");
-        }
+        sessionData.checkValidityAgainstToken(token);
 
         return token.getUserId();
     }

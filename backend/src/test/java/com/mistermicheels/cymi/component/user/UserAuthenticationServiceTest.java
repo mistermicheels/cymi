@@ -121,7 +121,7 @@ public class UserAuthenticationServiceTest {
         when(this.repositoryMock.findByEmail(any())).thenReturn(Optional.of(user));
 
         ZonedDateTime timeBeforeCall = ZonedDateTime.now();
-        SessionData sessionData = this.service.getSessionDataForLogin(this.validLoginData);
+        SessionDataOutgoing sessionData = this.service.getSessionDataForLogin(this.validLoginData);
         ZonedDateTime timeAferCall = ZonedDateTime.now();
 
         verify(this.sessionTokenRepositoryMock).save(this.sessionTokenCaptor.capture());

@@ -1,11 +1,11 @@
 package com.mistermicheels.cymi.component.user;
 
-public class SessionData {
+public class SessionDataOutgoing {
 
     private final String sessionToken;
     private final String csrfToken;
 
-    public SessionData(String sessionToken, String csrfToken) {
+    public SessionDataOutgoing(String sessionToken, String csrfToken) {
         this.sessionToken = sessionToken;
         this.csrfToken = csrfToken;
     }

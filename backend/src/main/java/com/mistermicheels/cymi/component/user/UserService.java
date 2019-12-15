@@ -28,11 +28,11 @@ public class UserService {
         this.userSignupService.confirmEmail(emailConfirmationToken, userId);
     }
 
-    public SessionData getSessionDataForLogin(LoginData loginData) {
+    public SessionDataOutgoing getSessionDataForLogin(LoginData loginData) {
         return this.userAuthenticationService.getSessionDataForLogin(loginData);
     }
 
-    public Long getAuthenticatedUserId(SessionData sessionData) {
+    public Long getAuthenticatedUserId(SessionDataIncoming sessionData) {
         return this.userAuthenticationService.getAuthenticatedUserId(sessionData);
     }
 
