@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import { AuthenticationService } from "../../core/services/authentication.service";
@@ -15,11 +16,12 @@ export class ReloginModalComponent {
     loginErrorType?: string;
 
     constructor(
-        public activeModal: NgbActiveModal,
+        private activeModal: NgbActiveModal,
+        private router: Router,
         private authenticationService: AuthenticationService
     ) {}
 
-    login() {
+    relogin() {
         this.authenticationService.logIn(this.email, this.password).subscribe(
             () => {
                 this.activeModal.close();
@@ -28,5 +30,15 @@ export class ReloginModalComponent {
                 this.loginErrorType = error.error.type;
             }
         );
+    }
+
+    goToLogin() {
+        this.router.navigateByUrl("/login");
+        this.activeModal.dismiss();
+    }
+
+    goToSignup() {
+        this.router.navigateByUrl("/signup");
+        this.activeModal.dismiss();
     }
 }

@@ -18,7 +18,7 @@
                 name="password"
             />
         </div>
-        <button type="button" class="btn btn-primary" (click)="login()">Submit</button>
+        <button type="button" class="btn btn-primary" (click)="relogin()">Submit</button>
 
         <div
             class="alert alert-danger mt-3"
@@ -31,13 +31,13 @@
 
         <div class="alert alert-primary mt-3" role="alert">
             Not you? Click
-            <a class="alert-link" routerLink="/login" (click)="this.activeModal.dismiss()">here</a>
+            <a class="alert-link" (click)="goToLogin()">here</a>
             to log in with your own account.
         </div>
 
         <div class="alert alert-primary mt-3" role="alert">
             Don't have an account yet? Click
-            <a class="alert-link" routerLink="/signup" (click)="this.activeModal.dismiss()">here</a>
+            <a class="alert-link" (click)="goToSignup()">here</a>
             to sign up.
         </div>
     </form>
