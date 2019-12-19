@@ -12,7 +12,6 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         // dummy call to trigger 401 if user is not logged in
-        this.currentUserService.getCurrentUser().subscribe(() => console.log("a"));
-        this.currentUserService.getCurrentUser().subscribe(() => console.log("b"));
+        this.currentUserService.getCurrentUser().subscribe();
     }
 }
