@@ -7,12 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
+import com.mistermicheels.cymi.common.FieldLengths;
+
 @Entity
 @Table(name = "user_session_token", indexes = {
         @Index(name = "user_session_token_expiration_timestamp_idx", columnList = "expirationTimestamp") })
 class SessionToken extends UserTokenBase {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String csrfToken;
 
     SessionToken() {

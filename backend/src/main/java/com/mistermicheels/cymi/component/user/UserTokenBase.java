@@ -14,6 +14,8 @@ import javax.persistence.PostUpdate;
 
 import org.springframework.data.domain.Persistable;
 
+import com.mistermicheels.cymi.common.FieldLengths;
+
 /**
  * Base entity for a token identifying a user. The token serves as ID.
  * 
@@ -23,7 +25,8 @@ import org.springframework.data.domain.Persistable;
 @MappedSuperclass
 class UserTokenBase implements Persistable<String> {
 
-    @Id
+    @Id()
+    @Column(length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)

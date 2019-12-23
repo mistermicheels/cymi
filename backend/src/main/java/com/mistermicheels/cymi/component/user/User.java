@@ -28,7 +28,7 @@ public class User {
     @Column(nullable = false)
     private boolean emailConfirmed;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String saltedPasswordHash;
 
     @Column(nullable = true, length = FieldLengths.DEFAULT_STRING_LENGTH)
