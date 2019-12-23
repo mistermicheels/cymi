@@ -40,10 +40,10 @@ class UserSignupService {
 
     @Transactional
     public void signUpUser(LoginData loginData, String defaultDisplayName) {
-        String email = loginData.getEmail();
-        this.checkEmailUnique(email);
+        String emailLowerCase = loginData.getEmailLowerCase();
+        this.checkEmailUnique(emailLowerCase);
 
-        User user = new User(email);
+        User user = new User(emailLowerCase);
         String password = loginData.getPassword();
         String saltedPasswordHash = this.passwordService.getSaltedPasswordHash(password);
         user.signup(saltedPasswordHash, defaultDisplayName);
@@ -54,17 +54,17 @@ class UserSignupService {
         EmailConfirmationToken emailConfirmationToken = this.getNewEmailConfirmationToken(user);
         this.emailConfirmationTokenRepository.save(emailConfirmationToken);
 
-        ConfirmEmailEmailMessage emailMessage = new ConfirmEmailEmailMessage(email,
+        ConfirmEmailEmailMessage emailMessage = new ConfirmEmailEmailMessage(emailLowerCase,
                 emailConfirmationToken.getId(), user.getId());
 
         this.emailService.send(emailMessage);
     }
 
-    private void checkEmailUnique(String email) {
+    private void checkEmailUnique(String emailLowerCase) {
         // ignores possible (but unlikely) race conditions
         // those will be caught by the unique index
 
-        Optional<User> existingWithEmail = this.repository.findByEmail(email);
+        Optional<User> existingWithEmail = this.repository.findByEmail(emailLowerCase);
 
         if (existingWithEmail.isPresent()) {
             throw new InvalidRequestException("There is already a user with the same email address",

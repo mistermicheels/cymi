@@ -10,8 +10,8 @@ public class LoginData {
         this.password = password;
     }
 
-    public String getEmail() {
-        return this.email;
+    public String getEmailLowerCase() {
+        return this.email.toLowerCase();
     }
 
     public String getPassword() {

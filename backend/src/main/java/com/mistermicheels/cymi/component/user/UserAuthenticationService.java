@@ -32,7 +32,7 @@ class UserAuthenticationService {
     public SessionDataOutgoing getSessionDataForLogin(LoginData loginData) {
         String signupMessage = "Please sign up first";
 
-        User user = this.repository.findByEmail(loginData.getEmail())
+        User user = this.repository.findByEmail(loginData.getEmailLowerCase())
                 .orElseThrow(() -> new InvalidRequestException(signupMessage,
                         InvalidRequestExceptionType.UserNotSignedUp));
 
