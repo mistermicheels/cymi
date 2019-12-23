@@ -6,19 +6,18 @@
 
     <p><strong>Email:</strong> {{ email }}</p>
 
-    <form>
+    <form [formGroup]="formGroup" (validSubmit)="relogin()">
         <div class="form-group">
             <label for="inputPassword">Password</label>
             <input
+                id="inputPassword"
                 type="password"
                 class="form-control"
-                id="inputPassword"
                 placeholder="Enter password"
-                [(ngModel)]="password"
-                name="password"
+                formControlName="password"
             />
         </div>
-        <button type="button" class="btn btn-primary" (click)="relogin()">Submit</button>
+        <button type="submit" class="btn btn-primary">Log in</button>
 
         <div
             class="alert alert-danger mt-3"

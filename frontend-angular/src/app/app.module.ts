@@ -1,9 +1,10 @@
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from "@angular/common/http";
 import { ErrorHandler, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { BootstrapVersion, NgBootstrapFormValidationModule } from "ng-bootstrap-form-validation";
 import { CookieService } from "ngx-cookie-service";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -40,6 +41,12 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
             headerName: "X-XSRF-TOKEN"
         }),
         FormsModule,
+        ReactiveFormsModule,
+
+        // both are needed here because we only use a single module
+        NgBootstrapFormValidationModule.forRoot({ bootstrapVersion: BootstrapVersion.Four }),
+        NgBootstrapFormValidationModule,
+
         NgbModule
     ],
     providers: [

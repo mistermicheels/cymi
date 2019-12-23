@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { AuthenticationService } from "../../core/services/authentication.service";
@@ -9,21 +10,29 @@ import { AuthenticationService } from "../../core/services/authentication.servic
     styleUrls: []
 })
 export class SignupComponent implements OnInit {
-    email = "";
-    password = "";
-    defaultDisplayName = "";
+    formGroup!: FormGroup;
 
     signupErrorType?: string;
 
     constructor(private router: Router, private authenticationService: AuthenticationService) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.formGroup = new FormGroup({
+            email: new FormControl("", [Validators.required, Validators.email]),
+            password: new FormControl("", [Validators.required]),
+            defaultDisplayName: new FormControl("", [Validators.required])
+        });
+    }
 
-    login() {
+    signUp() {
         this.authenticationService
-            .signUp(this.email, this.password, this.defaultDisplayName)
+            .signUp(
+                this.formGroup.get("email")!.value,
+                this.formGroup.get("password")!.value,
+                this.formGroup.get("defaultDisplayName")!.value
+            )
             .subscribe(
-                () => this.router.navigateByUrl("/"),
+                () => this.router.navigateByUrl("/login"),
                 error => {
                     this.signupErrorType = error.error.type;
                 }

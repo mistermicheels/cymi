@@ -1,4 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
@@ -9,9 +10,10 @@ import { AuthenticationService } from "../../core/services/authentication.servic
     templateUrl: "./relogin-modal.component.html",
     styleUrls: []
 })
-export class ReloginModalComponent {
+export class ReloginModalComponent implements OnInit {
+    formGroup!: FormGroup;
+
     email = "";
-    password = "";
 
     loginErrorType?: string;
 
@@ -21,15 +23,23 @@ export class ReloginModalComponent {
         private authenticationService: AuthenticationService
     ) {}
 
+    ngOnInit() {
+        this.formGroup = new FormGroup({
+            password: new FormControl("", [Validators.required])
+        });
+    }
+
     relogin() {
-        this.authenticationService.logIn(this.email, this.password).subscribe(
-            () => {
-                this.activeModal.close();
-            },
-            error => {
-                this.loginErrorType = error.error.type;
-            }
-        );
+        this.authenticationService
+            .logIn(this.email, this.formGroup.get("password")!.value)
+            .subscribe(
+                () => {
+                    this.activeModal.close();
+                },
+                error => {
+                    this.loginErrorType = error.error.type;
+                }
+            );
     }
 
     goToLogin() {

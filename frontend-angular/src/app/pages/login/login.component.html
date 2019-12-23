@@ -2,30 +2,28 @@
 
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <form>
+        <form [formGroup]="formGroup" (validSubmit)="login()">
             <div class="form-group">
                 <label for="inputEmail">Email address</label>
                 <input
+                    id="inputEmail"
                     type="email"
                     class="form-control"
-                    id="inputEmail"
                     placeholder="Enter email"
-                    [(ngModel)]="email"
-                    name="email"
+                    formControlName="email"
                 />
             </div>
             <div class="form-group">
                 <label for="inputPassword">Password</label>
                 <input
+                    id="inputPassword"
                     type="password"
                     class="form-control"
-                    id="inputPassword"
                     placeholder="Enter password"
-                    [(ngModel)]="password"
-                    name="password"
+                    formControlName="password"
                 />
             </div>
-            <button type="button" class="btn btn-primary" (click)="login()">Submit</button>
+            <button type="submit" class="btn btn-primary">Log in</button>
 
             <div
                 class="alert alert-danger mt-3"
