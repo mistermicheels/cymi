@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.mistermicheels.cymi.common.error.ForbiddenAccessException;
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 
 @ControllerAdvice
@@ -109,6 +110,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         } else {
             apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
         }
+
+        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
+                request);
+    }
+
+    @ExceptionHandler(value = { ForbiddenAccessException.class })
+    protected ResponseEntity<Object> handleAccessNotAllowedException(
+            ForbiddenAccessException exception, WebRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        String message = exception.getMessage();
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
 
         return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
                 request);
