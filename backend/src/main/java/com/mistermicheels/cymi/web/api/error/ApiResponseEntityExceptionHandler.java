@@ -4,17 +4,29 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.ConversionNotSupportedException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -43,6 +55,49 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
             AuthenticationException exception, WebRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String message = exception.getMessage();
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
+
+        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
+                request);
+    }
+
+    @ExceptionHandler(value = { InvalidRequestException.class })
+    protected ResponseEntity<Object> handleInvalidRequestException(
+            InvalidRequestException exception, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String message = exception.getMessage();
+        ApiError apiError;
+
+        if (exception.getType().isPresent()) {
+            String type = exception.getType().get().name();
+            apiError = this.apiErrorFactoryService.createApiError(status, message, exception, type);
+        } else {
+            apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
+        }
+
+        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
+                request);
+    }
+
+    @ExceptionHandler(value = { ForbiddenAccessException.class })
+    protected ResponseEntity<Object> handleAccessNotAllowedException(
+            ForbiddenAccessException exception, WebRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        String message = exception.getMessage();
+        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
+
+        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
+                request);
+    }
+
+    @ExceptionHandler(value = { Exception.class })
+    protected ResponseEntity<Object> handleUnkownException(Exception exception,
+            WebRequest request) {
+        this.logger.error("Internal server error returned", exception);
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        String message = "Unknown error, please try again";
+
         ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
 
         return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
@@ -97,28 +152,15 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
                 .collect(Collectors.joining("/"));
     }
 
-    @ExceptionHandler(value = { InvalidRequestException.class })
-    protected ResponseEntity<Object> handleInvalidRequestException(
-            InvalidRequestException exception, WebRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        String message = exception.getMessage();
-        ApiError apiError;
-
-        if (exception.getType().isPresent()) {
-            String type = exception.getType().get().name();
-            apiError = this.apiErrorFactoryService.createApiError(status, message, exception, type);
-        } else {
-            apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
-        }
-
-        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
-                request);
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
     }
 
-    @ExceptionHandler(value = { ForbiddenAccessException.class })
-    protected ResponseEntity<Object> handleAccessNotAllowedException(
-            ForbiddenAccessException exception, WebRequest request) {
-        HttpStatus status = HttpStatus.FORBIDDEN;
+    private ResponseEntity<Object> createBasicApiErrorResponse(Exception exception,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = exception.getMessage();
         ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
 
@@ -127,28 +169,85 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     }
 
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException exception, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
-        String message = exception.getMessage();
-        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
-
-        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
-                request);
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException exception,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
     }
 
-    @ExceptionHandler(value = { Exception.class })
-    protected ResponseEntity<Object> handleAnyOtherException(Exception exception,
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException exception, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
+            HttpMediaTypeNotSupportedException exception, HttpHeaders headers, HttpStatus status,
             WebRequest request) {
-        this.logger.error("Internal server error returned", exception);
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
 
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String message = "Unknown error, please try again";
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(
+            HttpMediaTypeNotAcceptableException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
 
-        ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
+    @Override
+    protected ResponseEntity<Object> handleMissingPathVariable(
+            MissingPathVariableException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
 
-        return this.handleExceptionInternal(exception, apiError, new HttpHeaders(), status,
-                request);
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException exception, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleServletRequestBindingException(
+            ServletRequestBindingException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleConversionNotSupported(
+            ConversionNotSupportedException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(
+            HttpMessageNotWritableException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestPart(
+            MissingServletRequestPartException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException exception,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleAsyncRequestTimeoutException(
+            AsyncRequestTimeoutException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
+        return this.createBasicApiErrorResponse(exception, headers, status, request);
     }
 
 }
