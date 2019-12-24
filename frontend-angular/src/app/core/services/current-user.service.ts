@@ -12,6 +12,6 @@ export class CurrentUserService {
     constructor(private http: HttpClient) {}
 
     getCurrentUser() {
-        return this.http.get<ApiUser>(this.API_PATH, {});
+        return this.http.get<ApiUser>(this.API_PATH);
     }
 }
