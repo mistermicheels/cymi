@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
+import { AuthGuard } from "./core/auth-guard";
 import { ConfirmEmailComponent } from "./pages/confirm-email/confirm-email.component";
 import { GroupCreateComponent } from "./pages/group-create/group-create.component";
 import { GroupComponent } from "./pages/group/group.component";
@@ -11,12 +12,12 @@ import { SignupComponent } from "./pages/signup/signup.component";
 
 const routes: Routes = [
     { path: "confirm-email/token/:token/user-id/:userId", component: ConfirmEmailComponent },
-    { path: "create-group", component: GroupCreateComponent },
-    { path: "group/:groupId", component: GroupComponent },
+    { path: "create-group", component: GroupCreateComponent, canActivate: [AuthGuard] },
+    { path: "group/:groupId", component: GroupComponent, canActivate: [AuthGuard] },
     { path: "login", component: LoginComponent },
-    { path: "my-account", component: MyAccountComponent },
+    { path: "my-account", component: MyAccountComponent, canActivate: [AuthGuard] },
     { path: "signup", component: SignupComponent },
-    { path: "", component: HomeComponent }
+    { path: "", component: HomeComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
