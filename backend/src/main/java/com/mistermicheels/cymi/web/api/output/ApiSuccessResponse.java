@@ -3,13 +3,13 @@ package com.mistermicheels.cymi.web.api.output;
 public class ApiSuccessResponse {
 
     private final boolean success = true;
-    private final Object id;
+    private final Long id;
 
     public ApiSuccessResponse() {
         this(null);
     }
 
-    public ApiSuccessResponse(Object id) {
+    public ApiSuccessResponse(Long id) {
         this.id = id;
     }
 
@@ -17,7 +17,7 @@ public class ApiSuccessResponse {
         return this.success;
     }
 
-    public Object getId() {
+    public Long getId() {
         return this.id;
     }
 
