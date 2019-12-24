@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
+import { AuthenticationService } from "../../core/services/authentication.service";
 import { GroupsService } from "../../core/services/groups.service";
 
 @Component({
@@ -12,12 +13,18 @@ import { GroupsService } from "../../core/services/groups.service";
 export class GroupCreateComponent implements OnInit {
     formGroup!: FormGroup;
 
-    constructor(private router: Router, private groupsService: GroupsService) {}
+    constructor(
+        private router: Router,
+        private authenticationService: AuthenticationService,
+        private groupsService: GroupsService
+    ) {}
 
     ngOnInit() {
+        const defaultDisplayName = this.authenticationService.getLoggedInUserDefaultDisplayName();
+
         this.formGroup = new FormGroup({
             name: new FormControl("", [Validators.required]),
-            userDisplayName: new FormControl("", [Validators.required])
+            userDisplayName: new FormControl(defaultDisplayName, [Validators.required])
         });
     }
 
