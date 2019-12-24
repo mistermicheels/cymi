@@ -41,4 +41,8 @@ public class UserService {
                 () -> new InvalidRequestException("There is no user with the specified ID"));
     }
 
+    public User getReference(Long id) {
+        return this.repository.getOne(id);
+    }
+
 }

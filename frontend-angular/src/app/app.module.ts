@@ -13,8 +13,12 @@ import { DefaultErrorHandler } from "./core/default-error-handler";
 import { AuthInterceptor } from "./core/interceptors/auth-interceptor";
 import { AuthenticationService } from "./core/services/authentication.service";
 import { CurrentUserService } from "./core/services/current-user.service";
+import { GroupsService } from "./core/services/groups.service";
 import { ReloginService } from "./core/services/relogin.service";
 import { ConfirmEmailComponent } from "./pages/confirm-email/confirm-email.component";
+import { GroupCreateComponent } from "./pages/group-create/group-create.component";
+import { GroupComponent } from "./pages/group/group.component";
+import { GroupsComponent } from "./pages/home/groups/groups.component";
 import { HomeComponent } from "./pages/home/home.component";
 import { LoginComponent } from "./pages/login/login.component";
 import { MyAccountComponent } from "./pages/my-account/my-account.component";
@@ -29,7 +33,10 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         SignupComponent,
         ReloginModalComponent,
         ConfirmEmailComponent,
-        MyAccountComponent
+        MyAccountComponent,
+        GroupsComponent,
+        GroupComponent,
+        GroupCreateComponent
     ],
     imports: [
         BrowserModule,
@@ -55,7 +62,8 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         AuthenticationService,
         CurrentUserService,
-        ReloginService
+        ReloginService,
+        GroupsService
     ],
     bootstrap: [AppComponent],
     entryComponents: [ReloginModalComponent]

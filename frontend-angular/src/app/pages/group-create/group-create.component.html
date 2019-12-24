@@ -1,0 +1,32 @@
+<h1 class="text-center">Create group</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form [formGroup]="formGroup" (validSubmit)="createGroup()">
+            <div class="form-group">
+                <label for="inputName">Group name</label>
+                <input
+                    id="inputName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter group name"
+                    formControlName="name"
+                />
+            </div>
+            <div class="form-group">
+                <label for="inputUserDisplayName">My display name</label>
+                <input
+                    id="inputUserDisplayName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter display name"
+                    formControlName="userDisplayName"
+                />
+                <small id="defaultDisplayNameHelp" class="form-text text-muted"
+                    >Your display name describes who you are to other members of the group.</small
+                >
+            </div>
+            <button type="submit" class="btn btn-primary">Create group</button>
+        </form>
+    </div>
+</div>

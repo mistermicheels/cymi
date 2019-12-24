@@ -1,0 +1,18 @@
+<div
+    class="card cursor-pointer"
+    *ngFor="let joinedGroup of joinedGroups"
+    routerLink="/group/{{ joinedGroup.id }}"
+>
+    <div class="card-body">
+        <h5 class="card-title">
+            <span *ngIf="joinedGroup.userRole === 'Admin'" class="badge badge-primary mr-1"
+                >Admin</span
+            >
+            <span>{{ joinedGroup.name }}</span>
+        </h5>
+        <p class="card-text"><strong>My display name:</strong> {{ joinedGroup.userDisplayName }}</p>
+    </div>
+</div>
+<div class="mt-3">
+    <a routerLink="/create-group">Create a new group</a>
+</div>

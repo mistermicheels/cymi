@@ -1,0 +1,10 @@
+<div *ngIf="group">
+    <h1 class="text-center">{{ group!.name }}</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <p><strong>My display name:</strong> {{ group!.userDisplayName }}</p>
+            <p><strong>My role:</strong> {{ group!.userRole }}</p>
+        </div>
+    </div>
+</div>

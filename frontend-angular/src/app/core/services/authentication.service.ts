@@ -62,6 +62,16 @@ export class AuthenticationService {
         return this.loggedInUser.email;
     }
 
+    getLoggedInUserDefaultDisplayName() {
+        if (!this.loggedInUser) {
+            throw new Error(
+                "Cannot get default display name for logged in user because there is no logged in user"
+            );
+        }
+
+        return this.loggedInUser.defaultDisplayName;
+    }
+
     logIn(email: string, password: string) {
         return this.http
             .post<ApiUser>(this.API_PATH + "/log-in", { email, password })
