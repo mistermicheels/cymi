@@ -108,7 +108,8 @@ public class GroupsController {
         List<GroupMembership> memberships = this.groupService.findMembershipsByGroupId(id,
                 userDetails.getId());
 
-        return memberships.stream().map(membership -> new ApiGroupMembership(membership))
+        return memberships.stream()
+                .map(membership -> new ApiGroupMembership(membership, userDetails.getId()))
                 .collect(Collectors.toList());
     }
 

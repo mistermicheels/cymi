@@ -1,3 +1,8 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+.flex-remaining-space {
+    min-height: 0;
+    flex: 1 1 0;
+}

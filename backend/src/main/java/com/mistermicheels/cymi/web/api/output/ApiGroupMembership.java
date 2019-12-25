@@ -8,11 +8,13 @@ public class ApiGroupMembership {
     private final Long groupId;
     private final GroupMembershipRole role;
     private final String displayName;
+    private final boolean isCurrentUser;
 
-    public ApiGroupMembership(GroupMembership membership) {
+    public ApiGroupMembership(GroupMembership membership, Long currentUserId) {
         this.groupId = membership.getGroupId();
         this.role = membership.getRole();
         this.displayName = membership.getDisplayName();
+        this.isCurrentUser = (membership.getUserId() == currentUserId);
     }
 
     public Long getGroupId() {
@@ -25,6 +27,10 @@ public class ApiGroupMembership {
 
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    public boolean getIsCurrentUser() {
+        return this.isCurrentUser;
     }
 
 }

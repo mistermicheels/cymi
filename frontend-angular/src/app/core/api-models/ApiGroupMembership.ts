@@ -4,4 +4,5 @@ export interface ApiGroupMembership {
     groupId: number;
     role: ApiGroupMembershipRole;
     displayName: string;
+    isCurrentUser: boolean;
 }
