@@ -1,6 +1,6 @@
 package com.mistermicheels.cymi.component.group;
 
-public interface GroupUserLink {
+interface GroupUserLink {
 
     Group getGroup();
 

@@ -1,5 +1,7 @@
 package com.mistermicheels.cymi.component.user;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,11 @@ public class UserService {
 
     public User getReference(Long id) {
         return this.repository.getOne(id);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        String emailLowerCase = email.toLowerCase();
+        return this.repository.findByEmail(emailLowerCase);
     }
 
 }

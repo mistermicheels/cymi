@@ -1,0 +1,25 @@
+<h1 class="text-center">Accept group invitation</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <p><strong>Group name:</strong> {{ group?.name }}</p>
+        <p><strong>My role:</strong> {{ group?.userRole }}</p>
+
+        <form [formGroup]="formGroup" (validSubmit)="acceptInvitation()">
+            <div class="form-group">
+                <label for="inputDisplayName">My display name</label>
+                <input
+                    id="inputDisplayName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter display name"
+                    formControlName="displayName"
+                />
+                <small id="displayNameHelp" class="form-text text-muted"
+                    >Your display name describes who you are to other members of the group.</small
+                >
+            </div>
+            <button type="submit" class="btn btn-primary">Accept invitation</button>
+        </form>
+    </div>
+</div>

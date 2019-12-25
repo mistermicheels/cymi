@@ -1,10 +1,82 @@
-<div *ngIf="group">
-    <h1 class="text-center">{{ group!.name }}</h1>
+<h1 class="text-center">{{ group?.name }}</h1>
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <p><strong>My display name:</strong> {{ group!.userDisplayName }}</p>
-            <p><strong>My role:</strong> {{ group!.userRole }}</p>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <p><strong>My display name:</strong> {{ group?.userDisplayName }}</p>
+        <p><strong>My role:</strong> {{ group?.userRole }}</p>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-white bg-primary">Members</div>
+            <div class="card-body">
+                <h5 class="card-title">Members</h5>
+                <ul>
+                    <li *ngFor="let member of members">
+                        <span class="badge badge-primary mr-1" *ngIf="member.role === 'Admin'"
+                            >Admin</span
+                        >
+                        <span>{{ member.displayName }}</span>
+                    </li>
+                </ul>
+                <div *ngIf="invitees">
+                    <h5 class="card-title">Invited</h5>
+                    <ul>
+                        <li *ngFor="let invitee of invitees">
+                            <span class="badge badge-primary mr-1" *ngIf="invitee.role === 'Admin'"
+                                >Admin</span
+                            >
+                            <span>{{ invitee.email }}</span>
+                        </li>
+                    </ul>
+                    <h5 class="card-title">Invite other user</h5>
+                    <form [formGroup]="invitationFormGroup" (validSubmit)="inviteUser()">
+                        <div class="form-group">
+                            <label for="inputEmail">User's email</label>
+                            <input
+                                id="inputEmail"
+                                type="email"
+                                class="form-control"
+                                placeholder="Enter email"
+                                formControlName="email"
+                            />
+                            <small id="emailHelp" class="form-text text-muted"
+                                >Note that other group admins will be able to see the email
+                                addresses of users you invite.</small
+                            >
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    id="makeAdminSwitch"
+                                    formControlName="makeAdmin"
+                                    (blur)="resetMakeAdminValidation()"
+                                />
+                                <label class="custom-control-label" for="makeAdminSwitch"
+                                    >Make user admin</label
+                                >
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Invite user</button>
+                        <div
+                            class="alert alert-danger mt-3"
+                            role="alert"
+                            *ngIf="invitationErrorType"
+                            [ngSwitch]="invitationErrorType"
+                        >
+                            <span *ngSwitchCase="'UserAlreadyInvited'"
+                                >The user has already been invited to this group.</span
+                            >
+                            <span *ngSwitchCase="'UserAlreadyMember'"
+                                >The user is already a member of this group.</span
+                            >
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 interface GroupMembershipRepository extends JpaRepository<GroupMembership, GroupUserLinkId> {
 
+    List<GroupMembership> findByGroupUserLinkIdGroupId(Long groupId);
+
     @Query("SELECT membership FROM GroupMembership membership JOIN FETCH membership.group WHERE membership.groupUserLinkId.userId = :userId")
     List<GroupMembership> findWithGroupsByUserId(@Param(value = "userId") Long userId);
 

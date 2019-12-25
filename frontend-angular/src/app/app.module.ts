@@ -16,6 +16,7 @@ import { CurrentUserService } from "./core/services/current-user.service";
 import { GroupsService } from "./core/services/groups.service";
 import { ReloginService } from "./core/services/relogin.service";
 import { ConfirmEmailComponent } from "./pages/confirm-email/confirm-email.component";
+import { GroupAcceptInvitationComponent } from "./pages/group-accept-invitation/group-accept-invitation.component";
 import { GroupCreateComponent } from "./pages/group-create/group-create.component";
 import { GroupComponent } from "./pages/group/group.component";
 import { GroupsComponent } from "./pages/home/groups/groups.component";
@@ -36,7 +37,8 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         MyAccountComponent,
         GroupsComponent,
         GroupComponent,
-        GroupCreateComponent
+        GroupCreateComponent,
+        GroupAcceptInvitationComponent
     ],
     imports: [
         BrowserModule,
