@@ -13,6 +13,7 @@ import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 import com.mistermicheels.cymi.io.email.EmailService;
 import com.mistermicheels.cymi.io.email.emailMessage.ConfirmEmailEmailMessage;
+import com.mistermicheels.cymi.io.email.emailMessage.InvitationEmailMessage;
 
 @Service
 class UserSignupService {
@@ -38,15 +39,77 @@ class UserSignupService {
                 .getEmailConfirmationTokenValidityDays();
     }
 
-    @Transactional
     public void signUpUser(LoginData loginData, String defaultDisplayName) {
-        String emailLowerCase = loginData.getEmailLowerCase();
-        this.checkEmailUnique(emailLowerCase);
+        this.signUpUser(loginData, defaultDisplayName, null);
+    }
 
-        User user = new User(emailLowerCase);
+    @Transactional
+    public void signUpUser(LoginData loginData, String defaultDisplayName,
+            String emailConfirmationToken) {
+        String emailLowerCase = loginData.getEmailLowerCase();
+
+        // (unlikely) race condition will be caught by unique index
+        Optional<User> existingWithEmail = this.repository.findByEmail(emailLowerCase);
+        User user = existingWithEmail.orElseGet(() -> new User(emailLowerCase));
+
+        this.checkUserNotSignedUpYet(user);
+
         String password = loginData.getPassword();
         String saltedPasswordHash = this.passwordService.getSaltedPasswordHash(password);
         user.signup(saltedPasswordHash, defaultDisplayName);
+
+        this.markEmailConfirmedIfTokenValid(user, emailConfirmationToken);
+
+        if (user.isEmailConfirmed()) {
+            this.repository.save(user);
+        } else {
+            // save and flush so the user gets its DB-generated ID
+            this.repository.saveAndFlush(user);
+
+            EmailConfirmationToken newConfirmationToken = this.getNewEmailConfirmationToken(user);
+            this.emailConfirmationTokenRepository.save(newConfirmationToken);
+
+            ConfirmEmailEmailMessage emailMessage = new ConfirmEmailEmailMessage(emailLowerCase,
+                    newConfirmationToken.getId());
+
+            this.emailService.send(emailMessage);
+        }
+    }
+
+    private void checkUserNotSignedUpYet(User user) {
+        if (user.getSaltedPasswordHash().isPresent()) {
+            throw new InvalidRequestException(
+                    "There is already a signed up user for this email address",
+                    InvalidRequestExceptionType.EmailAlreadyTaken);
+        }
+    }
+
+    private void markEmailConfirmedIfTokenValid(User user, String emailConfirmationToken) {
+        if (emailConfirmationToken != null) {
+            Optional<EmailConfirmationToken> token = this.emailConfirmationTokenRepository
+                    .findById(emailConfirmationToken);
+
+            if (token.isPresent() && token.get().isValidForUserId(user.getId())) {
+                user.confirmEmail();
+            }
+        }
+    }
+
+    private EmailConfirmationToken getNewEmailConfirmationToken(User user) {
+        String token = UUID.randomUUID().toString();
+
+        ZonedDateTime expirationTimestamp = ZonedDateTime.now()
+                .plusDays(this.emailConfirmationTokenValidityDays);
+
+        return new EmailConfirmationToken(token, user, expirationTimestamp);
+    }
+
+    @Transactional
+    public User inviteUser(String email, String invitingGroupName) {
+        String emailLowerCase = email.toLowerCase();
+        this.checkEmailUnique(emailLowerCase);
+
+        User user = new User(emailLowerCase);
 
         // save and flush so the user gets its DB-generated ID
         this.repository.saveAndFlush(user);
@@ -54,10 +117,12 @@ class UserSignupService {
         EmailConfirmationToken emailConfirmationToken = this.getNewEmailConfirmationToken(user);
         this.emailConfirmationTokenRepository.save(emailConfirmationToken);
 
-        ConfirmEmailEmailMessage emailMessage = new ConfirmEmailEmailMessage(emailLowerCase,
-                emailConfirmationToken.getId(), user.getId());
+        InvitationEmailMessage emailMessage = new InvitationEmailMessage(emailLowerCase,
+                invitingGroupName, emailConfirmationToken.getId());
 
         this.emailService.send(emailMessage);
+
+        return user;
     }
 
     private void checkEmailUnique(String emailLowerCase) {
@@ -72,17 +137,8 @@ class UserSignupService {
         }
     }
 
-    private EmailConfirmationToken getNewEmailConfirmationToken(User user) {
-        String token = UUID.randomUUID().toString();
-
-        ZonedDateTime expirationTimestamp = ZonedDateTime.now()
-                .plusDays(this.emailConfirmationTokenValidityDays);
-
-        return new EmailConfirmationToken(token, user, expirationTimestamp);
-    }
-
     @Transactional
-    public void confirmEmail(String emailConfirmationToken, Long userId) {
+    public void confirmEmail(String emailConfirmationToken) {
         String invalidTokenMessage = "Invalid email confirmation token";
 
         EmailConfirmationToken token = this.emailConfirmationTokenRepository
@@ -94,11 +150,6 @@ class UserSignupService {
         }
 
         User userFromToken = token.getUser();
-
-        if (!userFromToken.getId().equals(userId)) {
-            throw new InvalidRequestException(invalidTokenMessage);
-        }
-
         userFromToken.confirmEmail();
         this.repository.save(userFromToken);
         this.emailConfirmationTokenRepository.delete(token);

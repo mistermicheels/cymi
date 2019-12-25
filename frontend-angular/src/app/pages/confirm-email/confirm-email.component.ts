@@ -21,11 +21,10 @@ export class ConfirmEmailComponent implements OnInit {
     ngOnInit() {
         const snapshot = this.route.snapshot;
         const token = snapshot.paramMap.get("token");
-        const userId = snapshot.paramMap.get("userId");
 
-        if (token && userId && !isNaN(+userId)) {
+        if (token) {
             this.authenticationService
-                .confirmEmail(token, +userId)
+                .confirmEmail(token)
                 .pipe(
                     finalize(() => {
                         this.checkInProgress = false;

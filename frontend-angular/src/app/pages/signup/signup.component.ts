@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { AuthenticationService } from "../../core/services/authentication.service";
 
@@ -14,7 +14,11 @@ export class SignupComponent implements OnInit {
 
     signupErrorType?: string;
 
-    constructor(private router: Router, private authenticationService: AuthenticationService) {}
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router,
+        private authenticationService: AuthenticationService
+    ) {}
 
     ngOnInit() {
         this.formGroup = new FormGroup({
@@ -25,11 +29,15 @@ export class SignupComponent implements OnInit {
     }
 
     signUp() {
+        const snapshot = this.route.snapshot;
+        const token = snapshot.paramMap.get("token");
+
         this.authenticationService
             .signUp(
                 this.formGroup.get("email")!.value,
                 this.formGroup.get("password")!.value,
-                this.formGroup.get("defaultDisplayName")!.value
+                this.formGroup.get("defaultDisplayName")!.value,
+                token || undefined
             )
             .subscribe(
                 () => this.router.navigateByUrl("/login"),

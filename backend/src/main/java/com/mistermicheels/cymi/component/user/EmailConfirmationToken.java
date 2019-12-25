@@ -19,4 +19,8 @@ class EmailConfirmationToken extends UserTokenBase {
         super(token, user, expirationTimestamp);
     }
 
+    public boolean isValidForUserId(Long userId) {
+        return this.getUserId() == userId && !this.hasExpired();
+    }
+
 }

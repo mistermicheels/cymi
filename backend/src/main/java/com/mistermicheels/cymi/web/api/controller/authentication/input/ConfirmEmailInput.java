@@ -7,7 +7,4 @@ public class ConfirmEmailInput {
     @NotNull
     public String token;
 
-    @NotNull
-    public Long userId;
-
 }

@@ -13,4 +13,6 @@ public class SignupInput {
     @NotNull
     public String defaultDisplayName;
 
+    public String emailConfirmationToken;
+
 }

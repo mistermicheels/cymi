@@ -84,18 +84,23 @@ export class AuthenticationService {
             .pipe(tap(() => this.clearLoggedInUser()));
     }
 
-    signUp(email: string, password: string, defaultDisplayName: string) {
+    signUp(
+        email: string,
+        password: string,
+        defaultDisplayName: string,
+        emailConfirmationToken?: string
+    ) {
         return this.http.post<void>(this.API_PATH + "/sign-up", {
             email,
             password,
-            defaultDisplayName
+            defaultDisplayName,
+            emailConfirmationToken
         });
     }
 
-    confirmEmail(token: string, userId: number) {
+    confirmEmail(token: string) {
         return this.http.post<void>(this.API_PATH + "/confirm-email", {
-            token,
-            userId
+            token
         });
     }
 }

@@ -1,7 +1,5 @@
 package com.mistermicheels.cymi.component.user;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +24,13 @@ public class UserService {
         this.userSignupService.signUpUser(loginData, defaultDisplayName);
     }
 
-    public void confirmEmail(String emailConfirmationToken, Long userId) {
-        this.userSignupService.confirmEmail(emailConfirmationToken, userId);
+    public void signUpUser(LoginData loginData, String defaultDisplayName,
+            String emailConfirmationToken) {
+        this.userSignupService.signUpUser(loginData, defaultDisplayName, emailConfirmationToken);
+    }
+
+    public void confirmEmail(String emailConfirmationToken) {
+        this.userSignupService.confirmEmail(emailConfirmationToken);
     }
 
     public SessionDataOutgoing getSessionDataForLogin(LoginData loginData) {
@@ -47,9 +50,12 @@ public class UserService {
         return this.repository.getOne(id);
     }
 
-    public Optional<User> findByEmail(String email) {
+    public User findByEmailOrInviteNew(String email, String invitingGroupName) {
         String emailLowerCase = email.toLowerCase();
-        return this.repository.findByEmail(emailLowerCase);
+
+        // any race conditions will be taken care of by the unique email index
+        return this.repository.findByEmail(emailLowerCase).orElseGet(
+                () -> this.userSignupService.inviteUser(emailLowerCase, invitingGroupName));
     }
 
 }

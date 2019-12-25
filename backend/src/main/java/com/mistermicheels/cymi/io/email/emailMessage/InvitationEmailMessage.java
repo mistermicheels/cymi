@@ -1,12 +1,15 @@
 package com.mistermicheels.cymi.io.email.emailMessage;
 
-public class ConfirmEmailEmailMessage implements EmailMessage {
+public class InvitationEmailMessage implements EmailMessage {
 
     private final String recipient;
+    private final String groupName;
     private final String emailConfirmationToken;
 
-    public ConfirmEmailEmailMessage(String recipient, String emailConfirmationToken) {
+    public InvitationEmailMessage(String recipient, String groupName,
+            String emailConfirmationToken) {
         this.recipient = recipient;
+        this.groupName = groupName;
         this.emailConfirmationToken = emailConfirmationToken;
     }
 
@@ -17,7 +20,11 @@ public class ConfirmEmailEmailMessage implements EmailMessage {
 
     @Override
     public String getBody() {
-        return "CONFIRM EMAIL: " + this.emailConfirmationToken;
+        return "ACCEPT INVITATION: " + this.groupName + " " + this.emailConfirmationToken;
+    }
+
+    public String getGroupName() {
+        return this.groupName;
     }
 
     public String getEmailConfirmationToken() {

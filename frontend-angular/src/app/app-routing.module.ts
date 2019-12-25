@@ -12,7 +12,7 @@ import { MyAccountComponent } from "./pages/my-account/my-account.component";
 import { SignupComponent } from "./pages/signup/signup.component";
 
 const routes: Routes = [
-    { path: "confirm-email/token/:token/user-id/:userId", component: ConfirmEmailComponent },
+    { path: "confirm-email/token/:token", component: ConfirmEmailComponent },
     { path: "create-group", component: GroupCreateComponent, canActivate: [AuthGuard] },
     { path: "group/:groupId", component: GroupComponent, canActivate: [AuthGuard] },
     {
@@ -23,6 +23,7 @@ const routes: Routes = [
     { path: "login", component: LoginComponent },
     { path: "my-account", component: MyAccountComponent, canActivate: [AuthGuard] },
     { path: "signup", component: SignupComponent },
+    { path: "signup/token/:token", component: SignupComponent },
     { path: "", component: HomeComponent, canActivate: [AuthGuard] }
 ];
 

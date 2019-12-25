@@ -47,10 +47,18 @@ public class GroupService {
 
     public void inviteUser(Long groupId, Long currentUserId, String userEmail,
             GroupMembershipRole role) {
-        this.checkCurrentUserAdmin(groupId, currentUserId);
+        String notAnAdminMessage = "You are not an admin of this group";
 
-        User userToInvite = this.userService.findByEmail(userEmail).orElseThrow(
-                () -> new InvalidRequestException("There is no user with that email address"));
+        GroupMembership membership = this.membershipRepository
+                .findWithGroupByGroupIdAndUserId(groupId, currentUserId)
+                .orElseThrow(() -> new ForbiddenAccessException(notAnAdminMessage));
+
+        if (membership.getRole() != GroupMembershipRole.Admin) {
+            throw new ForbiddenAccessException(notAnAdminMessage);
+        }
+
+        String groupName = membership.getGroup().getName();
+        User userToInvite = this.userService.findByEmailOrInviteNew(userEmail, groupName);
 
         this.checkUserCanBeInvitedToGroup(groupId, userToInvite.getId());
 
@@ -58,18 +66,6 @@ public class GroupService {
 
         GroupInvitation invitation = new GroupInvitation(groupReference, userToInvite, role);
         this.invitationRepository.save(invitation);
-    }
-
-    private void checkCurrentUserAdmin(Long groupId, Long currentUserId) {
-        String notAnAdminMessage = "You are not an admin of this group";
-
-        GroupMembership membership = this.membershipRepository
-                .findById(new GroupUserLinkId(groupId, currentUserId))
-                .orElseThrow(() -> new ForbiddenAccessException(notAnAdminMessage));
-
-        if (membership.getRole() != GroupMembershipRole.Admin) {
-            throw new ForbiddenAccessException(notAnAdminMessage);
-        }
     }
 
     private void checkUserCanBeInvitedToGroup(Long groupId, Long userId) {
@@ -159,6 +155,18 @@ public class GroupService {
             Long currentUserId) {
         this.checkCurrentUserAdmin(groupId, currentUserId);
         return this.invitationRepository.findWithUserByGroupUserLinkIdGroupId(groupId);
+    }
+
+    private void checkCurrentUserAdmin(Long groupId, Long currentUserId) {
+        String notAnAdminMessage = "You are not an admin of this group";
+
+        GroupMembership membership = this.membershipRepository
+                .findById(new GroupUserLinkId(groupId, currentUserId))
+                .orElseThrow(() -> new ForbiddenAccessException(notAnAdminMessage));
+
+        if (membership.getRole() != GroupMembershipRole.Admin) {
+            throw new ForbiddenAccessException(notAnAdminMessage);
+        }
     }
 
 }

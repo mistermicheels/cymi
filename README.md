@@ -8,9 +8,15 @@ The application is mostly a playground that lets me try out all kinds of stuff i
 
 Users can create groups and invite others to those groups. Within groups, admins can create events. All group members can then RSVP to those events.
 
+## Signing up
+
+Users can sign up based on their email address. They will receive an email to confirm this email address.
+
+It's also possible to invite a not-yet-registered user to a group based on their email address. The user will receive an email invite with a token that can be used to immediately confirm their email address.
+
 ## Authentication and authorization
 
-Users are required to sign up and confirm their email before being able to log in. Because the user's email address is used as identification for group invitations, logging in without a confirmed email is not allowed.
+Users are required to confirm their email before being able to log in. Because the user's email address is used as identification for group invitations, logging in without a confirmed email is not allowed.
 
 A successful login produces a session token (required for every request) and CSRF token (required for every state-changing request). Making a request with an invalid session token (or CSRF token if it's required) triggers a relogin by returning a 401 response.
 

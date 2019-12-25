@@ -41,13 +41,20 @@ public class AuthenticationController {
     @PostMapping("sign-up")
     public ApiSuccessResponse signUp(@Valid @RequestBody SignupInput input) {
         LoginData loginData = new LoginData(input.email, input.password);
-        this.userService.signUpUser(loginData, input.defaultDisplayName);
+
+        if (input.emailConfirmationToken != null) {
+            this.userService.signUpUser(loginData, input.defaultDisplayName,
+                    input.emailConfirmationToken);
+        } else {
+            this.userService.signUpUser(loginData, input.defaultDisplayName);
+        }
+
         return new ApiSuccessResponse();
     }
 
     @PostMapping("confirm-email")
     public ApiSuccessResponse confirmEmail(@Valid @RequestBody ConfirmEmailInput input) {
-        this.userService.confirmEmail(input.token, input.userId);
+        this.userService.confirmEmail(input.token);
         return new ApiSuccessResponse();
     }
 
