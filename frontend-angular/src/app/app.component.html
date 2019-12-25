@@ -29,6 +29,9 @@
                 <a class="nav-link" routerLink="/signup" (click)="collapseMenu()">Sign up</a>
             </li>
             <li class="nav-item on-top" *ngIf="isUserLoggedIn">
+                <a class="nav-link" routerLink="/" (click)="collapseMenu()">Home</a>
+            </li>
+            <li class="nav-item on-top" *ngIf="isUserLoggedIn">
                 <a class="nav-link" routerLink="/my-account" (click)="collapseMenu()">My account</a>
             </li>
             <li class="nav-item on-top" *ngIf="isUserLoggedIn">
