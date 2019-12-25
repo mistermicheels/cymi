@@ -10,6 +10,7 @@ import { CookieService } from "ngx-cookie-service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { DefaultErrorHandler } from "./core/default-error-handler";
+import { AutofocusDirective } from "./core/directives/autofocus.directive";
 import { AuthInterceptor } from "./core/interceptors/auth-interceptor";
 import { AuthenticationService } from "./core/services/authentication.service";
 import { CurrentUserService } from "./core/services/current-user.service";
@@ -28,6 +29,7 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
 
 @NgModule({
     declarations: [
+        AutofocusDirective,
         AppComponent,
         HomeComponent,
         LoginComponent,
