@@ -157,7 +157,7 @@ public class GroupService {
         return this.invitationRepository.findWithUserByGroupUserLinkIdGroupId(groupId);
     }
 
-    private void checkCurrentUserAdmin(Long groupId, Long currentUserId) {
+    public void checkCurrentUserAdmin(Long groupId, Long currentUserId) {
         String notAnAdminMessage = "You are not an admin of this group";
 
         GroupMembership membership = this.membershipRepository
@@ -167,6 +167,15 @@ public class GroupService {
         if (membership.getRole() != GroupMembershipRole.Admin) {
             throw new ForbiddenAccessException(notAnAdminMessage);
         }
+    }
+
+    public void checkCurrentUserMember(Long groupId, Long currentUserId) {
+        this.membershipRepository.findById(new GroupUserLinkId(groupId, currentUserId)).orElseThrow(
+                () -> new ForbiddenAccessException("You are not a member of this group"));
+    }
+
+    public Group getReference(Long id) {
+        return this.repository.getOne(id);
     }
 
 }

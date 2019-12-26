@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FlatpickrModule } from "angularx-flatpickr";
 import { BootstrapVersion, NgBootstrapFormValidationModule } from "ng-bootstrap-form-validation";
 import { CookieService } from "ngx-cookie-service";
 
@@ -14,9 +15,12 @@ import { AutofocusDirective } from "./core/directives/autofocus.directive";
 import { AuthInterceptor } from "./core/interceptors/auth-interceptor";
 import { AuthenticationService } from "./core/services/authentication.service";
 import { CurrentUserService } from "./core/services/current-user.service";
+import { EventsService } from "./core/services/events.service";
 import { GroupsService } from "./core/services/groups.service";
 import { ReloginService } from "./core/services/relogin.service";
 import { ConfirmEmailComponent } from "./pages/confirm-email/confirm-email.component";
+import { EventCreateComponent } from "./pages/event-create/event-create.component";
+import { EventComponent } from "./pages/event/event.component";
 import { GroupAcceptInvitationComponent } from "./pages/group-accept-invitation/group-accept-invitation.component";
 import { GroupCreateComponent } from "./pages/group-create/group-create.component";
 import { GroupComponent } from "./pages/group/group.component";
@@ -25,6 +29,7 @@ import { HomeComponent } from "./pages/home/home.component";
 import { LoginComponent } from "./pages/login/login.component";
 import { MyAccountComponent } from "./pages/my-account/my-account.component";
 import { SignupComponent } from "./pages/signup/signup.component";
+import { EventCardComponent } from "./shared/event-card/event-card.component";
 import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.component";
 
 @NgModule({
@@ -40,7 +45,10 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         GroupsComponent,
         GroupComponent,
         GroupCreateComponent,
-        GroupAcceptInvitationComponent
+        GroupAcceptInvitationComponent,
+        EventCreateComponent,
+        EventComponent,
+        EventCardComponent
     ],
     imports: [
         BrowserModule,
@@ -58,7 +66,15 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         NgBootstrapFormValidationModule.forRoot({ bootstrapVersion: BootstrapVersion.Four }),
         NgBootstrapFormValidationModule,
 
-        NgbModule
+        NgbModule,
+        FlatpickrModule.forRoot({
+            allowInput: false,
+            altFormat: "F j, Y, H:i",
+            altInput: true,
+            altInputClass: "form-control",
+            dateFormat: "Z",
+            time24hr: true
+        })
     ],
     providers: [
         CookieService,
@@ -67,7 +83,8 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         AuthenticationService,
         CurrentUserService,
         ReloginService,
-        GroupsService
+        GroupsService,
+        EventsService
     ],
     bootstrap: [AppComponent],
     entryComponents: [ReloginModalComponent]

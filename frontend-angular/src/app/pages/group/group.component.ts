@@ -2,10 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
+import { ApiEvent } from "../../core/api-models/ApiEvent";
 import { ApiGroupInvitation } from "../../core/api-models/ApiGroupInvitation";
 import { ApiGroupMembership } from "../../core/api-models/ApiGroupMembership";
 import { ApiGroupMembershipRole } from "../../core/api-models/ApiGroupMembershipRole";
 import { ApiGroupWithMembership } from "../../core/api-models/ApiGroupWithMembership";
+import { EventsService } from "../../core/services/events.service";
 import { GroupsService } from "../../core/services/groups.service";
 
 @Component({
@@ -15,6 +17,9 @@ import { GroupsService } from "../../core/services/groups.service";
 })
 export class GroupComponent implements OnInit {
     group?: ApiGroupWithMembership;
+
+    events?: ApiEvent[];
+
     members?: ApiGroupMembership[];
     invitees?: ApiGroupInvitation[];
 
@@ -25,7 +30,8 @@ export class GroupComponent implements OnInit {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private groupsService: GroupsService
+        private groupsService: GroupsService,
+        private eventsService: EventsService
     ) {}
 
     ngOnInit() {
@@ -39,12 +45,20 @@ export class GroupComponent implements OnInit {
 
         this.groupsService.getJoinedById(+groupId).subscribe(group => {
             this.group = group;
+
+            this.retrieveEvents();
             this.retrieveMembers();
 
             if (this.group.userRole === ApiGroupMembershipRole.Admin) {
                 this.retrieveInvitees();
                 this.setUpInvitationForm();
             }
+        });
+    }
+
+    private retrieveEvents() {
+        this.eventsService.getUpcomingByGroup(this.group!.id).subscribe(events => {
+            this.events = events;
         });
     }
 

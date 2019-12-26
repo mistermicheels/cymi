@@ -1,0 +1,11 @@
+<div class="card cursor-pointer" routerLink="/event/{{ event.id }}">
+    <div class="card-body">
+        <h5 class="card-title">{{ event.name }}</h5>
+        <p class="card-text"></p>
+        <p>
+            {{ event.startTimestamp | date: dateFormat }} -
+            {{ event.endTimestamp | date: dateFormat }}
+        </p>
+        <p *ngIf="groupName"><strong>Group:</strong> {{ groupName }}</p>
+    </div>
+</div>

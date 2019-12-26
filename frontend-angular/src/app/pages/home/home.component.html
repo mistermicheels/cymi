@@ -4,40 +4,11 @@
             <div class="card mb-3 mb-md-0 h-100">
                 <div class="card-header text-white bg-primary">Upcoming events</div>
                 <div class="card-body overflow-auto">
-                    <p class="card-text">
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content. Some quick example text to build on the card title and
-                        make up the bulk of the card's content. Some quick example text to build on
-                        the card title and make up the bulk of the card's content. Some quick
-                        example text to build on the card title and make up the bulk of the card's
-                        content. Some quick example text to build on the card title and make up the
-                        bulk of the card's content. Some quick example text to build on the card
-                        title and make up the bulk of the card's content. Some quick example text to
-                        build on the card title and make up the bulk of the card's content. Some
-                        quick example text to build on the card title and make up the bulk of the
-                        card's content. Some quick example text to build on the card title and make
-                        up the bulk of the card's content. Some quick example text to build on the
-                        card title and make up the bulk of the card's content. Some quick example
-                        text to build on the card title and make up the bulk of the card's content.
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content. Some quick example text to build on the card title and
-                        make up the bulk of the card's content. Some quick example text to build on
-                        the card title and make up the bulk of the card's content. Some quick
-                        example text to build on the card title and make up the bulk of the card's
-                        content. Some quick example text to build on the card title and make up the
-                        bulk of the card's content. Some quick example text to build on the card
-                        title and make up the bulk of the card's content. Some quick example text to
-                        build on the card title and make up the bulk of the card's content. Some
-                        quick example text to build on the card title and make up the bulk of the
-                        card's content. Some quick example text to build on the card title and make
-                        up the bulk of the card's content. Some quick example text to build on the
-                        card title and make up the bulk of the card's content. Some quick example
-                        text to build on the card title and make up the bulk of the card's content.
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content. Some quick example text to build on the card title and
-                        make up the bulk of the card's content. Some quick example text to build on
-                        the card title and make up the bulk of the card's content.
-                    </p>
+                    <app-event-card
+                        *ngFor="let event of events"
+                        [event]="event"
+                        [groupName]="event.groupName"
+                    ></app-event-card>
                 </div>
             </div>
         </div>

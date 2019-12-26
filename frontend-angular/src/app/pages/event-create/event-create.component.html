@@ -1,0 +1,66 @@
+<h1 class="text-center">Create event</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form [formGroup]="formGroup" (validSubmit)="createEvent()">
+            <div class="form-group">
+                <label for="inputName">Name</label>
+                <input
+                    id="inputName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter name"
+                    formControlName="name"
+                    appAutofocus
+                />
+            </div>
+            <div class="form-group">
+                <label for="inputStartTime">Start time</label>
+                <input
+                    id="inputStartTime"
+                    mwlFlatpickr
+                    [enableTime]="true"
+                    [minDate]="now"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter start time"
+                    formControlName="startTimestamp"
+                />
+            </div>
+            <div class="form-group" [customErrorMessages]="customErrorMessages">
+                <label for="inputEndTime">End time</label>
+                <input
+                    id="inputEndTime"
+                    mwlFlatpickr
+                    [enableTime]="true"
+                    [minDate]="getStartTimestamp()"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter end time"
+                    formControlName="endTimestamp"
+                />
+            </div>
+            <div class="form-group">
+                <label for="inputLocation">Location</label>
+                <input
+                    id="inputLocation"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter location"
+                    formControlName="location"
+                />
+            </div>
+            <div class="form-group">
+                <label for="inputDescription">Description</label>
+                <textarea
+                    id="inputDescription"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter description (optional)"
+                    formControlName="description"
+                ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create event</button>
+        </form>
+    </div>
+</div>

@@ -4,48 +4,20 @@
     <div class="row flex-remaining-space">
         <div class="col-md-6 h-100">
             <div class="card mb-3 mb-md-0 h-100">
-                <div class="card-header text-white bg-primary">Upcoming events</div>
+                <div class="card-header text-white bg-primary">
+                    Upcoming events for {{ group?.name }}
+                </div>
                 <div class="card-body overflow-auto">
-                    <p class="card-text">
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content. Some quick example text to build on the card title and
-                        make up the bulk of the card's content. Some quick example text to build on
-                        the card title and make up the bulk of the card's content. Some quick
-                        example text to build on the card title and make up the bulk of the card's
-                        content. Some quick example text to build on the card title and make up the
-                        bulk of the card's content. Some quick example text to build on the card
-                        title and make up the bulk of the card's content. Some quick example text to
-                        build on the card title and make up the bulk of the card's content. Some
-                        quick example text to build on the card title and make up the bulk of the
-                        card's content. Some quick example text to build on the card title and make
-                        up the bulk of the card's content. Some quick example text to build on the
-                        card title and make up the bulk of the card's content. Some quick example
-                        text to build on the card title and make up the bulk of the card's content.
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content. Some quick example text to build on the card title and
-                        make up the bulk of the card's content. Some quick example text to build on
-                        the card title and make up the bulk of the card's content. Some quick
-                        example text to build on the card title and make up the bulk of the card's
-                        content. Some quick example text to build on the card title and make up the
-                        bulk of the card's content. Some quick example text to build on the card
-                        title and make up the bulk of the card's content. Some quick example text to
-                        build on the card title and make up the bulk of the card's content. Some
-                        quick example text to build on the card title and make up the bulk of the
-                        card's content. Some quick example text to build on the card title and make
-                        up the bulk of the card's content. Some quick example text to build on the
-                        card title and make up the bulk of the card's content. Some quick example
-                        text to build on the card title and make up the bulk of the card's content.
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content. Some quick example text to build on the card title and
-                        make up the bulk of the card's content. Some quick example text to build on
-                        the card title and make up the bulk of the card's content.
-                    </p>
+                    <div class="mb-3" *ngIf="group?.userRole == 'Admin'">
+                        <a routerLink="/event-create/group/{{ group?.id }}">Create a new event</a>
+                    </div>
+                    <app-event-card *ngFor="let event of events" [event]="event"></app-event-card>
                 </div>
             </div>
         </div>
         <div class="col-md-6 h-100">
             <div class="card h-100">
-                <div class="card-header text-white bg-primary">Members</div>
+                <div class="card-header text-white bg-primary">Members of {{ group?.name }}</div>
                 <div class="card-body overflow-auto">
                     <h5 class="card-title">Members</h5>
                     <ul>

@@ -33,7 +33,7 @@ class UserTokenBase implements Persistable<String> {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "timestamp with time zone")
     private ZonedDateTime expirationTimestamp;
 
     private transient boolean persisted;
