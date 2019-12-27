@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FlatpickrModule } from "angularx-flatpickr";
 import { BootstrapVersion, NgBootstrapFormValidationModule } from "ng-bootstrap-form-validation";
@@ -74,7 +75,8 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
             altInputClass: "form-control",
             dateFormat: "Z",
             time24hr: true
-        })
+        }),
+        FontAwesomeModule
     ],
     providers: [
         CookieService,

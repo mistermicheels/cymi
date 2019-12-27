@@ -1,3 +1,5 @@
+import { ApiEventResponseStatus } from "./ApiEventResponseStatus";
+
 export interface ApiEvent {
     id: number;
     name: string;
@@ -5,4 +7,6 @@ export interface ApiEvent {
     endTimestamp: string;
     location: string;
     description?: string;
+    ownStatus?: ApiEventResponseStatus;
+    ownComment?: string;
 }

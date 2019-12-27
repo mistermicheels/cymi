@@ -7,8 +7,8 @@ public class ApiEventWithGroup extends ApiEvent {
     private final Long groupId;
     private final String groupName;
 
-    public ApiEventWithGroup(Event event) {
-        super(event);
+    public ApiEventWithGroup(Event event, Long currentUserId) {
+        super(event, currentUserId);
         this.groupId = event.getGroupId();
         this.groupName = event.getGroupName();
     }

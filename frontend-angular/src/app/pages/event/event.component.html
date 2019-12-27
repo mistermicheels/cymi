@@ -31,7 +31,65 @@
                 <div class="card-header text-white bg-primary">Can people make it?</div>
                 <div class="card-body overflow-auto">
                     <h5 class="card-title">Can you make it?</h5>
-                    <h5 class="card-title">Can others make it?</h5>
+                    <div *ngIf="event && event?.ownStatus" [ngSwitch]="event?.ownStatus">
+                        <p class="card-text" *ngSwitchCase="'Yes'">
+                            <fa-icon class="text-success" [icon]="faCheck"></fa-icon> Yes
+                        </p>
+                        <p class="card-text" *ngSwitchCase="'No'">
+                            <fa-icon class="text-danger" [icon]="faTimes"></fa-icon> No
+                        </p>
+                        <p class="card-text" *ngSwitchCase="'Maybe'">
+                            <fa-icon class="text-warning" [icon]="faQuestion"></fa-icon> Maybe
+                        </p>
+                        <p class="card-text" *ngIf="event?.ownComment">{{ event?.ownComment }}</p>
+                    </div>
+                    <div *ngIf="event && !event?.ownStatus">
+                        <div class="alert alert-danger mb-3" role="alert">
+                            You still need to respond.
+                        </div>
+                        <form [formGroup]="responseFormGroup" (validSubmit)="respond()">
+                            <div class="form-group">
+                                <label for="inputStatus" style="display:block;">Status</label>
+                                <div
+                                    class="btn-group btn-group-toggle"
+                                    ngbRadioGroup
+                                    id="inputStatus"
+                                    name="radioBasic"
+                                    formControlName="status"
+                                >
+                                    <label ngbButtonLabel class="btn-light">
+                                        <input ngbButton type="radio" [value]="'Yes'" />
+                                        <fa-icon class="text-success" [icon]="faCheck"></fa-icon>
+                                        Yes
+                                    </label>
+                                    <label ngbButtonLabel class="btn-light">
+                                        <input ngbButton type="radio" [value]="'No'" />
+                                        <fa-icon class="text-danger" [icon]="faTimes"></fa-icon> No
+                                    </label>
+                                    <label ngbButtonLabel class="btn-light">
+                                        <input ngbButton type="radio" [value]="'Maybe'" /><fa-icon
+                                            class="text-warning"
+                                            [icon]="faQuestion"
+                                        ></fa-icon>
+                                        Maybe
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputComment">Comment</label>
+                                <textarea
+                                    id="inputComment"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter comment (optional)"
+                                    formControlName="comment"
+                                ></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Respond</button>
+                        </form>
+                    </div>
+
+                    <h5 class="card-title mt-3">Can others make it?</h5>
                 </div>
             </div>
         </div>

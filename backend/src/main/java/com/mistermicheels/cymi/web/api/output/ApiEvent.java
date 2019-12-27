@@ -3,6 +3,7 @@ package com.mistermicheels.cymi.web.api.output;
 import java.time.ZonedDateTime;
 
 import com.mistermicheels.cymi.component.event.Event;
+import com.mistermicheels.cymi.component.event.EventResponseStatus;
 
 public class ApiEvent {
 
@@ -12,14 +13,22 @@ public class ApiEvent {
     private final ZonedDateTime endTimestamp;
     private final String location;
     private final String description;
+    private final EventResponseStatus ownStatus;
+    private final String ownComment;
 
-    public ApiEvent(Event event) {
+    public ApiEvent(Event event, Long currentUserId) {
         this.id = event.getId();
         this.name = event.getName();
         this.startTimestamp = event.getStartTimestamp();
         this.endTimestamp = event.getEndTimestamp();
         this.location = event.getLocation();
         this.description = event.getDescription().orElse(null);
+
+        this.ownStatus = event.getResponseForUserId(currentUserId)
+                .map(response -> response.getStatus()).orElse(null);
+
+        this.ownComment = event.getResponseForUserId(currentUserId)
+                .flatMap(response -> response.getComment()).orElse(null);
     }
 
     public Long getId() {
@@ -44,6 +53,14 @@ public class ApiEvent {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public EventResponseStatus getOwnStatus() {
+        return this.ownStatus;
+    }
+
+    public String getOwnComment() {
+        return this.ownComment;
     }
 
 }

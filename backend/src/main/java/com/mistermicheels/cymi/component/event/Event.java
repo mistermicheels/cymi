@@ -2,6 +2,7 @@ package com.mistermicheels.cymi.component.event;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.mistermicheels.cymi.common.FieldLengths;
@@ -43,6 +45,9 @@ public class Event {
 
     @Column(nullable = true, columnDefinition = "text")
     private String description;
+
+    @OneToMany(mappedBy = "event")
+    private Set<EventResponse> responses;
 
     Event() {
     }
@@ -90,6 +95,10 @@ public class Event {
 
     public Optional<String> getDescription() {
         return Optional.ofNullable(this.description);
+    }
+
+    public Optional<EventResponse> getResponseForUserId(Long userId) {
+        return this.responses.stream().filter(response -> response.getUserId() == userId).findAny();
     }
 
 }

@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
+import { ApiEventResponseStatus } from "../api-models/ApiEventResponseStatus";
 import { ApiEventWithGroup } from "../api-models/ApiEventWithGroup";
 import { ApiSuccessResponseWithId } from "../api-models/ApiSuccessResponseWithId";
 
@@ -27,6 +28,14 @@ export class EventsService {
             endTimestamp,
             location,
             description
+        });
+    }
+
+    respond(eventId: number, status: ApiEventResponseStatus, comment?: string) {
+        return this.http.post<ApiSuccessResponseWithId>(this.API_PATH + "/respond", {
+            eventId,
+            status,
+            comment
         });
     }
 
