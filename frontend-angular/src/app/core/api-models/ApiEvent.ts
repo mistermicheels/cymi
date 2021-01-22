@@ -9,4 +9,7 @@ export interface ApiEvent {
     description?: string;
     ownStatus?: ApiEventResponseStatus;
     ownComment?: string;
+    numberOtherYesResponses: number;
+    numberOtherNoResponses: number;
+    numberOtherMaybeResponses: number;
 }

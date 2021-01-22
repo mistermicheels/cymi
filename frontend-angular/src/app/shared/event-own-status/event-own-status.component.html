@@ -1,0 +1,15 @@
+<span [ngSwitch]="event.ownStatus">
+    <span *ngSwitchCase="'Yes'">
+        <fa-icon class="text-success" [icon]="faCheck"></fa-icon>
+        <span>&nbsp;Yes</span>
+    </span>
+    <span *ngSwitchCase="'No'">
+        <fa-icon class="text-danger" [icon]="faTimes"></fa-icon>
+        <span>&nbsp;No</span>
+    </span>
+    <span *ngSwitchCase="'Maybe'">
+        <fa-icon class="text-warning" [icon]="faQuestion"></fa-icon>
+        <span>&nbsp;Maybe</span>
+    </span>
+    <span *ngSwitchDefault class="badge badge-danger">Not responded yet</span>
+</span>

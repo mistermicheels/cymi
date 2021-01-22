@@ -46,6 +46,17 @@ public class Event {
     @Column(nullable = true, columnDefinition = "text")
     private String description;
 
+    // we store response counts so we can show them without retrieving all responses
+
+    @Column(nullable = false)
+    private Integer numberYesResponses;
+
+    @Column(nullable = false)
+    private Integer numberNoResponses;
+
+    @Column(nullable = false)
+    private Integer numberMaybeResponses;
+
     @OneToMany(mappedBy = "event")
     private Set<EventResponse> responses;
 
@@ -63,6 +74,19 @@ public class Event {
         this.endTimestamp = basicData.getEndTimestamp();
         this.location = basicData.getLocation();
         this.description = basicData.getDescription().orElse(null);
+        this.numberYesResponses = 0;
+        this.numberNoResponses = 0;
+        this.numberMaybeResponses = 0;
+    }
+
+    public void addResponseToResponseCounts(EventResponseStatus status) {
+        if (status == EventResponseStatus.Yes) {
+            this.numberYesResponses++;
+        } else if (status == EventResponseStatus.No) {
+            this.numberNoResponses++;
+        } else if (status == EventResponseStatus.Maybe) {
+            this.numberMaybeResponses++;
+        }
     }
 
     public Long getId() {
@@ -97,8 +121,16 @@ public class Event {
         return Optional.ofNullable(this.description);
     }
 
-    public Optional<EventResponse> getResponseForUserId(Long userId) {
-        return this.responses.stream().filter(response -> response.getUserId() == userId).findAny();
+    public Integer getNumberYesResponses() {
+        return this.numberYesResponses;
+    }
+
+    public Integer getNumberNoResponses() {
+        return this.numberNoResponses;
+    }
+
+    public Integer getNumberMaybeResponses() {
+        return this.numberMaybeResponses;
     }
 
 }

@@ -7,5 +7,13 @@
             {{ event.endTimestamp | date: dateFormat }}
         </p>
         <p *ngIf="groupName"><strong>Group:</strong> {{ groupName }}</p>
+        <p>
+            <strong>Can you make it?&nbsp;</strong>
+            <app-event-own-status [event]="event"></app-event-own-status>
+        </p>
+        <p>
+            <strong>Can others make it?&nbsp;</strong>
+            <app-event-other-statuses [event]="event"></app-event-other-statuses>
+        </p>
     </div>
 </div>

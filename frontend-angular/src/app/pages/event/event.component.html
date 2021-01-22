@@ -31,17 +31,9 @@
                 <div class="card-header text-white bg-primary">Can people make it?</div>
                 <div class="card-body overflow-auto">
                     <h5 class="card-title">Can you make it?</h5>
-                    <div *ngIf="event && event?.ownStatus" [ngSwitch]="event?.ownStatus">
-                        <p class="card-text" *ngSwitchCase="'Yes'">
-                            <fa-icon class="text-success" [icon]="faCheck"></fa-icon> Yes
-                        </p>
-                        <p class="card-text" *ngSwitchCase="'No'">
-                            <fa-icon class="text-danger" [icon]="faTimes"></fa-icon> No
-                        </p>
-                        <p class="card-text" *ngSwitchCase="'Maybe'">
-                            <fa-icon class="text-warning" [icon]="faQuestion"></fa-icon> Maybe
-                        </p>
-                        <p class="card-text" *ngIf="event?.ownComment">{{ event?.ownComment }}</p>
+                    <div *ngIf="event && event?.ownStatus">
+                        <p><app-event-own-status [event]="event"></app-event-own-status></p>
+                        <p *ngIf="event?.ownComment">{{ event?.ownComment }}</p>
                     </div>
                     <div *ngIf="event && !event?.ownStatus">
                         <div class="alert alert-danger mb-3" role="alert">
@@ -90,6 +82,9 @@
                     </div>
 
                     <h5 class="card-title mt-3">Can others make it?</h5>
+                    <div *ngIf="event">
+                        <p><app-event-other-statuses [event]="event"></app-event-other-statuses></p>
+                    </div>
                 </div>
             </div>
         </div>

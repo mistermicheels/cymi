@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.component.group.Group;
@@ -40,12 +41,15 @@ public class EventService {
         this.respond(eventId, currentUserId, status, null);
     }
 
+    @Transactional
     public void respond(Long eventId, Long currentUserId, EventResponseStatus status,
             String comment) {
         Event event = this.repository.findById(eventId)
                 .orElseThrow(() -> new InvalidRequestException("There is no event with that ID"));
 
         this.groupService.checkCurrentUserMember(event.getGroupId(), currentUserId);
+
+        event.addResponseToResponseCounts(status);
 
         User user = this.userService.getReference(currentUserId);
         EventResponse response;
@@ -56,6 +60,7 @@ public class EventService {
             response = new EventResponse(event, user, status);
         }
 
+        this.repository.save(event);
         this.eventResponseRepository.save(response);
     }
 
