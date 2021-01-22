@@ -1,6 +1,8 @@
 package com.mistermicheels.cymi.web.api.controller.events;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mistermicheels.cymi.component.event.Event;
 import com.mistermicheels.cymi.component.event.EventBasicData;
+import com.mistermicheels.cymi.component.event.EventResponse;
 import com.mistermicheels.cymi.component.event.EventService;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.events.input.CreateEventInput;
@@ -69,26 +72,49 @@ public class EventsController {
     }
 
     @GetMapping("/id/{id}")
-    public ApiEvent getByIdOrThrow(@PathVariable("id") Long id,
+    public ApiEventWithGroup getByIdOrThrow(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Event event = this.eventService.findWithGroupByIdOrThrow(id, userDetails.getId());
-        return new ApiEventWithGroup(event, userDetails.getId());
+        ApiEventWithGroup apiEventWithGroup = new ApiEventWithGroup(event);
+        this.setOwnResponsesOnApiEvents(List.of(apiEventWithGroup), userDetails.getId());
+        return apiEventWithGroup;
     }
 
     @GetMapping("/upcoming/user")
     public List<ApiEventWithGroup> getUpcomingForUser(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return this.eventService.findUpcomingWithGroupWithOwnResponseForUser(userDetails.getId())
-                .stream().map(event -> new ApiEventWithGroup(event, userDetails.getId()))
-                .collect(Collectors.toList());
+        List<ApiEventWithGroup> apiEventsWithGroup = this.eventService
+                .findUpcomingWithGroupForUser(userDetails.getId()).stream()
+                .map(event -> new ApiEventWithGroup(event)).collect(Collectors.toList());
+
+        this.setOwnResponsesOnApiEvents(apiEventsWithGroup, userDetails.getId());
+        return apiEventsWithGroup;
     }
 
     @GetMapping("/upcoming/group/{groupId}")
     public List<ApiEvent> getUpcomingByGroup(@PathVariable("groupId") Long groupId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return this.eventService.findUpcomingWithOwnResponseByGroup(groupId, userDetails.getId())
-                .stream().map(event -> new ApiEvent(event, userDetails.getId()))
-                .collect(Collectors.toList());
+        List<ApiEvent> apiEvents = this.eventService
+                .findUpcomingByGroup(groupId, userDetails.getId()).stream()
+                .map(event -> new ApiEvent(event)).collect(Collectors.toList());
+
+        this.setOwnResponsesOnApiEvents(apiEvents, userDetails.getId());
+        return apiEvents;
+    }
+
+    private void setOwnResponsesOnApiEvents(List<? extends ApiEvent> apiEvents,
+            Long currentUserId) {
+        List<Long> eventIds = apiEvents.stream().map(ApiEvent::getId).collect(Collectors.toList());
+
+        Map<Long, EventResponse> ownResponsesByEventId = this.eventService
+                .findOwnResponsesForEvents(eventIds, currentUserId).stream()
+                .collect(Collectors.toMap(EventResponse::getEventId, Function.identity()));
+
+        for (ApiEvent apiEvent : apiEvents) {
+            if (ownResponsesByEventId.containsKey(apiEvent.getId())) {
+                apiEvent.setOwnResponse(ownResponsesByEventId.get(apiEvent.getId()));
+            }
+        }
     }
 
 }

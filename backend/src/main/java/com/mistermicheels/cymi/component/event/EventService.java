@@ -67,13 +67,18 @@ public class EventService {
         return event;
     }
 
-    public List<Event> findUpcomingWithOwnResponseByGroup(Long groupId, Long currentUserId) {
+    public List<Event> findUpcomingByGroup(Long groupId, Long currentUserId) {
         this.groupService.checkCurrentUserMember(groupId, currentUserId);
-        return this.repository.findUpcomingWithResponsesByGroupId(groupId);
+        return this.repository.findUpcomingByGroupId(groupId);
     }
 
-    public List<Event> findUpcomingWithGroupWithOwnResponseForUser(Long userId) {
-        return this.repository.findUpcomingWithGroupWithResponsesByUserId(userId);
+    public List<Event> findUpcomingWithGroupForUser(Long userId) {
+        return this.repository.findUpcomingWithGroupByUserId(userId);
+    }
+
+    public List<EventResponse> findOwnResponsesForEvents(List<Long> eventIds, Long currentUserId) {
+        return this.eventResponseRepository
+                .findByEventResponseIdUserIdAndEventResponseIdEventIdIn(currentUserId, eventIds);
     }
 
 }
