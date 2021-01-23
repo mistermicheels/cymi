@@ -41,14 +41,16 @@ export class AuthInterceptor implements HttpInterceptor {
             this.authenticationService.clearLoggedInUser();
 
             return this.reloginService.relogin(email).pipe(
-                catchError(() => EMPTY), // only continue if relogin successful
+                catchError(() => {
+                    this.router.navigateByUrl("/login");
+                    return EMPTY;
+                }),
                 switchMap(() => this.retryRequest(request, next))
             );
         } else if (this.reloginService.isReloginInProgress()) {
-            return this.reloginService.completed$.pipe(
-                catchError(() => EMPTY), // only continue if relogin successful
+            return this.reloginService.reloginResult$.pipe(
                 take(1),
-                switchMap(() => this.retryRequest(request, next))
+                switchMap(result => (result.success ? this.retryRequest(request, next) : EMPTY))
             );
         } else {
             this.router.navigateByUrl("/login");

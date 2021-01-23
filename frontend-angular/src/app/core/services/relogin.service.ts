@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { from, Subject } from "rxjs";
-import { tap } from "rxjs/operators";
+import { finalize, tap } from "rxjs/operators";
 
 import { ReloginModalComponent } from "../../shared/relogin-modal/relogin-modal.component";
 
@@ -11,8 +11,8 @@ import { ReloginModalComponent } from "../../shared/relogin-modal/relogin-modal.
 export class ReloginService {
     private inProgress = false;
 
-    private completedSubject = new Subject<void>();
-    completed$ = this.completedSubject.asObservable();
+    private reloginResultSubject = new Subject<{ success: boolean }>();
+    reloginResult$ = this.reloginResultSubject.asObservable();
 
     constructor(private modalService: NgbModal) {}
 
@@ -24,9 +24,11 @@ export class ReloginService {
 
         return from(modal.result).pipe(
             tap(
-                () => this.completedSubject.next(),
-                error => this.completedSubject.error(error)
-            )
+                // don't put reloginResult in error state (once Observable is in error state, it stays in error state)
+                () => this.reloginResultSubject.next({ success: true }),
+                () => this.reloginResultSubject.next({ success: false })
+            ),
+            finalize(() => (this.inProgress = false))
         );
     }
 
