@@ -9,7 +9,10 @@ interface SessionTokenRepository extends JpaRepository<SessionToken, String> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM SessionToken token WHERE CURRENT_TIMESTAMP > token.expirationTimestamp")
+    // @formatter:off
+    @Query("DELETE FROM SessionToken token "
+            + "WHERE CURRENT_TIMESTAMP > token.expirationTimestamp")
+    // @formatter:on
     void deleteExpired();
 
 }

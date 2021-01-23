@@ -9,14 +9,30 @@ import org.springframework.data.repository.query.Param;
 
 interface GroupInvitationRepository extends JpaRepository<GroupInvitation, GroupUserLinkId> {
 
-    @Query("SELECT invitation FROM GroupInvitation invitation JOIN FETCH invitation.user WHERE invitation.groupUserLinkId.groupId = :groupId")
+    // @formatter:off
+    @Query("SELECT invitation "
+            + "FROM GroupInvitation invitation "
+            + "JOIN FETCH invitation.user "
+            + "WHERE invitation.groupUserLinkId.groupId = :groupId")
+    // @formatter:on
     List<GroupInvitation> findWithUserByGroupUserLinkIdGroupId(
             @Param(value = "groupId") Long groupId);
 
-    @Query("SELECT invitation FROM GroupInvitation invitation JOIN FETCH invitation.group WHERE invitation.groupUserLinkId.userId = :userId")
+    // @formatter:off
+    @Query("SELECT invitation "
+            + "FROM GroupInvitation invitation "
+            + "JOIN FETCH invitation.group "
+            + "WHERE invitation.groupUserLinkId.userId = :userId")
+    // @formatter:on
     List<GroupInvitation> findWithGroupsByUserId(@Param(value = "userId") Long userId);
 
-    @Query("SELECT invitation FROM GroupInvitation invitation JOIN FETCH invitation.group WHERE invitation.groupUserLinkId.groupId = :groupId AND invitation.groupUserLinkId.userId = :userId")
+    // @formatter:off
+    @Query("SELECT invitation "
+            + "FROM GroupInvitation invitation "
+            + "JOIN FETCH invitation.group "
+            + "WHERE invitation.groupUserLinkId.groupId = :groupId "
+            + "AND invitation.groupUserLinkId.userId = :userId")
+    // @formatter:on
     Optional<GroupInvitation> findWithGroupByGroupIdAndUserId(
             @Param(value = "groupId") Long groupId, @Param(value = "userId") Long userId);
 

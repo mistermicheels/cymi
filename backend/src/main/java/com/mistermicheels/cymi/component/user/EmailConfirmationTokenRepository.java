@@ -10,12 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 interface EmailConfirmationTokenRepository extends JpaRepository<EmailConfirmationToken, String> {
 
-    @Query("SELECT token FROM EmailConfirmationToken token JOIN FETCH token.user WHERE token.id = :id")
+    // @formatter:off
+    @Query("SELECT token "
+            + "FROM EmailConfirmationToken token "
+            + "JOIN FETCH token.user "
+            + "WHERE token.id = :id")
+    // @formatter:on
     Optional<EmailConfirmationToken> findByIdWithUser(@Param(value = "id") String id);
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM EmailConfirmationToken token WHERE CURRENT_TIMESTAMP > token.expirationTimestamp")
+    // @formatter:off
+    @Query("DELETE FROM EmailConfirmationToken token "
+            + "WHERE CURRENT_TIMESTAMP > token.expirationTimestamp")
+    // @formatter:on
     void deleteExpired();
 
 }

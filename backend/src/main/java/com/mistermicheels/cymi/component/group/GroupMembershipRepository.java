@@ -11,10 +11,21 @@ interface GroupMembershipRepository extends JpaRepository<GroupMembership, Group
 
     List<GroupMembership> findByGroupUserLinkIdGroupId(Long groupId);
 
-    @Query("SELECT membership FROM GroupMembership membership JOIN FETCH membership.group WHERE membership.groupUserLinkId.userId = :userId")
+    // @formatter:off
+    @Query("SELECT membership "
+            + "FROM GroupMembership membership "
+            + "JOIN FETCH membership.group "
+            + "WHERE membership.groupUserLinkId.userId = :userId")
+    // @formatter:on
     List<GroupMembership> findWithGroupsByUserId(@Param(value = "userId") Long userId);
 
-    @Query("SELECT membership FROM GroupMembership membership JOIN FETCH membership.group WHERE membership.groupUserLinkId.groupId = :groupId AND membership.groupUserLinkId.userId = :userId")
+    // @formatter:off
+    @Query("SELECT membership "
+            + "FROM GroupMembership membership "
+            + "JOIN FETCH membership.group "
+            + "WHERE membership.groupUserLinkId.groupId = :groupId "
+            + "AND membership.groupUserLinkId.userId = :userId")
+    // @formatter:on
     Optional<GroupMembership> findWithGroupByGroupIdAndUserId(
             @Param(value = "groupId") Long groupId, @Param(value = "userId") Long userId);
 
