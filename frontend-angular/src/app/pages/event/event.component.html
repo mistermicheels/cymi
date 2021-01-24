@@ -12,11 +12,9 @@
                 <div *ngIf="event" class="card-body overflow-auto">
                     <p class="card-text">
                         <strong>Group:</strong>&nbsp;
-                        <span
-                            *ngIf="event!.userRoleInGroup === 'Admin'"
-                            class="badge badge-primary mr-1"
-                            >Admin</span
-                        >
+                        <app-user-role-indicator
+                            [role]="event!.userRoleInGroup"
+                        ></app-user-role-indicator>
                         <a routerLink="/group/{{ event!.groupId }}">{{ event!.groupName }}</a>
                     </p>
                     <p class="card-text"><strong>Name:</strong> {{ event!.name }}</p>

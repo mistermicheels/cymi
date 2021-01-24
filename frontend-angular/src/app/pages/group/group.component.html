@@ -24,9 +24,7 @@
                     <h5 class="card-title">Members</h5>
                     <ul>
                         <li *ngFor="let member of members">
-                            <span class="badge badge-primary mr-1" *ngIf="member.role === 'Admin'"
-                                >Admin</span
-                            >
+                            <app-user-role-indicator [role]="member.role"></app-user-role-indicator>
                             <span *ngIf="member.isCurrentUser"
                                 ><strong>{{ member.displayName }} (me)</strong></span
                             >
@@ -37,11 +35,9 @@
                         <h5 class="card-title">Invited</h5>
                         <ul>
                             <li *ngFor="let invitee of invitees">
-                                <span
-                                    class="badge badge-primary mr-1"
-                                    *ngIf="invitee.role === 'Admin'"
-                                    >Admin</span
-                                >
+                                <app-user-role-indicator
+                                    [role]="invitee.role"
+                                ></app-user-role-indicator>
                                 <span>{{ invitee.email }}</span>
                             </li>
                         </ul>

@@ -34,6 +34,7 @@ import { EventCardComponent } from "./shared/event-card/event-card.component";
 import { EventOtherStatusesComponent } from "./shared/event-other-statuses/event-other-statuses.component";
 import { EventResponseStatusComponent } from "./shared/event-response-status/event-response-status.component";
 import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.component";
+import { UserRoleIndicatorComponent } from "./shared/user-role-indicator/user-role-indicator.component";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         EventComponent,
         EventCardComponent,
         EventOtherStatusesComponent,
-        EventResponseStatusComponent
+        EventResponseStatusComponent,
+        UserRoleIndicatorComponent
     ],
     imports: [
         BrowserModule,

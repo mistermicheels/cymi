@@ -24,9 +24,7 @@
     >
         <div class="card-body">
             <h5 class="card-title">
-                <span *ngIf="joinedGroup.userRole === 'Admin'" class="badge badge-primary mr-1"
-                    >Admin</span
-                >
+                <app-user-role-indicator [role]="joinedGroup.userRole"></app-user-role-indicator>
                 <span>{{ joinedGroup.name }}</span>
             </h5>
             <p class="card-text">

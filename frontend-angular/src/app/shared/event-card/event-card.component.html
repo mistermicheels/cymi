@@ -8,9 +8,7 @@
         </p>
         <p *ngIf="groupData">
             <strong>Group:</strong>&nbsp;
-            <span *ngIf="groupData!.userRoleInGroup === 'Admin'" class="badge badge-primary mr-1"
-                >Admin</span
-            >
+            <app-user-role-indicator [role]="groupData!.userRoleInGroup"></app-user-role-indicator>
             <span>{{ groupData!.groupName }}</span>
         </p>
         <p>
