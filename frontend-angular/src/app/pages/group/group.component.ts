@@ -69,10 +69,10 @@ export class GroupComponent implements OnInit {
     }
 
     private memberComparator(a: ApiGroupMembership, b: ApiGroupMembership) {
-        if (a.role === b.role) {
-            return a.displayName.localeCompare(b.displayName);
-        } else {
+        if (a.role !== b.role) {
             return a.role.localeCompare(b.role);
+        } else {
+            return a.displayName.localeCompare(b.displayName);
         }
     }
 
@@ -83,10 +83,10 @@ export class GroupComponent implements OnInit {
     }
 
     private inviteeComparator(a: ApiGroupInvitation, b: ApiGroupInvitation) {
-        if (a.role === b.role) {
-            return a.email.localeCompare(b.email);
-        } else {
+        if (a.role !== b.role) {
             return a.role.localeCompare(b.role);
+        } else {
+            return a.email.localeCompare(b.email);
         }
     }
 

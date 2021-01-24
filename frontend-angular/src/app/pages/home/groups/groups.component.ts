@@ -33,10 +33,10 @@ export class GroupsComponent implements OnInit {
         a: ApiGroupWithMembership | ApiGroupWithInvitation,
         b: ApiGroupWithMembership | ApiGroupWithInvitation
     ) {
-        if (a.userRole === b.userRole) {
-            return a.name.localeCompare(b.name);
-        } else {
+        if (a.userRole !== b.userRole) {
             return a.userRole.localeCompare(b.userRole);
+        } else {
+            return a.name.localeCompare(b.name);
         }
     }
 }
