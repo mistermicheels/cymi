@@ -68,7 +68,7 @@ public class GroupsController {
     public List<ApiGroupWithMembership> getJoined(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<GroupMembership> memberships = this.groupService
-                .findMembershipsWithGroupsByUserId(userDetails.getId());
+                .findMembershipsWithGroupsForUser(userDetails.getId());
 
         return memberships.stream().map(membership -> new ApiGroupWithMembership(membership))
                 .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class GroupsController {
     public List<ApiGroupWithInvitation> getInvitedGroups(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<GroupInvitation> invitations = this.groupService
-                .findInvitationsWithGroupsByUserId(userDetails.getId());
+                .findInvitationsWithGroupsForUser(userDetails.getId());
 
         return invitations.stream().map(invitation -> new ApiGroupWithInvitation(invitation))
                 .collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class GroupsController {
     public ApiGroupWithMembership getJoinedById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         GroupMembership membership = this.groupService
-                .findMembershipWithGroupByGroupAndUserIdOrThrow(id, userDetails.getId());
+                .findMembershipWithGroupForGroupAndUserOrThrow(id, userDetails.getId());
 
         return new ApiGroupWithMembership(membership);
     }
@@ -97,7 +97,7 @@ public class GroupsController {
     public ApiGroupWithInvitation getInvitedById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         GroupInvitation invitation = this.groupService
-                .findInvitationWithGroupByGroupAndUserIdOrThrow(id, userDetails.getId());
+                .findInvitationWithGroupForGroupAndUserOrThrow(id, userDetails.getId());
 
         return new ApiGroupWithInvitation(invitation);
     }
@@ -105,7 +105,7 @@ public class GroupsController {
     @GetMapping("/id/{id}/members")
     public List<ApiGroupMembership> getMembersById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<GroupMembership> memberships = this.groupService.findMembershipsByGroupId(id,
+        List<GroupMembership> memberships = this.groupService.findMembershipsForGroup(id,
                 userDetails.getId());
 
         return memberships.stream()
@@ -116,7 +116,7 @@ public class GroupsController {
     @GetMapping("/id/{id}/invitations")
     public List<ApiGroupInvitation> getInvitationsById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<GroupInvitation> invitations = this.groupService.findInvitationsWithUserByGroupId(id,
+        List<GroupInvitation> invitations = this.groupService.findInvitationsWithUserForGroup(id,
                 userDetails.getId());
 
         return invitations.stream().map(invitation -> new ApiGroupInvitation(invitation))

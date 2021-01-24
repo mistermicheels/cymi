@@ -111,7 +111,7 @@ public class GroupService {
         this.invitationRepository.delete(invitation);
     }
 
-    public GroupMembership findMembershipWithGroupByGroupAndUserIdOrThrow(Long id,
+    public GroupMembership findMembershipWithGroupForGroupAndUserOrThrow(Long id,
             Long currentUserId) {
         GroupMembership membership = this.membershipRepository
                 .findWithGroupByGroupIdAndUserId(id, currentUserId).orElseThrow(
@@ -120,7 +120,7 @@ public class GroupService {
         return membership;
     }
 
-    public GroupInvitation findInvitationWithGroupByGroupAndUserIdOrThrow(Long id,
+    public GroupInvitation findInvitationWithGroupForGroupAndUserOrThrow(Long id,
             Long currentUserId) {
         GroupInvitation invitation = this.invitationRepository
                 .findWithGroupByGroupIdAndUserId(id, currentUserId).orElseThrow(
@@ -129,15 +129,15 @@ public class GroupService {
         return invitation;
     }
 
-    public List<GroupMembership> findMembershipsWithGroupsByUserId(Long userId) {
+    public List<GroupMembership> findMembershipsWithGroupsForUser(Long userId) {
         return this.membershipRepository.findWithGroupsByUserId(userId);
     }
 
-    public List<GroupInvitation> findInvitationsWithGroupsByUserId(Long userId) {
+    public List<GroupInvitation> findInvitationsWithGroupsForUser(Long userId) {
         return this.invitationRepository.findWithGroupsByUserId(userId);
     }
 
-    public List<GroupMembership> findMembershipsByGroupId(Long groupId, Long currentUserId) {
+    public List<GroupMembership> findMembershipsForGroup(Long groupId, Long currentUserId) {
         List<GroupMembership> memberships = this.membershipRepository
                 .findByGroupUserLinkIdGroupId(groupId);
 
@@ -151,7 +151,7 @@ public class GroupService {
         return memberships;
     }
 
-    public List<GroupInvitation> findInvitationsWithUserByGroupId(Long groupId,
+    public List<GroupInvitation> findInvitationsWithUserForGroup(Long groupId,
             Long currentUserId) {
         this.checkCurrentUserAdmin(groupId, currentUserId);
         return this.invitationRepository.findWithUserByGroupUserLinkIdGroupId(groupId);

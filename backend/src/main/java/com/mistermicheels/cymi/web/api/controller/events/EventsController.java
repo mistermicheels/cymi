@@ -95,7 +95,7 @@ public class EventsController {
     public List<ApiEvent> getUpcomingByGroup(@PathVariable("groupId") Long groupId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<ApiEvent> apiEvents = this.eventService
-                .findUpcomingByGroup(groupId, userDetails.getId()).stream()
+                .findUpcomingForGroup(groupId, userDetails.getId()).stream()
                 .map(event -> new ApiEvent(event)).collect(Collectors.toList());
 
         this.setOwnResponsesOnApiEvents(apiEvents, userDetails.getId());

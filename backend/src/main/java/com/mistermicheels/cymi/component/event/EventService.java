@@ -72,7 +72,7 @@ public class EventService {
         return event;
     }
 
-    public List<Event> findUpcomingByGroup(Long groupId, Long currentUserId) {
+    public List<Event> findUpcomingForGroup(Long groupId, Long currentUserId) {
         this.groupService.checkCurrentUserMember(groupId, currentUserId);
         return this.repository.findUpcomingByGroupId(groupId);
     }
