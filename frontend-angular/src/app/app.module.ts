@@ -32,7 +32,7 @@ import { MyAccountComponent } from "./pages/my-account/my-account.component";
 import { SignupComponent } from "./pages/signup/signup.component";
 import { EventCardComponent } from "./shared/event-card/event-card.component";
 import { EventOtherStatusesComponent } from "./shared/event-other-statuses/event-other-statuses.component";
-import { EventOwnStatusComponent } from "./shared/event-own-status/event-own-status.component";
+import { EventResponseStatusComponent } from "./shared/event-response-status/event-response-status.component";
 import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.component";
 
 @NgModule({
@@ -53,7 +53,7 @@ import { ReloginModalComponent } from "./shared/relogin-modal/relogin-modal.comp
         EventComponent,
         EventCardComponent,
         EventOtherStatusesComponent,
-        EventOwnStatusComponent
+        EventResponseStatusComponent
     ],
     imports: [
         BrowserModule,

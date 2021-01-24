@@ -39,7 +39,12 @@
                 <div *ngIf="event" class="card-body overflow-auto">
                     <h5 class="card-title">Can you make it?</h5>
                     <div *ngIf="event!.ownStatus">
-                        <p><app-event-own-status [event]="event"></app-event-own-status></p>
+                        <p>
+                            <app-event-response-status
+                                [status]="event!.ownStatus"
+                                [includeText]="true"
+                            ></app-event-response-status>
+                        </p>
                         <p *ngIf="event?.ownComment">{{ event?.ownComment }}</p>
                     </div>
                     <div *ngIf="!event!.ownStatus">
@@ -58,19 +63,24 @@
                                 >
                                     <label ngbButtonLabel class="btn-light">
                                         <input ngbButton type="radio" [value]="'Yes'" />
-                                        <fa-icon class="text-success" [icon]="faCheck"></fa-icon>
-                                        Yes
+                                        <app-event-response-status
+                                            [status]="'Yes'"
+                                            [includeText]="true"
+                                        ></app-event-response-status>
                                     </label>
                                     <label ngbButtonLabel class="btn-light">
                                         <input ngbButton type="radio" [value]="'No'" />
-                                        <fa-icon class="text-danger" [icon]="faTimes"></fa-icon> No
+                                        <app-event-response-status
+                                            [status]="'No'"
+                                            [includeText]="true"
+                                        ></app-event-response-status>
                                     </label>
                                     <label ngbButtonLabel class="btn-light">
-                                        <input ngbButton type="radio" [value]="'Maybe'" /><fa-icon
-                                            class="text-warning"
-                                            [icon]="faQuestion"
-                                        ></fa-icon>
-                                        Maybe
+                                        <input ngbButton type="radio" [value]="'Maybe'" />
+                                        <app-event-response-status
+                                            [status]="'Maybe'"
+                                            [includeText]="true"
+                                        ></app-event-response-status>
                                     </label>
                                 </div>
                             </div>

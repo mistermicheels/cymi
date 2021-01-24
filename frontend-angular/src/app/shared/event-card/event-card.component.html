@@ -15,7 +15,12 @@
         </p>
         <p>
             <strong>Can you make it?&nbsp;</strong>
-            <app-event-own-status [event]="event"></app-event-own-status>
+            <app-event-response-status
+                *ngIf="event.ownStatus"
+                [status]="event.ownStatus"
+                [includeText]="true"
+            ></app-event-response-status>
+            <span *ngIf="!event.ownStatus" class="badge badge-danger">Not responded yet</span>
         </p>
         <p>
             <strong>Can others make it?&nbsp;</strong>

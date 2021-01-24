@@ -1,8 +1,8 @@
 <span>
-    <fa-icon class="text-success" [icon]="faCheck"></fa-icon>
+    <app-event-response-status [status]="'Yes'"></app-event-response-status>
     <span>&nbsp;{{ event.numberOtherYesResponses }}&nbsp;</span>
-    <fa-icon class="text-danger" [icon]="faTimes"></fa-icon>
+    <app-event-response-status [status]="'No'"></app-event-response-status>
     <span>&nbsp;{{ event.numberOtherNoResponses }}&nbsp;</span>
-    <fa-icon class="text-warning" [icon]="faQuestion"></fa-icon>
+    <app-event-response-status [status]="'Maybe'"></app-event-response-status>
     <span>&nbsp;{{ event.numberOtherMaybeResponses }}</span>
 </span>

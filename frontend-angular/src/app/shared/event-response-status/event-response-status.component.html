@@ -1,15 +1,14 @@
-<span [ngSwitch]="event.ownStatus">
+<span [ngSwitch]="status">
     <span *ngSwitchCase="'Yes'">
         <fa-icon class="text-success" [icon]="faCheck"></fa-icon>
-        <span>&nbsp;Yes</span>
+        <span *ngIf="includeText">&nbsp;Yes</span>
     </span>
     <span *ngSwitchCase="'No'">
         <fa-icon class="text-danger" [icon]="faTimes"></fa-icon>
-        <span>&nbsp;No</span>
+        <span *ngIf="includeText">&nbsp;No</span>
     </span>
     <span *ngSwitchCase="'Maybe'">
         <fa-icon class="text-warning" [icon]="faQuestion"></fa-icon>
-        <span>&nbsp;Maybe</span>
+        <span *ngIf="includeText">&nbsp;Maybe</span>
     </span>
-    <span *ngSwitchDefault class="badge badge-danger">Not responded yet</span>
 </span>
