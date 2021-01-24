@@ -7,10 +7,11 @@
             {{ event.endTimestamp | date: dateFormat }}
         </p>
         <p *ngIf="groupData">
+            <strong>Group:</strong>&nbsp;
             <span *ngIf="groupData!.userRoleInGroup === 'Admin'" class="badge badge-primary mr-1"
                 >Admin</span
             >
-            <span><strong>Group:</strong> {{ groupData!.groupName }}</span>
+            <span>{{ groupData!.groupName }}</span>
         </p>
         <p>
             <strong>Can you make it?&nbsp;</strong>
