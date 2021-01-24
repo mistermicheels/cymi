@@ -27,6 +27,7 @@ import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.events.input.CreateEventInput;
 import com.mistermicheels.cymi.web.api.controller.events.input.RespondInput;
 import com.mistermicheels.cymi.web.api.output.ApiEvent;
+import com.mistermicheels.cymi.web.api.output.ApiEventResponse;
 import com.mistermicheels.cymi.web.api.output.ApiEventWithGroup;
 import com.mistermicheels.cymi.web.api.output.ApiSuccessResponse;
 
@@ -84,6 +85,26 @@ public class EventsController {
         this.setOwnResponseOnApiEvents(List.of(apiEvent), userDetails.getId());
         this.setUserRoleInGroupOnApiEventsWithGroup(List.of(apiEvent), userDetails.getId());
         return apiEvent;
+    }
+
+    @GetMapping("/id/{id}/other_responses")
+    public List<ApiEventResponse> getOtherResponsesForEventOrThrow(@PathVariable("id") Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Event event = this.eventService.findByIdOrThrow(id, userDetails.getId());
+
+        List<GroupMembership> memberships = this.groupService
+                .findMembershipsForGroup(event.getGroupId(), userDetails.getId());
+
+        Map<Long, EventResponse> responsesByUserId = this.eventService
+                .findResponsesForEvent(id, userDetails.getId()).stream()
+                .collect(Collectors.toMap(EventResponse::getUserId, Function.identity()));
+
+        return memberships.stream()
+                .filter(membership -> membership.getUserId() != userDetails.getId())
+                .filter(membership -> responsesByUserId.containsKey(membership.getUserId()))
+                .map(membership -> new ApiEventResponse(
+                        responsesByUserId.get(membership.getUserId()), membership))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/upcoming/user")

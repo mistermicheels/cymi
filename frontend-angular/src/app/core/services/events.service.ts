@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
+import { ApiEventResponse } from "../api-models/ApiEventresponse";
 import { ApiEventResponseStatus } from "../api-models/ApiEventResponseStatus";
 import { ApiEventWithGroup } from "../api-models/ApiEventWithGroup";
 import { ApiSuccessResponseWithId } from "../api-models/ApiSuccessResponseWithId";
@@ -41,6 +42,10 @@ export class EventsService {
 
     getByIdOrThrow(id: number) {
         return this.http.get<ApiEventWithGroup>(this.API_PATH + `/id/${id}`);
+    }
+
+    getOtherResponsesForEventOrThrow(id: number) {
+        return this.http.get<ApiEventResponse[]>(this.API_PATH + `/id/${id}/other_responses`);
     }
 
     getUpcomingForUser() {

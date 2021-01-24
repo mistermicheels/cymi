@@ -100,6 +100,29 @@
 
                     <h5 class="card-title mt-3">Can others make it?</h5>
                     <p><app-event-other-statuses [event]="event!"></app-event-other-statuses></p>
+                    <ul *ngIf="otherResponses">
+                        <li *ngFor="let response of otherResponses">
+                            <app-event-response-status
+                                class="mr-1"
+                                [status]="response.status"
+                            ></app-event-response-status>
+                            <span>{{ response.userDisplayName }}</span>
+                            <fa-icon
+                                *ngIf="response.comment"
+                                (click)="toggleShowCommentForResponse(response)"
+                                class="ml-1"
+                                style="cursor: pointer;"
+                                [icon]="faCommentDots"
+                            ></fa-icon>
+                            <p
+                                *ngIf="expandedResponseCommentUserId === response.userId"
+                                class="text-muted small"
+                                style="white-space: pre-line;"
+                            >
+                                {{ response.comment }}
+                            </p>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

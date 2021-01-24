@@ -1,11 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { faCheck, faQuestion, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 
+import { ApiEventResponse } from "../../core/api-models/ApiEventresponse";
 import { ApiEventWithGroup } from "../../core/api-models/ApiEventWithGroup";
+import { ApiGroupMembershipRole } from "../../core/api-models/ApiGroupMembershipRole";
 import { defaultDateFormat } from "../../core/defaults";
 import { EventsService } from "../../core/services/events.service";
+import { compareApiEventResponseStatuses } from "../../core/util/compareApiEventResponseStatuses";
 
 @Component({
     selector: "app-event",
@@ -14,14 +17,15 @@ import { EventsService } from "../../core/services/events.service";
 })
 export class EventComponent implements OnInit {
     event?: ApiEventWithGroup;
+    otherResponses?: ApiEventResponse[];
+
+    expandedResponseCommentUserId?: number = undefined;
 
     responseFormGroup?: FormGroup;
 
     dateFormat = defaultDateFormat;
 
-    faCheck = faCheck;
-    faTimes = faTimes;
-    faQuestion = faQuestion;
+    faCommentDots = faCommentDots;
 
     constructor(
         private router: Router,
@@ -51,7 +55,31 @@ export class EventComponent implements OnInit {
                     comment: new FormControl(undefined, [])
                 });
             }
+
+            if (event.userRoleInGroup === ApiGroupMembershipRole.Admin) {
+                this.eventsService
+                    .getOtherResponsesForEventOrThrow(eventId)
+                    .subscribe(otherResponses => {
+                        this.otherResponses = otherResponses.sort(this.responseComparator);
+                    });
+            }
         });
+    }
+
+    private responseComparator(a: ApiEventResponse, b: ApiEventResponse) {
+        if (a.status !== b.status) {
+            return compareApiEventResponseStatuses(a.status, b.status);
+        } else {
+            return a.userDisplayName.localeCompare(b.userDisplayName);
+        }
+    }
+
+    toggleShowCommentForResponse(response: ApiEventResponse) {
+        if (response.userId === this.expandedResponseCommentUserId) {
+            this.expandedResponseCommentUserId = undefined;
+        } else {
+            this.expandedResponseCommentUserId = response.userId;
+        }
     }
 
     respond() {

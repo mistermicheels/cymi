@@ -9,4 +9,6 @@ interface EventResponseRepository extends JpaRepository<EventResponse, EventResp
     List<EventResponse> findByEventResponseIdUserIdAndEventResponseIdEventIdIn(Long userId,
             List<Long> eventIds);
 
+    List<EventResponse> findByEventResponseIdEventId(Long eventId);
+
 }

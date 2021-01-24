@@ -44,11 +44,8 @@ public class EventService {
     @Transactional
     public void respond(Long eventId, Long currentUserId, EventResponseStatus status,
             String comment) {
-        Event event = this.repository.findById(eventId)
-                .orElseThrow(() -> new InvalidRequestException("There is no event with that ID"));
-
+        Event event = this.repository.findById(eventId).orElseThrow(this::getInvalidIdException);
         this.groupService.checkCurrentUserMember(event.getGroupId(), currentUserId);
-
         event.addResponseToResponseCounts(status);
 
         User user = this.userService.getReference(currentUserId);
@@ -64,9 +61,19 @@ public class EventService {
         this.eventResponseRepository.save(response);
     }
 
-    public Event findWithGroupByIdOrThrow(Long eventId, Long currentUserId) {
-        Event event = this.repository.findWithGroupById(eventId)
-                .orElseThrow(() -> new InvalidRequestException("Invalid event ID"));
+    private InvalidRequestException getInvalidIdException() {
+        return new InvalidRequestException("Invalid event ID");
+    }
+
+    public Event findByIdOrThrow(Long id, Long currentUserId) {
+        Event event = this.repository.findById(id).orElseThrow(this::getInvalidIdException);
+        this.groupService.checkCurrentUserMember(event.getGroupId(), currentUserId);
+        return event;
+    }
+
+    public Event findWithGroupByIdOrThrow(Long id, Long currentUserId) {
+        Event event = this.repository.findWithGroupById(id)
+                .orElseThrow(this::getInvalidIdException);
 
         this.groupService.checkCurrentUserMember(event.getGroupId(), currentUserId);
         return event;
@@ -84,6 +91,14 @@ public class EventService {
     public List<EventResponse> findOwnResponsesForEvents(List<Long> eventIds, Long currentUserId) {
         return this.eventResponseRepository
                 .findByEventResponseIdUserIdAndEventResponseIdEventIdIn(currentUserId, eventIds);
+    }
+
+    public List<EventResponse> findResponsesForEvent(Long eventId, Long currentUserId) {
+        Event event = this.repository.findById(eventId)
+                .orElseThrow(() -> new InvalidRequestException("Invalid event ID"));
+
+        this.groupService.checkCurrentUserAdmin(event.getGroupId(), currentUserId);
+        return this.eventResponseRepository.findByEventResponseIdEventId(eventId);
     }
 
 }
