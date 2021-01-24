@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 
 import { ApiEvent } from "../../core/api-models/ApiEvent";
+import { ApiGroupMembershipRole } from "../../core/api-models/ApiGroupMembershipRole";
 import { defaultDateFormat } from "../../core/defaults";
 
 @Component({
@@ -13,7 +14,7 @@ export class EventCardComponent implements OnInit {
     event!: ApiEvent;
 
     @Input()
-    groupName?: string;
+    groupData?: { groupName: string; userRoleInGroup: ApiGroupMembershipRole };
 
     dateFormat = defaultDateFormat;
 

@@ -133,6 +133,12 @@ public class GroupService {
         return this.membershipRepository.findWithGroupsByUserId(userId);
     }
 
+    public List<GroupMembership> findMembershipsOfUserInGroups(List<Long> groupIds,
+            Long userId) {
+        return this.membershipRepository
+                .findByGroupUserLinkIdUserIdAndGroupUserLinkIdGroupIdIn(userId, groupIds);
+    }
+
     public List<GroupInvitation> findInvitationsWithGroupsForUser(Long userId) {
         return this.invitationRepository.findWithGroupsByUserId(userId);
     }

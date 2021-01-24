@@ -7,21 +7,26 @@
                 <div class="card-header text-white bg-primary">
                     Event details
                 </div>
-                <div class="card-body overflow-auto">
+                <div *ngIf="event" class="card-body overflow-auto">
                     <p class="card-text">
                         <strong>Group:</strong>&nbsp;
-                        <a routerLink="/group/{{ event?.groupId }}">{{ event?.groupName }}</a>
+                        <span
+                            *ngIf="event!.userRoleInGroup === 'Admin'"
+                            class="badge badge-primary mr-1"
+                            >Admin</span
+                        >
+                        <a routerLink="/group/{{ event!.groupId }}">{{ event!.groupName }}</a>
                     </p>
-                    <p class="card-text"><strong>Name:</strong> {{ event?.name }}</p>
+                    <p class="card-text"><strong>Name:</strong> {{ event!.name }}</p>
                     <p class="card-text">
-                        <strong>Start time:</strong> {{ event?.startTimestamp | date: dateFormat }}
+                        <strong>Start time:</strong> {{ event!.startTimestamp | date: dateFormat }}
                     </p>
                     <p class="card-text">
-                        <strong>End time:</strong> {{ event?.endTimestamp | date: dateFormat }}
+                        <strong>End time:</strong> {{ event!.endTimestamp | date: dateFormat }}
                     </p>
-                    <p class="card-text"><strong>Location:</strong> {{ event?.location }}</p>
-                    <p class="card-text" *ngIf="event?.description">
-                        <strong>Description:</strong> {{ event?.description }}
+                    <p class="card-text"><strong>Location:</strong> {{ event!.location }}</p>
+                    <p class="card-text" *ngIf="event!.description">
+                        <strong>Description:</strong> {{ event!.description }}
                     </p>
                 </div>
             </div>
@@ -29,13 +34,13 @@
         <div class="col-md-6 h-100">
             <div class="card h-100">
                 <div class="card-header text-white bg-primary">Can people make it?</div>
-                <div class="card-body overflow-auto">
+                <div *ngIf="event" class="card-body overflow-auto">
                     <h5 class="card-title">Can you make it?</h5>
-                    <div *ngIf="event && event?.ownStatus">
+                    <div *ngIf="event!.ownStatus">
                         <p><app-event-own-status [event]="event"></app-event-own-status></p>
                         <p *ngIf="event?.ownComment">{{ event?.ownComment }}</p>
                     </div>
-                    <div *ngIf="event && !event?.ownStatus">
+                    <div *ngIf="!event!.ownStatus">
                         <div class="alert alert-danger mb-3" role="alert">
                             You still need to respond.
                         </div>
@@ -82,9 +87,7 @@
                     </div>
 
                     <h5 class="card-title mt-3">Can others make it?</h5>
-                    <div *ngIf="event">
-                        <p><app-event-other-statuses [event]="event"></app-event-other-statuses></p>
-                    </div>
+                    <p><app-event-other-statuses [event]="event!"></app-event-other-statuses></p>
                 </div>
             </div>
         </div>

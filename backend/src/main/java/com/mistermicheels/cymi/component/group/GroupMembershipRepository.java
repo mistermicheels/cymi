@@ -11,6 +11,9 @@ interface GroupMembershipRepository extends JpaRepository<GroupMembership, Group
 
     List<GroupMembership> findByGroupUserLinkIdGroupId(Long groupId);
 
+    List<GroupMembership> findByGroupUserLinkIdUserIdAndGroupUserLinkIdGroupIdIn(Long userId,
+            List<Long> groupIds);
+
     // @formatter:off
     @Query("SELECT membership "
             + "FROM GroupMembership membership "

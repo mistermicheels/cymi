@@ -20,6 +20,9 @@ import com.mistermicheels.cymi.component.event.Event;
 import com.mistermicheels.cymi.component.event.EventBasicData;
 import com.mistermicheels.cymi.component.event.EventResponse;
 import com.mistermicheels.cymi.component.event.EventService;
+import com.mistermicheels.cymi.component.group.GroupMembership;
+import com.mistermicheels.cymi.component.group.GroupMembershipRole;
+import com.mistermicheels.cymi.component.group.GroupService;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.events.input.CreateEventInput;
 import com.mistermicheels.cymi.web.api.controller.events.input.RespondInput;
@@ -32,10 +35,12 @@ import com.mistermicheels.cymi.web.api.output.ApiSuccessResponse;
 public class EventsController {
 
     private final EventService eventService;
+    private final GroupService groupService;
 
     @Autowired
-    public EventsController(EventService eventService) {
+    public EventsController(EventService eventService, GroupService groupService) {
         this.eventService = eventService;
+        this.groupService = groupService;
     }
 
     @PostMapping()
@@ -75,20 +80,22 @@ public class EventsController {
     public ApiEventWithGroup getByIdOrThrow(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Event event = this.eventService.findWithGroupByIdOrThrow(id, userDetails.getId());
-        ApiEventWithGroup apiEventWithGroup = new ApiEventWithGroup(event);
-        this.setOwnResponsesOnApiEvents(List.of(apiEventWithGroup), userDetails.getId());
-        return apiEventWithGroup;
+        ApiEventWithGroup apiEvent = new ApiEventWithGroup(event);
+        this.setOwnResponseOnApiEvents(List.of(apiEvent), userDetails.getId());
+        this.setUserRoleInGroupOnApiEventsWithGroup(List.of(apiEvent), userDetails.getId());
+        return apiEvent;
     }
 
     @GetMapping("/upcoming/user")
     public List<ApiEventWithGroup> getUpcomingForUser(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<ApiEventWithGroup> apiEventsWithGroup = this.eventService
+        List<ApiEventWithGroup> apiEvents = this.eventService
                 .findUpcomingWithGroupForUser(userDetails.getId()).stream()
                 .map(event -> new ApiEventWithGroup(event)).collect(Collectors.toList());
 
-        this.setOwnResponsesOnApiEvents(apiEventsWithGroup, userDetails.getId());
-        return apiEventsWithGroup;
+        this.setOwnResponseOnApiEvents(apiEvents, userDetails.getId());
+        this.setUserRoleInGroupOnApiEventsWithGroup(apiEvents, userDetails.getId());
+        return apiEvents;
     }
 
     @GetMapping("/upcoming/group/{groupId}")
@@ -98,12 +105,11 @@ public class EventsController {
                 .findUpcomingForGroup(groupId, userDetails.getId()).stream()
                 .map(event -> new ApiEvent(event)).collect(Collectors.toList());
 
-        this.setOwnResponsesOnApiEvents(apiEvents, userDetails.getId());
+        this.setOwnResponseOnApiEvents(apiEvents, userDetails.getId());
         return apiEvents;
     }
 
-    private void setOwnResponsesOnApiEvents(List<? extends ApiEvent> apiEvents,
-            Long currentUserId) {
+    private void setOwnResponseOnApiEvents(List<? extends ApiEvent> apiEvents, Long currentUserId) {
         List<Long> eventIds = apiEvents.stream().map(ApiEvent::getId).collect(Collectors.toList());
 
         Map<Long, EventResponse> ownResponsesByEventId = this.eventService
@@ -111,8 +117,28 @@ public class EventsController {
                 .collect(Collectors.toMap(EventResponse::getEventId, Function.identity()));
 
         for (ApiEvent apiEvent : apiEvents) {
-            if (ownResponsesByEventId.containsKey(apiEvent.getId())) {
-                apiEvent.setOwnResponse(ownResponsesByEventId.get(apiEvent.getId()));
+            Long eventId = apiEvent.getId();
+
+            if (ownResponsesByEventId.containsKey(eventId)) {
+                apiEvent.setOwnResponse(ownResponsesByEventId.get(eventId));
+            }
+        }
+    }
+
+    private void setUserRoleInGroupOnApiEventsWithGroup(List<ApiEventWithGroup> apiEvents,
+            Long currentUserId) {
+        List<Long> groupIds = apiEvents.stream().map(ApiEventWithGroup::getGroupId).distinct()
+                .collect(Collectors.toList());
+
+        Map<Long, GroupMembershipRole> userRolesByGroup = this.groupService
+                .findMembershipsOfUserInGroups(groupIds, currentUserId).stream()
+                .collect(Collectors.toMap(GroupMembership::getGroupId, GroupMembership::getRole));
+
+        for (ApiEventWithGroup apiEvent : apiEvents) {
+            Long groupId = apiEvent.getGroupId();
+
+            if (userRolesByGroup.containsKey(groupId)) {
+                apiEvent.setUserRoleInGroup(userRolesByGroup.get(groupId));
             }
         }
     }
