@@ -16,7 +16,7 @@ export class AuthenticationService {
 
     private loggedInUser?: ApiUser;
 
-    private isUserLoggedInSubject = new ReplaySubject<boolean>();
+    private isUserLoggedInSubject = new ReplaySubject<boolean>(1);
     isUserLoggedIn$ = this.isUserLoggedInSubject.asObservable();
 
     constructor(
