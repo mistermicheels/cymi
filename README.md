@@ -1,3 +1,8 @@
+Project status:
+
+-   🛑 Not actively maintained
+-   🔒 Not looking for code contributions from other developers
+
 # Can You Make It
 
 This is the code for Can You Make It, a web application allowing people to indicate whether they will join certain events.
