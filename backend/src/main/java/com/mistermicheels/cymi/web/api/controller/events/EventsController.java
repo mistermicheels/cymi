@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mistermicheels.cymi.component.event.Event;
-import com.mistermicheels.cymi.component.event.EventBasicData;
+import com.mistermicheels.cymi.component.event.EventCreationDto;
 import com.mistermicheels.cymi.component.event.EventResponse;
 import com.mistermicheels.cymi.component.event.EventService;
 import com.mistermicheels.cymi.component.group.GroupMembership;
@@ -47,17 +47,17 @@ public class EventsController {
     @PostMapping()
     public ApiSuccessResponse create(@Valid @RequestBody CreateEventInput input,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        EventBasicData basicData;
+        EventCreationDto eventData;
 
         if (input.description != null) {
-            basicData = new EventBasicData(input.name, input.startTimestamp, input.endTimestamp,
+            eventData = new EventCreationDto(input.name, input.startTimestamp, input.endTimestamp,
                     input.location, input.description);
         } else {
-            basicData = new EventBasicData(input.name, input.startTimestamp, input.endTimestamp,
+            eventData = new EventCreationDto(input.name, input.startTimestamp, input.endTimestamp,
                     input.location);
         }
 
-        Event createdEvent = this.eventService.createEvent(input.groupId, basicData,
+        Event createdEvent = this.eventService.createEvent(input.groupId, eventData,
                 userDetails.getId());
 
         return new ApiSuccessResponse(createdEvent.getId());
@@ -82,8 +82,8 @@ public class EventsController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Event event = this.eventService.findWithGroupByIdOrThrow(id, userDetails.getId());
         ApiEventWithGroup apiEvent = new ApiEventWithGroup(event);
-        this.setOwnResponseOnApiEvents(List.of(apiEvent), userDetails.getId());
-        this.setUserRoleInGroupOnApiEventsWithGroup(List.of(apiEvent), userDetails.getId());
+        this.includeOwnResponse(List.of(apiEvent), userDetails.getId());
+        this.includeUserRoleInGroup(List.of(apiEvent), userDetails.getId());
         return apiEvent;
     }
 
@@ -114,8 +114,8 @@ public class EventsController {
                 .findUpcomingWithGroupForUser(userDetails.getId()).stream()
                 .map(event -> new ApiEventWithGroup(event)).collect(Collectors.toList());
 
-        this.setOwnResponseOnApiEvents(apiEvents, userDetails.getId());
-        this.setUserRoleInGroupOnApiEventsWithGroup(apiEvents, userDetails.getId());
+        this.includeOwnResponse(apiEvents, userDetails.getId());
+        this.includeUserRoleInGroup(apiEvents, userDetails.getId());
         return apiEvents;
     }
 
@@ -126,11 +126,11 @@ public class EventsController {
                 .findUpcomingForGroup(groupId, userDetails.getId()).stream()
                 .map(event -> new ApiEvent(event)).collect(Collectors.toList());
 
-        this.setOwnResponseOnApiEvents(apiEvents, userDetails.getId());
+        this.includeOwnResponse(apiEvents, userDetails.getId());
         return apiEvents;
     }
 
-    private void setOwnResponseOnApiEvents(List<? extends ApiEvent> apiEvents, Long currentUserId) {
+    private void includeOwnResponse(List<? extends ApiEvent> apiEvents, Long currentUserId) {
         List<Long> eventIds = apiEvents.stream().map(ApiEvent::getId).collect(Collectors.toList());
 
         Map<Long, EventResponse> ownResponsesByEventId = this.eventService
@@ -146,7 +146,7 @@ public class EventsController {
         }
     }
 
-    private void setUserRoleInGroupOnApiEventsWithGroup(List<ApiEventWithGroup> apiEvents,
+    private void includeUserRoleInGroup(List<ApiEventWithGroup> apiEvents,
             Long currentUserId) {
         List<Long> groupIds = apiEvents.stream().map(ApiEventWithGroup::getGroupId).distinct()
                 .collect(Collectors.toList());

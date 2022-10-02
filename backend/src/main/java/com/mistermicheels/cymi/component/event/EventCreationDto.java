@@ -3,7 +3,7 @@ package com.mistermicheels.cymi.component.event;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-public class EventBasicData {
+public class EventCreationDto {
 
     private final String name;
     private final ZonedDateTime startTimestamp;
@@ -11,12 +11,12 @@ public class EventBasicData {
     private final String location;
     private final String description;
 
-    public EventBasicData(String name, ZonedDateTime startTimestamp, ZonedDateTime endTimestamp,
+    public EventCreationDto(String name, ZonedDateTime startTimestamp, ZonedDateTime endTimestamp,
             String location) {
         this(name, startTimestamp, endTimestamp, location, null);
     }
 
-    public EventBasicData(String name, ZonedDateTime startTimestamp, ZonedDateTime endTimestamp,
+    public EventCreationDto(String name, ZonedDateTime startTimestamp, ZonedDateTime endTimestamp,
             String location, String description) {
         this.name = name;
         this.startTimestamp = startTimestamp;

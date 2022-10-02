@@ -63,17 +63,17 @@ public class Event {
     Event() {
     }
 
-    Event(Group group, EventBasicData basicData) {
-        if (!basicData.getEndTimestamp().isAfter(basicData.getStartTimestamp())) {
+    Event(Group group, EventCreationDto eventData) {
+        if (!eventData.getEndTimestamp().isAfter(eventData.getStartTimestamp())) {
             throw new InvalidRequestException("End of event must be after start of event");
         }
 
         this.group = group;
-        this.name = basicData.getName();
-        this.startTimestamp = basicData.getStartTimestamp();
-        this.endTimestamp = basicData.getEndTimestamp();
-        this.location = basicData.getLocation();
-        this.description = basicData.getDescription().orElse(null);
+        this.name = eventData.getName();
+        this.startTimestamp = eventData.getStartTimestamp();
+        this.endTimestamp = eventData.getEndTimestamp();
+        this.location = eventData.getLocation();
+        this.description = eventData.getDescription().orElse(null);
         this.numberYesResponses = 0;
         this.numberNoResponses = 0;
         this.numberMaybeResponses = 0;

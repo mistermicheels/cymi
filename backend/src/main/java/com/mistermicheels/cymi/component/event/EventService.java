@@ -29,10 +29,10 @@ public class EventService {
         this.eventResponseRepository = eventResponseRepository;
     }
 
-    public Event createEvent(Long groupId, EventBasicData basicData, Long currentUserId) {
+    public Event createEvent(Long groupId, EventCreationDto eventData, Long currentUserId) {
         this.groupService.checkCurrentUserAdmin(groupId, currentUserId);
         Group group = this.groupService.getReference(groupId);
-        Event event = new Event(group, basicData);
+        Event event = new Event(group, eventData);
         this.repository.save(event);
         return event;
     }
