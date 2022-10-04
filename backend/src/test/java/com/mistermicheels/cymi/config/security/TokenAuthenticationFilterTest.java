@@ -12,7 +12,7 @@ import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,34 +23,25 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 public class TokenAuthenticationFilterTest {
 
-    @Mock
-    RequestMatcher requiresAuthenticationRequestMatcherMock;
-
-    @Mock
-    SecurityProperties securityPropertiesMock;
-
-    @Mock
-    AuthenticationManager authenticationManagerMock;
+    RequestMatcher requiresAuthenticationRequestMatcherMock = Mockito.mock(RequestMatcher.class);
+    SecurityProperties securityPropertiesMock = Mockito.mock(SecurityProperties.class);
+    AuthenticationManager authenticationManagerMock = Mockito.mock(AuthenticationManager.class);
 
     private final String sessionTokenCookieName = "sessionTokenCookieName";
     private final String csrfTokenHeaderName = "csrfTokenHeaderName";
 
     private final MockHttpServletResponse response = new MockHttpServletResponse();
 
-    private TokenAuthenticationFilter filter;
+    private TokenAuthenticationFilter filter = spy(new TokenAuthenticationFilter(
+            this.requiresAuthenticationRequestMatcherMock, this.securityPropertiesMock));
 
     @BeforeEach
     public void beforeEach() {
         when(this.securityPropertiesMock.getSessionTokenCookieName())
                 .thenReturn(this.sessionTokenCookieName);
-                
+
         when(this.securityPropertiesMock.getCsrfTokenHeaderName())
                 .thenReturn(this.csrfTokenHeaderName);
-
-        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(
-                this.requiresAuthenticationRequestMatcherMock, this.securityPropertiesMock);
-
-        this.filter = spy(filter);
 
         when(this.filter.getAuthenticationManager()).thenReturn(this.authenticationManagerMock);
     }

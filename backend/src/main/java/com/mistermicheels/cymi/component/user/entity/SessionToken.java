@@ -1,4 +1,4 @@
-package com.mistermicheels.cymi.component.user;
+package com.mistermicheels.cymi.component.user.entity;
 
 import java.time.ZonedDateTime;
 
@@ -12,7 +12,7 @@ import com.mistermicheels.cymi.common.FieldLengths;
 @Entity
 @Table(name = "user_session_token", indexes = {
         @Index(name = "user_session_token_expiration_timestamp_idx", columnList = "expirationTimestamp") })
-class SessionToken extends UserTokenBase {
+public class SessionToken extends UserTokenBase {
 
     @Column(nullable = false, length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String csrfToken;
@@ -21,7 +21,8 @@ class SessionToken extends UserTokenBase {
         super();
     }
 
-    SessionToken(String token, User user, ZonedDateTime expirationTimestamp, String csrfToken) {
+    public SessionToken(String token, User user, ZonedDateTime expirationTimestamp,
+            String csrfToken) {
         super(token, user, expirationTimestamp);
         this.csrfToken = csrfToken;
     }

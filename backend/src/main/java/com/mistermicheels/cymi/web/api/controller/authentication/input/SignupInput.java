@@ -2,6 +2,8 @@ package com.mistermicheels.cymi.web.api.controller.authentication.input;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.lang.Nullable;
+
 public class SignupInput {
 
     @NotNull
@@ -13,6 +15,7 @@ public class SignupInput {
     @NotNull
     public String defaultDisplayName;
 
+    @Nullable
     public String emailConfirmationToken;
 
 }

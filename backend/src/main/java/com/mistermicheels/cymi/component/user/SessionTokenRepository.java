@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mistermicheels.cymi.component.user.entity.SessionToken;
+
 interface SessionTokenRepository extends JpaRepository<SessionToken, String> {
 
     @Transactional

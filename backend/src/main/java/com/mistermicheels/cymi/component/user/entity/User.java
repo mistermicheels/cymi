@@ -1,4 +1,4 @@
-package com.mistermicheels.cymi.component.user;
+package com.mistermicheels.cymi.component.user.entity;
 
 import java.util.Optional;
 
@@ -34,10 +34,16 @@ public class User {
     @Column(nullable = true, length = FieldLengths.DEFAULT_STRING_LENGTH)
     private String defaultDisplayName;
 
+    public static User forTestWithId(Long id) {
+        User user = new User();
+        user.setIdForTest(id);
+        return user;
+    }
+
     User() {
     }
 
-    User(String email) {
+    public User(String email) {
         if (email.length() > FieldLengths.DEFAULT_STRING_LENGTH) {
             throw new InvalidRequestException("Email should not be longer than "
                     + FieldLengths.DEFAULT_STRING_LENGTH + " characters");
@@ -67,7 +73,7 @@ public class User {
         return this.id;
     }
 
-    void setIdForTest(Long id) {
+    public void setIdForTest(Long id) {
         this.id = id;
     }
 

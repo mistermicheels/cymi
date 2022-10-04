@@ -1,4 +1,4 @@
-package com.mistermicheels.cymi.component.event;
+package com.mistermicheels.cymi.component.event.entity;
 
 import java.util.Optional;
 
@@ -13,8 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import org.springframework.lang.Nullable;
+
 import com.mistermicheels.cymi.common.FieldLengths;
-import com.mistermicheels.cymi.component.user.User;
+import com.mistermicheels.cymi.component.event.EventResponseStatus;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 @Entity
 @Table(name = "event_response")
@@ -47,7 +50,8 @@ public class EventResponse {
         this(event, user, status, null);
     }
 
-    public EventResponse(Event event, User user, EventResponseStatus status, String comment) {
+    public EventResponse(Event event, User user, EventResponseStatus status,
+            @Nullable String comment) {
         this.eventResponseId = new EventResponseId(event.getId(), user.getId());
         this.event = event;
         this.user = user;

@@ -1,6 +1,6 @@
 package com.mistermicheels.cymi.web.api.output;
 
-import com.mistermicheels.cymi.component.group.Group;
+import com.mistermicheels.cymi.component.group.entity.Group;
 
 public abstract class ApiGroup {
 

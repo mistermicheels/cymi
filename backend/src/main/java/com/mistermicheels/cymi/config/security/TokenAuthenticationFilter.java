@@ -24,26 +24,27 @@ import com.mistermicheels.cymi.component.user.SessionDataIncoming;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private String sessionTokenCookieName;
-    private String csrfTokenHeaderName;
+    private SecurityProperties securityProperties;
 
     protected TokenAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher,
             SecurityProperties securityProperties) {
         super(requiresAuthenticationRequestMatcher);
-        this.sessionTokenCookieName = securityProperties.getSessionTokenCookieName();
-        this.csrfTokenHeaderName = securityProperties.getCsrfTokenHeaderName();
+        this.securityProperties = securityProperties;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
             HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-        String sessionToken = this.getCookieValue(request, this.sessionTokenCookieName);
+        String sessionToken = this.getCookieValue(request,
+                this.securityProperties.getSessionTokenCookieName());
 
         SessionDataIncoming sessionData;
 
         if (this.isStateChangingRequest(request)) {
-            String csrfToken = this.getHeaderValue(request, this.csrfTokenHeaderName);
+            String csrfToken = this.getHeaderValue(request,
+                    this.securityProperties.getCsrfTokenHeaderName());
+
             sessionData = SessionDataIncoming.forStateChangingRequest(sessionToken, csrfToken);
         } else {
             sessionData = SessionDataIncoming.forNonStateChangingRequest(sessionToken);

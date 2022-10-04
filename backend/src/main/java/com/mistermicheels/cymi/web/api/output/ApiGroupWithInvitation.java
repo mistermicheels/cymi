@@ -1,7 +1,7 @@
 package com.mistermicheels.cymi.web.api.output;
 
-import com.mistermicheels.cymi.component.group.GroupInvitation;
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
+import com.mistermicheels.cymi.component.group.entity.GroupInvitation;
 
 public class ApiGroupWithInvitation extends ApiGroup {
 

@@ -4,6 +4,8 @@ import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.lang.Nullable;
+
 public class CreateEventInput {
 
     @NotNull
@@ -21,6 +23,7 @@ public class CreateEventInput {
     @NotNull
     public String location;
 
+    @Nullable
     public String description;
 
 }

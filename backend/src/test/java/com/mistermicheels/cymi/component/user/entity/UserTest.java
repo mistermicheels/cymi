@@ -1,10 +1,11 @@
-package com.mistermicheels.cymi.component.user;
+package com.mistermicheels.cymi.component.user.entity;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 public class UserTest {
 

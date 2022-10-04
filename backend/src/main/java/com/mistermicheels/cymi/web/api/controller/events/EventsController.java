@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mistermicheels.cymi.component.event.Event;
 import com.mistermicheels.cymi.component.event.EventCreationDto;
-import com.mistermicheels.cymi.component.event.EventResponse;
 import com.mistermicheels.cymi.component.event.EventService;
-import com.mistermicheels.cymi.component.group.GroupMembership;
+import com.mistermicheels.cymi.component.event.entity.Event;
+import com.mistermicheels.cymi.component.event.entity.EventResponse;
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
 import com.mistermicheels.cymi.component.group.GroupService;
+import com.mistermicheels.cymi.component.group.entity.GroupMembership;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.events.input.CreateEventInput;
 import com.mistermicheels.cymi.web.api.controller.events.input.RespondInput;
@@ -47,15 +47,8 @@ public class EventsController {
     @PostMapping()
     public ApiSuccessResponse create(@Valid @RequestBody CreateEventInput input,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        EventCreationDto eventData;
-
-        if (input.description != null) {
-            eventData = new EventCreationDto(input.name, input.startTimestamp, input.endTimestamp,
-                    input.location, input.description);
-        } else {
-            eventData = new EventCreationDto(input.name, input.startTimestamp, input.endTimestamp,
-                    input.location);
-        }
+        EventCreationDto eventData = new EventCreationDto(input.name, input.startTimestamp,
+                input.endTimestamp, input.location, input.description);
 
         Event createdEvent = this.eventService.createEvent(input.groupId, eventData,
                 userDetails.getId());
@@ -66,14 +59,7 @@ public class EventsController {
     @PostMapping("/respond")
     public ApiSuccessResponse respond(@Valid @RequestBody RespondInput input,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long currentUserId = userDetails.getId();
-
-        if (input.comment != null) {
-            this.eventService.respond(input.eventId, currentUserId, input.status, input.comment);
-        } else {
-            this.eventService.respond(input.eventId, currentUserId, input.status);
-        }
-
+        this.eventService.respond(input.eventId, userDetails.getId(), input.status, input.comment);
         return new ApiSuccessResponse();
     }
 
@@ -146,8 +132,7 @@ public class EventsController {
         }
     }
 
-    private void includeUserRoleInGroup(List<ApiEventWithGroup> apiEvents,
-            Long currentUserId) {
+    private void includeUserRoleInGroup(List<ApiEventWithGroup> apiEvents, Long currentUserId) {
         List<Long> groupIds = apiEvents.stream().map(ApiEventWithGroup::getGroupId).distinct()
                 .collect(Collectors.toList());
 

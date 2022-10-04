@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mistermicheels.cymi.component.group.Group;
-import com.mistermicheels.cymi.component.group.GroupInvitation;
-import com.mistermicheels.cymi.component.group.GroupMembership;
 import com.mistermicheels.cymi.component.group.GroupService;
+import com.mistermicheels.cymi.component.group.entity.Group;
+import com.mistermicheels.cymi.component.group.entity.GroupInvitation;
+import com.mistermicheels.cymi.component.group.entity.GroupMembership;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.groups.input.AcceptInvitationInput;
 import com.mistermicheels.cymi.web.api.controller.groups.input.CreateGroupInput;

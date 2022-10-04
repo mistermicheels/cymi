@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
+import com.mistermicheels.cymi.component.user.entity.SessionToken;
+import com.mistermicheels.cymi.component.user.entity.User;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 
 @Service
@@ -16,8 +18,7 @@ class UserAuthenticationService {
     private final UserRepository repository;
     private final SessionTokenRepository sessionTokenRepository;
     private final PasswordService passwordService;
-
-    private final int sessionTokenValidityDays;
+    private final SecurityProperties securityProperties;
 
     @Autowired
     UserAuthenticationService(UserRepository repository,
@@ -26,7 +27,7 @@ class UserAuthenticationService {
         this.repository = repository;
         this.sessionTokenRepository = sessionTokenRepository;
         this.passwordService = passwordService;
-        this.sessionTokenValidityDays = securityProperties.getSessionTokenValidityDays();
+        this.securityProperties = securityProperties;
     }
 
     public SessionDataOutgoing getSessionDataForLogin(LoginData loginData) {
@@ -67,7 +68,7 @@ class UserAuthenticationService {
         String csrfToken = UUID.randomUUID().toString();
 
         ZonedDateTime expirationTimestamp = ZonedDateTime.now()
-                .plusDays(this.sessionTokenValidityDays);
+                .plusDays(this.securityProperties.getSessionTokenValidityDays());
 
         return new SessionToken(sessionToken, user, expirationTimestamp, csrfToken);
     }

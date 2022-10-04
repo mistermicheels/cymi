@@ -1,4 +1,4 @@
-package com.mistermicheels.cymi.component.group;
+package com.mistermicheels.cymi.component.group.entity;
 
 import java.util.Set;
 
@@ -30,7 +30,7 @@ public class Group {
     Group() {
     }
 
-    Group(String name) {
+    public Group(String name) {
         if (name.length() > FieldLengths.DEFAULT_STRING_LENGTH) {
             throw new InvalidRequestException("Name should not be longer than "
                     + FieldLengths.DEFAULT_STRING_LENGTH + " characters");

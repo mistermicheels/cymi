@@ -1,5 +1,7 @@
 package com.mistermicheels.cymi.component.user;
 
+import com.mistermicheels.cymi.component.user.entity.User;
+
 public class SessionDataOutgoing {
 
     private final String sessionToken;

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mistermicheels.cymi.component.group.entity.GroupMembership;
+import com.mistermicheels.cymi.component.group.entity.GroupUserLinkId;
+
 interface GroupMembershipRepository extends JpaRepository<GroupMembership, GroupUserLinkId> {
 
     List<GroupMembership> findByGroupUserLinkIdGroupId(Long groupId);

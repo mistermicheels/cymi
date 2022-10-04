@@ -14,31 +14,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
+import com.mistermicheels.cymi.component.user.entity.SessionToken;
+import com.mistermicheels.cymi.component.user.entity.User;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 
 @ExtendWith(SpringExtension.class)
 public class UserAuthenticationServiceTest {
 
-    @Captor
-    ArgumentCaptor<SessionToken> sessionTokenCaptor;
+    ArgumentCaptor<SessionToken> sessionTokenCaptor = ArgumentCaptor.forClass(SessionToken.class);
 
-    @Mock
-    UserRepository repositoryMock;
-
-    @Mock
-    SessionTokenRepository sessionTokenRepositoryMock;
-
-    @Mock
-    PasswordService passwordServiceMock;
-
-    @Mock
-    SecurityProperties securityPropertiesMock;
+    UserRepository repositoryMock = Mockito.mock(UserRepository.class);
+    SessionTokenRepository sessionTokenRepositoryMock = Mockito.mock(SessionTokenRepository.class);
+    PasswordService passwordServiceMock = Mockito.mock(PasswordService.class);
+    SecurityProperties securityPropertiesMock = Mockito.mock(SecurityProperties.class);
 
     private final int sessionTokenValidityDays = 7;
 
@@ -50,7 +43,8 @@ public class UserAuthenticationServiceTest {
     private final LoginData validLoginData = new LoginData(this.email, this.validPassword);
     private final LoginData invalidLoginData = new LoginData(this.email, this.invalidPassword);
 
-    private UserAuthenticationService service;
+    private UserAuthenticationService service = new UserAuthenticationService(this.repositoryMock,
+            this.sessionTokenRepositoryMock, this.passwordServiceMock, this.securityPropertiesMock);
 
     @BeforeEach
     public void beforeEach() {
@@ -62,10 +56,6 @@ public class UserAuthenticationServiceTest {
 
         when(this.securityPropertiesMock.getSessionTokenValidityDays())
                 .thenReturn(this.sessionTokenValidityDays);
-
-        this.service = new UserAuthenticationService(this.repositoryMock,
-                this.sessionTokenRepositoryMock, this.passwordServiceMock,
-                this.securityPropertiesMock);
     }
 
     @Test

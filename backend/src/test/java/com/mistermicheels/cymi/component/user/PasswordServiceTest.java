@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.mistermicheels.cymi.component.user.PasswordService;
+
 public class PasswordServiceTest {
 
     private final PasswordService passwordService = new PasswordService();

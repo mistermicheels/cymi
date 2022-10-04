@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,12 +43,8 @@ public class AuthenticationController {
     public ApiSuccessResponse signUp(@Valid @RequestBody SignupInput input) {
         LoginData loginData = new LoginData(input.email, input.password);
 
-        if (input.emailConfirmationToken != null) {
-            this.userService.signUpUser(loginData, input.defaultDisplayName,
-                    input.emailConfirmationToken);
-        } else {
-            this.userService.signUpUser(loginData, input.defaultDisplayName);
-        }
+        this.userService.signUpUser(loginData, input.defaultDisplayName,
+                input.emailConfirmationToken);
 
         return new ApiSuccessResponse();
     }
@@ -72,14 +69,14 @@ public class AuthenticationController {
         return new ApiUser(sessionData.getUser());
     }
 
-    private Cookie getSessionTokenCookie(String value) {
+    private Cookie getSessionTokenCookie(@Nullable String value) {
         Cookie sessionTokenCookie = new Cookie(this.sessionTokenCookieName, value);
         sessionTokenCookie.setPath("/");
         sessionTokenCookie.setHttpOnly(true);
         return sessionTokenCookie;
     }
 
-    private Cookie getCsrfTokenCookie(String value) {
+    private Cookie getCsrfTokenCookie(@Nullable String value) {
         Cookie csrfTokenCookie = new Cookie(this.csrfTokenCookieName, value);
         csrfTokenCookie.setPath("/");
         return csrfTokenCookie;

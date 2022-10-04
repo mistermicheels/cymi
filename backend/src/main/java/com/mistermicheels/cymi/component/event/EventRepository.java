@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mistermicheels.cymi.component.event.entity.Event;
+
 interface EventRepository extends JpaRepository<Event, Long> {
 
     // @formatter:off

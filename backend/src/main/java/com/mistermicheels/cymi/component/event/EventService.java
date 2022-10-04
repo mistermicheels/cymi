@@ -3,14 +3,17 @@ package com.mistermicheels.cymi.component.event;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
-import com.mistermicheels.cymi.component.group.Group;
+import com.mistermicheels.cymi.component.event.entity.Event;
+import com.mistermicheels.cymi.component.event.entity.EventResponse;
 import com.mistermicheels.cymi.component.group.GroupService;
-import com.mistermicheels.cymi.component.user.User;
+import com.mistermicheels.cymi.component.group.entity.Group;
 import com.mistermicheels.cymi.component.user.UserService;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 @Service
 public class EventService {
@@ -43,19 +46,13 @@ public class EventService {
 
     @Transactional
     public void respond(Long eventId, Long currentUserId, EventResponseStatus status,
-            String comment) {
+            @Nullable String comment) {
         Event event = this.repository.findById(eventId).orElseThrow(this::getInvalidIdException);
         this.groupService.checkCurrentUserMember(event.getGroupId(), currentUserId);
         event.addResponseToResponseCounts(status);
 
         User user = this.userService.getReference(currentUserId);
-        EventResponse response;
-
-        if (comment != null) {
-            response = new EventResponse(event, user, status, comment);
-        } else {
-            response = new EventResponse(event, user, status);
-        }
+        EventResponse response = new EventResponse(event, user, status, comment);
 
         this.repository.save(event);
         this.eventResponseRepository.save(response);

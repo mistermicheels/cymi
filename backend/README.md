@@ -31,11 +31,18 @@ After running the Gradle test task, we have:
 
 ### Dealing with null
 
--   Avoid passing null into a method
-    -   Exception when using null to be explicit about the absence of a value and the method is in the same class
-    -   Exception when using method overloading as a mechanism to implement optional parameters
--   Use Optional for methods potentially returning null
--   Code dealing with user input or library/framework classes should take care to check for null as needed
+-   Null checks are performed at compile time using Spring null-safety annotations
+    -   At package level, parameters, return values and fields are made non-nullable by default using `@org.springframework.lang.NonNullApi` and `@org.springframework.lang.NonNullFields`
+        -   Exception: packages containing only entities do not use `@org.springframework.lang.NonNullFields` because this does not work well with JPA conventions
+        -   Exception: the `com.mistermicheels.cymi.config.security` package does not use `@org.springframework.lang.NonNullApi` because this would make it impractical to implement the required method overrides
+        -   Exception: packages containing only user input definitions do not use `@org.springframework.lang.NonNullFields` because this does not work well for classes that don't define a constructor
+-   Avoid passing `null` or a null reference into methods
+    -   Exception: using overloading to implement optional parameters
+    -   Indicate nullable parameters with `@Nullable`
+-   Use `Optional` for methods potentially returning null
+    -   Exception: classes defining API responses or API errors use getters with `@Nullable` instead of returning `Optional` because using `Optional` would result in explicit `null` values in JSON responses
+-   When defining user input, check required properties at runtime using `@NotNull` and explicitly mark optional properties as `@Nullable`
+-   Code dealing with library/framework classes should take care to check for null as needed
 
 ### Package encapsulation for components
 

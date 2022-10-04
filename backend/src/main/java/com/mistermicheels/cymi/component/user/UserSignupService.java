@@ -5,11 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
+import com.mistermicheels.cymi.component.user.entity.EmailConfirmationToken;
+import com.mistermicheels.cymi.component.user.entity.User;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 import com.mistermicheels.cymi.io.email.EmailService;
 import com.mistermicheels.cymi.io.email.emailMessage.ConfirmEmailEmailMessage;
@@ -22,8 +25,7 @@ class UserSignupService {
     private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
     private final PasswordService passwordService;
     private final EmailService emailService;
-
-    private final int emailConfirmationTokenValidityDays;
+    private final SecurityProperties securityProperties;
 
     @Autowired
     UserSignupService(UserRepository repository,
@@ -34,9 +36,7 @@ class UserSignupService {
         this.emailConfirmationTokenRepository = emailConfirmationTokenRepository;
         this.passwordService = passwordService;
         this.emailService = emailService;
-
-        this.emailConfirmationTokenValidityDays = securityProperties
-                .getEmailConfirmationTokenValidityDays();
+        this.securityProperties = securityProperties;
     }
 
     public void signUpUser(LoginData loginData, String defaultDisplayName) {
@@ -45,7 +45,7 @@ class UserSignupService {
 
     @Transactional
     public void signUpUser(LoginData loginData, String defaultDisplayName,
-            String emailConfirmationToken) {
+            @Nullable String emailConfirmationToken) {
         String emailLowerCase = loginData.getEmailLowerCase();
 
         // (unlikely) race condition will be caught by unique index
@@ -58,7 +58,9 @@ class UserSignupService {
         String saltedPasswordHash = this.passwordService.getSaltedPasswordHash(password);
         user.signup(saltedPasswordHash, defaultDisplayName);
 
-        this.markEmailConfirmedIfTokenValid(user, emailConfirmationToken);
+        if (emailConfirmationToken != null) {
+            this.markEmailConfirmedIfTokenValid(user, emailConfirmationToken);
+        }
 
         if (user.isEmailConfirmed()) {
             this.repository.save(user);
@@ -85,13 +87,11 @@ class UserSignupService {
     }
 
     private void markEmailConfirmedIfTokenValid(User user, String emailConfirmationToken) {
-        if (emailConfirmationToken != null) {
-            Optional<EmailConfirmationToken> token = this.emailConfirmationTokenRepository
-                    .findById(emailConfirmationToken);
+        Optional<EmailConfirmationToken> token = this.emailConfirmationTokenRepository
+                .findById(emailConfirmationToken);
 
-            if (token.isPresent() && token.get().isValidForUserId(user.getId())) {
-                user.confirmEmail();
-            }
+        if (token.isPresent() && token.get().isValidForUserId(user.getId())) {
+            user.confirmEmail();
         }
     }
 
@@ -99,7 +99,7 @@ class UserSignupService {
         String token = UUID.randomUUID().toString();
 
         ZonedDateTime expirationTimestamp = ZonedDateTime.now()
-                .plusDays(this.emailConfirmationTokenValidityDays);
+                .plusDays(this.securityProperties.getEmailConfirmationTokenValidityDays());
 
         return new EmailConfirmationToken(token, user, expirationTimestamp);
     }

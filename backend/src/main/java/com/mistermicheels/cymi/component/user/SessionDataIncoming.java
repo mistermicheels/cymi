@@ -2,12 +2,18 @@ package com.mistermicheels.cymi.component.user;
 
 import java.util.Objects;
 
+import org.springframework.lang.Nullable;
+
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.component.user.entity.SessionToken;
 
 public class SessionDataIncoming {
 
     private final String sessionToken;
+
+    @Nullable
     private final String csrfToken;
+
     private final boolean isStateChangingRequest;
 
     public static SessionDataIncoming forStateChangingRequest(String sessionToken,
@@ -19,7 +25,7 @@ public class SessionDataIncoming {
         return new SessionDataIncoming(sessionToken, null, false);
     }
 
-    private SessionDataIncoming(String sessionToken, String csrfToken,
+    private SessionDataIncoming(String sessionToken, @Nullable String csrfToken,
             boolean isStateChangingRequest) {
         this.sessionToken = sessionToken;
         this.csrfToken = csrfToken;

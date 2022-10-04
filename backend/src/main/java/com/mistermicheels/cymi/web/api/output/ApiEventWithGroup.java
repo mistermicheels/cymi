@@ -1,6 +1,8 @@
 package com.mistermicheels.cymi.web.api.output;
 
-import com.mistermicheels.cymi.component.event.Event;
+import org.springframework.lang.Nullable;
+
+import com.mistermicheels.cymi.component.event.entity.Event;
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
 
 public class ApiEventWithGroup extends ApiEvent {
@@ -8,6 +10,7 @@ public class ApiEventWithGroup extends ApiEvent {
     private final Long groupId;
     private final String groupName;
 
+    @Nullable
     private GroupMembershipRole userRoleInGroup;
 
     public ApiEventWithGroup(Event event) {
@@ -28,7 +31,7 @@ public class ApiEventWithGroup extends ApiEvent {
         return this.groupName;
     }
 
-    public GroupMembershipRole getUserRoleInGroup() {
+    public @Nullable GroupMembershipRole getUserRoleInGroup() {
         return this.userRoleInGroup;
     }
 

@@ -3,12 +3,16 @@ package com.mistermicheels.cymi.component.event;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import org.springframework.lang.Nullable;
+
 public class EventCreationDto {
 
     private final String name;
     private final ZonedDateTime startTimestamp;
     private final ZonedDateTime endTimestamp;
     private final String location;
+
+    @Nullable
     private final String description;
 
     public EventCreationDto(String name, ZonedDateTime startTimestamp, ZonedDateTime endTimestamp,
@@ -17,7 +21,7 @@ public class EventCreationDto {
     }
 
     public EventCreationDto(String name, ZonedDateTime startTimestamp, ZonedDateTime endTimestamp,
-            String location, String description) {
+            String location, @Nullable String description) {
         this.name = name;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;

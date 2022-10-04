@@ -4,15 +4,21 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
 public class ApiError {
 
     private final HttpStatus status;
     private final String message;
+
+    @Nullable
     private final String type;
+
+    @Nullable
     private final String stackTrace;
 
-    public ApiError(HttpStatus status, String message, String type, Throwable stackTraceSource) {
+    public ApiError(HttpStatus status, String message, @Nullable String type,
+            @Nullable Throwable stackTraceSource) {
         this.status = status;
         this.message = message;
         this.type = type;
@@ -51,11 +57,11 @@ public class ApiError {
         return this.message;
     }
 
-    public String getType() {
+    public @Nullable String getType() {
         return this.type;
     }
 
-    public String getStackTrace() {
+    public @Nullable String getStackTrace() {
         return this.stackTrace;
     }
 }

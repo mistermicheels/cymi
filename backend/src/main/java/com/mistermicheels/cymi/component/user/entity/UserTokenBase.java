@@ -1,4 +1,4 @@
-package com.mistermicheels.cymi.component.user;
+package com.mistermicheels.cymi.component.user.entity;
 
 import java.time.ZonedDateTime;
 

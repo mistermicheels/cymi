@@ -1,15 +1,19 @@
 package com.mistermicheels.cymi.web.api.output;
 
+import org.springframework.lang.Nullable;
+
 public class ApiSuccessResponse {
 
     private final boolean success = true;
+
+    @Nullable
     private final Long id;
 
     public ApiSuccessResponse() {
         this(null);
     }
 
-    public ApiSuccessResponse(Long id) {
+    public ApiSuccessResponse(@Nullable Long id) {
         this.id = id;
     }
 
@@ -17,7 +21,7 @@ public class ApiSuccessResponse {
         return this.success;
     }
 
-    public Long getId() {
+    public @Nullable Long getId() {
         return this.id;
     }
 

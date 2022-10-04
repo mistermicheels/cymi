@@ -1,6 +1,6 @@
 package com.mistermicheels.cymi.web.api.output;
 
-import com.mistermicheels.cymi.component.user.User;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 public class ApiUser {
 

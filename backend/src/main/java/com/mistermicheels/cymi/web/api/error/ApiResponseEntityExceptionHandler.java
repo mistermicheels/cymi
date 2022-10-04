@@ -108,10 +108,14 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status,
             WebRequest request) {
+        String message = INVALID_INPUT_STRUCTURE_MESSAGE;
+
         FieldError firstError = exception.getBindingResult().getFieldError();
 
-        String message = INVALID_INPUT_STRUCTURE_MESSAGE + ": property " + firstError.getField()
-                + " " + firstError.getDefaultMessage();
+        if (firstError != null) {
+            message = message + ": property " + firstError.getField() + " "
+                    + firstError.getDefaultMessage();
+        }
 
         ApiError apiError = this.apiErrorFactoryService.createApiError(status, message, exception);
 

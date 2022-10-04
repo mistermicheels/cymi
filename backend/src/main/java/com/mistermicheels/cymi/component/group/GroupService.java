@@ -9,8 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mistermicheels.cymi.common.error.ForbiddenAccessException;
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
-import com.mistermicheels.cymi.component.user.User;
+import com.mistermicheels.cymi.component.group.entity.Group;
+import com.mistermicheels.cymi.component.group.entity.GroupInvitation;
+import com.mistermicheels.cymi.component.group.entity.GroupMembership;
+import com.mistermicheels.cymi.component.group.entity.GroupUserLinkId;
 import com.mistermicheels.cymi.component.user.UserService;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 @Service
 public class GroupService {

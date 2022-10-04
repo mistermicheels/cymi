@@ -17,12 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.common.error.InvalidRequestExceptionType;
+import com.mistermicheels.cymi.component.user.entity.EmailConfirmationToken;
+import com.mistermicheels.cymi.component.user.entity.User;
 import com.mistermicheels.cymi.config.security.SecurityProperties;
 import com.mistermicheels.cymi.io.email.EmailService;
 import com.mistermicheels.cymi.io.email.emailMessage.ConfirmEmailEmailMessage;
@@ -30,26 +31,20 @@ import com.mistermicheels.cymi.io.email.emailMessage.ConfirmEmailEmailMessage;
 @ExtendWith(SpringExtension.class)
 public class UserSignupServiceTest {
 
-    @Captor
-    ArgumentCaptor<EmailConfirmationToken> confirmationTokenCaptor;
+    ArgumentCaptor<EmailConfirmationToken> confirmationTokenCaptor = ArgumentCaptor
+            .forClass(EmailConfirmationToken.class);
 
-    @Captor
-    ArgumentCaptor<ConfirmEmailEmailMessage> confirmationMessageCaptor;
+    ArgumentCaptor<ConfirmEmailEmailMessage> confirmationMessageCaptor = ArgumentCaptor
+            .forClass(ConfirmEmailEmailMessage.class);
 
-    @Mock
-    UserRepository repositoryMock;
+    UserRepository repositoryMock = Mockito.mock(UserRepository.class);
 
-    @Mock
-    EmailConfirmationTokenRepository emailConfirmationTokenRepositoryMock;
+    EmailConfirmationTokenRepository emailConfirmationTokenRepositoryMock = Mockito
+            .mock(EmailConfirmationTokenRepository.class);
 
-    @Mock
-    PasswordService passwordServiceMock;
-
-    @Mock
-    EmailService emailServiceMock;
-
-    @Mock
-    SecurityProperties securityPropertiesMock;
+    PasswordService passwordServiceMock = Mockito.mock(PasswordService.class);
+    EmailService emailServiceMock = Mockito.mock(EmailService.class);
+    SecurityProperties securityPropertiesMock = Mockito.mock(SecurityProperties.class);
 
     private final int emailConfirmationTokenValidityDays = 7;
 
@@ -60,11 +55,13 @@ public class UserSignupServiceTest {
     private final String emailConfirmationToken = "emailConfirmationToken";
 
     private final Long userId = 1L;
-    private User userForConfirmationToken;
-    private User invitedWithEmail;
-    private User signedUpWithEmail;
+    private final User userForConfirmationToken = User.forTestWithId(this.userId);
+    private final User invitedWithEmail = new User(this.email);
+    private final User signedUpWithEmail = new User(this.email);
 
-    private UserSignupService service;
+    private UserSignupService service = new UserSignupService(this.repositoryMock,
+            this.emailConfirmationTokenRepositoryMock, this.passwordServiceMock,
+            this.emailServiceMock, this.securityPropertiesMock);
 
     @BeforeEach
     public void beforeEach() {
@@ -77,19 +74,10 @@ public class UserSignupServiceTest {
         when(this.securityPropertiesMock.getEmailConfirmationTokenValidityDays())
                 .thenReturn(this.emailConfirmationTokenValidityDays);
 
-        this.userForConfirmationToken = new User();
-        this.userForConfirmationToken.setIdForTest(this.userId);
-
-        this.invitedWithEmail = new User(this.email);
         this.invitedWithEmail.setIdForTest(this.userId);
 
-        this.signedUpWithEmail = new User(this.email);
         this.signedUpWithEmail.setIdForTest(this.userId);
         this.signedUpWithEmail.signup("saltedPasswordHash", this.defaultDisplayName);
-
-        this.service = new UserSignupService(this.repositoryMock,
-                this.emailConfirmationTokenRepositoryMock, this.passwordServiceMock,
-                this.emailServiceMock, this.securityPropertiesMock);
     }
 
     @Test

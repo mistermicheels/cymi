@@ -1,4 +1,4 @@
-package com.mistermicheels.cymi.component.event;
+package com.mistermicheels.cymi.component.event.entity;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -17,7 +17,9 @@ import javax.persistence.Table;
 
 import com.mistermicheels.cymi.common.FieldLengths;
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
-import com.mistermicheels.cymi.component.group.Group;
+import com.mistermicheels.cymi.component.event.EventCreationDto;
+import com.mistermicheels.cymi.component.event.EventResponseStatus;
+import com.mistermicheels.cymi.component.group.entity.Group;
 
 @Entity
 @Table(name = "event_definition")
@@ -63,7 +65,7 @@ public class Event {
     Event() {
     }
 
-    Event(Group group, EventCreationDto eventData) {
+    public Event(Group group, EventCreationDto eventData) {
         if (!eventData.getEndTimestamp().isAfter(eventData.getStartTimestamp())) {
             throw new InvalidRequestException("End of event must be after start of event");
         }

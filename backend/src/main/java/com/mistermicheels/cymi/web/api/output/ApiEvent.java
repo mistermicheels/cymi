@@ -2,9 +2,11 @@ package com.mistermicheels.cymi.web.api.output;
 
 import java.time.ZonedDateTime;
 
-import com.mistermicheels.cymi.component.event.Event;
-import com.mistermicheels.cymi.component.event.EventResponse;
+import org.springframework.lang.Nullable;
+
 import com.mistermicheels.cymi.component.event.EventResponseStatus;
+import com.mistermicheels.cymi.component.event.entity.Event;
+import com.mistermicheels.cymi.component.event.entity.EventResponse;
 
 public class ApiEvent {
 
@@ -18,7 +20,10 @@ public class ApiEvent {
     private final Integer numberNoResponses;
     private final Integer numberMaybeResponses;
 
+    @Nullable
     private EventResponseStatus ownStatus;
+
+    @Nullable
     private String ownComment;
 
     public ApiEvent(Event event) {
@@ -86,11 +91,11 @@ public class ApiEvent {
         }
     }
 
-    public EventResponseStatus getOwnStatus() {
+    public @Nullable EventResponseStatus getOwnStatus() {
         return this.ownStatus;
     }
 
-    public String getOwnComment() {
+    public @Nullable String getOwnComment() {
         return this.ownComment;
     }
 

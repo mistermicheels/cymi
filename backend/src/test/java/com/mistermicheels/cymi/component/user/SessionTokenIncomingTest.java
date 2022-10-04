@@ -5,14 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.component.user.entity.SessionToken;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 public class SessionTokenIncomingTest {
 
-    @Mock
-    User userMock;
+    User userMock = Mockito.mock(User.class);
 
     private final String validSessionToken = "validSessionToken";
     private final String invalidSessionToken = "invalidSessionToken";

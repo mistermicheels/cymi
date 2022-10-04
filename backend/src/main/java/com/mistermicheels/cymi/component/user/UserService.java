@@ -1,9 +1,11 @@
 package com.mistermicheels.cymi.component.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.component.user.entity.User;
 
 @Service
 public class UserService {
@@ -25,7 +27,7 @@ public class UserService {
     }
 
     public void signUpUser(LoginData loginData, String defaultDisplayName,
-            String emailConfirmationToken) {
+            @Nullable String emailConfirmationToken) {
         this.userSignupService.signUpUser(loginData, defaultDisplayName, emailConfirmationToken);
     }
 

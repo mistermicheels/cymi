@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mistermicheels.cymi.component.user.User;
 import com.mistermicheels.cymi.component.user.UserService;
+import com.mistermicheels.cymi.component.user.entity.User;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.output.ApiUser;
 

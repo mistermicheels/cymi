@@ -1,30 +1,32 @@
-package com.mistermicheels.cymi.component.group;
+package com.mistermicheels.cymi.component.event.entity;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.springframework.lang.Nullable;
+
 @SuppressWarnings("serial")
 @Embeddable
-class GroupUserLinkId implements Serializable {
+public class EventResponseId implements Serializable {
 
-    @Column(name = "group_id")
-    private Long groupId;
+    @Column(name = "event_id")
+    private Long eventId;
 
     @Column(name = "user_id")
     private Long userId;
 
-    GroupUserLinkId() {
+    EventResponseId() {
     }
 
-    GroupUserLinkId(Long groupId, Long userId) {
-        this.groupId = groupId;
+    EventResponseId(Long eventId, Long userId) {
+        this.eventId = eventId;
         this.userId = userId;
     }
 
-    Long getGroupId() {
-        return this.groupId;
+    Long getEventId() {
+        return this.eventId;
     }
 
     Long getUserId() {
@@ -34,18 +36,18 @@ class GroupUserLinkId implements Serializable {
     // auto-generated equals and hashCode
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
         if (this.getClass() != obj.getClass())
             return false;
-        GroupUserLinkId other = (GroupUserLinkId) obj;
-        if (this.groupId == null) {
-            if (other.groupId != null)
+        EventResponseId other = (EventResponseId) obj;
+        if (this.eventId == null) {
+            if (other.eventId != null)
                 return false;
-        } else if (!this.groupId.equals(other.groupId))
+        } else if (!this.eventId.equals(other.eventId))
             return false;
         if (this.userId == null) {
             if (other.userId != null)
@@ -59,7 +61,7 @@ class GroupUserLinkId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.groupId == null) ? 0 : this.groupId.hashCode());
+        result = prime * result + ((this.eventId == null) ? 0 : this.eventId.hashCode());
         result = prime * result + ((this.userId == null) ? 0 : this.userId.hashCode());
         return result;
     }

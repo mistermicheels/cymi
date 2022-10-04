@@ -1,4 +1,6 @@
-package com.mistermicheels.cymi.component.group;
+package com.mistermicheels.cymi.component.group.entity;
+
+import com.mistermicheels.cymi.component.group.GroupMembershipRole;
 
 interface GroupUserLink {
 
