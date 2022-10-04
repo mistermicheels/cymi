@@ -13,7 +13,13 @@ import com.mistermicheels.cymi.component.group.entity.Group;
 import com.mistermicheels.cymi.component.group.entity.GroupInvitation;
 import com.mistermicheels.cymi.component.group.entity.GroupMembership;
 import com.mistermicheels.cymi.component.group.entity.GroupUserLinkId;
+import com.mistermicheels.cymi.component.group.entity.IGroup;
+import com.mistermicheels.cymi.component.group.entity.IGroupInvitationWithGroup;
+import com.mistermicheels.cymi.component.group.entity.IGroupInvitationWithUser;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembership;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembershipWithGroup;
 import com.mistermicheels.cymi.component.user.UserService;
+import com.mistermicheels.cymi.component.user.entity.IUser;
 import com.mistermicheels.cymi.component.user.entity.User;
 
 @Service
@@ -36,7 +42,7 @@ public class GroupService {
     }
 
     @Transactional
-    public Group createGroup(String name, Long currentUserId, String currentUserDisplayName) {
+    public IGroup createGroup(String name, Long currentUserId, String currentUserDisplayName) {
         Group group = new Group(name);
         User currentUser = this.userService.getReference(currentUserId);
 
@@ -62,13 +68,13 @@ public class GroupService {
         }
 
         String groupName = membership.getGroup().getName();
-        User userToInvite = this.userService.findByEmailOrInviteNew(userEmail, groupName);
+        IUser userToInvite = this.userService.findByEmailOrInviteNew(userEmail, groupName);
 
         this.checkUserCanBeInvitedToGroup(groupId, userToInvite.getId());
 
         Group groupReference = this.repository.getOne(groupId);
-
-        GroupInvitation invitation = new GroupInvitation(groupReference, userToInvite, role);
+        User userReference = this.userService.getReference(userToInvite.getId());
+        GroupInvitation invitation = new GroupInvitation(groupReference, userReference, role);
         this.invitationRepository.save(invitation);
     }
 
@@ -115,7 +121,7 @@ public class GroupService {
         this.invitationRepository.delete(invitation);
     }
 
-    public GroupMembership findMembershipWithGroupForGroupAndUserOrThrow(Long id,
+    public IGroupMembershipWithGroup findMembershipWithGroupForGroupAndUserOrThrow(Long id,
             Long currentUserId) {
         GroupMembership membership = this.membershipRepository
                 .findWithGroupByGroupIdAndUserId(id, currentUserId).orElseThrow(
@@ -124,7 +130,7 @@ public class GroupService {
         return membership;
     }
 
-    public GroupInvitation findInvitationWithGroupForGroupAndUserOrThrow(Long id,
+    public IGroupInvitationWithGroup findInvitationWithGroupForGroupAndUserOrThrow(Long id,
             Long currentUserId) {
         GroupInvitation invitation = this.invitationRepository
                 .findWithGroupByGroupIdAndUserId(id, currentUserId).orElseThrow(
@@ -133,21 +139,22 @@ public class GroupService {
         return invitation;
     }
 
-    public List<GroupMembership> findMembershipsWithGroupsForUser(Long userId) {
+    public List<? extends IGroupMembershipWithGroup> findMembershipsWithGroupsForUser(Long userId) {
         return this.membershipRepository.findWithGroupsByUserId(userId);
     }
 
-    public List<GroupMembership> findMembershipsOfUserInGroups(List<Long> groupIds,
+    public List<? extends IGroupMembership> findMembershipsOfUserInGroups(List<Long> groupIds,
             Long userId) {
         return this.membershipRepository
                 .findByGroupUserLinkIdUserIdAndGroupUserLinkIdGroupIdIn(userId, groupIds);
     }
 
-    public List<GroupInvitation> findInvitationsWithGroupsForUser(Long userId) {
+    public List<? extends IGroupInvitationWithGroup> findInvitationsWithGroupsForUser(Long userId) {
         return this.invitationRepository.findWithGroupsByUserId(userId);
     }
 
-    public List<GroupMembership> findMembershipsForGroup(Long groupId, Long currentUserId) {
+    public List<? extends IGroupMembership> findMembershipsForGroup(Long groupId,
+            Long currentUserId) {
         List<GroupMembership> memberships = this.membershipRepository
                 .findByGroupUserLinkIdGroupId(groupId);
 
@@ -161,7 +168,7 @@ public class GroupService {
         return memberships;
     }
 
-    public List<GroupInvitation> findInvitationsWithUserForGroup(Long groupId,
+    public List<? extends IGroupInvitationWithUser> findInvitationsWithUserForGroup(Long groupId,
             Long currentUserId) {
         this.checkCurrentUserAdmin(groupId, currentUserId);
         return this.invitationRepository.findWithUserByGroupUserLinkIdGroupId(groupId);

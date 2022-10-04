@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mistermicheels.cymi.component.group.GroupService;
-import com.mistermicheels.cymi.component.group.entity.Group;
-import com.mistermicheels.cymi.component.group.entity.GroupInvitation;
-import com.mistermicheels.cymi.component.group.entity.GroupMembership;
+import com.mistermicheels.cymi.component.group.entity.IGroup;
+import com.mistermicheels.cymi.component.group.entity.IGroupInvitationWithGroup;
+import com.mistermicheels.cymi.component.group.entity.IGroupInvitationWithUser;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembership;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembershipWithGroup;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.groups.input.AcceptInvitationInput;
 import com.mistermicheels.cymi.web.api.controller.groups.input.CreateGroupInput;
@@ -42,7 +44,7 @@ public class GroupsController {
     @PostMapping()
     public ApiSuccessResponse create(@Valid @RequestBody CreateGroupInput input,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Group createdGroup = this.groupService.createGroup(input.name, userDetails.getId(),
+        IGroup createdGroup = this.groupService.createGroup(input.name, userDetails.getId(),
                 input.userDisplayName);
 
         return new ApiSuccessResponse(createdGroup.getId());
@@ -67,7 +69,7 @@ public class GroupsController {
     @GetMapping("/joined")
     public List<ApiGroupWithMembership> getJoined(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<GroupMembership> memberships = this.groupService
+        List<? extends IGroupMembershipWithGroup> memberships = this.groupService
                 .findMembershipsWithGroupsForUser(userDetails.getId());
 
         return memberships.stream().map(membership -> new ApiGroupWithMembership(membership))
@@ -77,7 +79,7 @@ public class GroupsController {
     @GetMapping("/invited")
     public List<ApiGroupWithInvitation> getInvitedGroups(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<GroupInvitation> invitations = this.groupService
+        List<? extends IGroupInvitationWithGroup> invitations = this.groupService
                 .findInvitationsWithGroupsForUser(userDetails.getId());
 
         return invitations.stream().map(invitation -> new ApiGroupWithInvitation(invitation))
@@ -87,7 +89,7 @@ public class GroupsController {
     @GetMapping("/joined/id/{id}")
     public ApiGroupWithMembership getJoinedById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        GroupMembership membership = this.groupService
+        IGroupMembershipWithGroup membership = this.groupService
                 .findMembershipWithGroupForGroupAndUserOrThrow(id, userDetails.getId());
 
         return new ApiGroupWithMembership(membership);
@@ -96,7 +98,7 @@ public class GroupsController {
     @GetMapping("/invited/id/{id}")
     public ApiGroupWithInvitation getInvitedById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        GroupInvitation invitation = this.groupService
+        IGroupInvitationWithGroup invitation = this.groupService
                 .findInvitationWithGroupForGroupAndUserOrThrow(id, userDetails.getId());
 
         return new ApiGroupWithInvitation(invitation);
@@ -105,7 +107,7 @@ public class GroupsController {
     @GetMapping("/id/{id}/members")
     public List<ApiGroupMembership> getMembersById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<GroupMembership> memberships = this.groupService.findMembershipsForGroup(id,
+        List<? extends IGroupMembership> memberships = this.groupService.findMembershipsForGroup(id,
                 userDetails.getId());
 
         return memberships.stream()
@@ -116,8 +118,8 @@ public class GroupsController {
     @GetMapping("/id/{id}/invitations")
     public List<ApiGroupInvitation> getInvitationsById(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<GroupInvitation> invitations = this.groupService.findInvitationsWithUserForGroup(id,
-                userDetails.getId());
+        List<? extends IGroupInvitationWithUser> invitations = this.groupService
+                .findInvitationsWithUserForGroup(id, userDetails.getId());
 
         return invitations.stream().map(invitation -> new ApiGroupInvitation(invitation))
                 .collect(Collectors.toList());

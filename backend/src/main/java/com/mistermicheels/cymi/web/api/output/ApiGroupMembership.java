@@ -1,7 +1,7 @@
 package com.mistermicheels.cymi.web.api.output;
 
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
-import com.mistermicheels.cymi.component.group.entity.GroupMembership;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembership;
 
 public class ApiGroupMembership {
 
@@ -10,7 +10,7 @@ public class ApiGroupMembership {
     private final String displayName;
     private final boolean isCurrentUser;
 
-    public ApiGroupMembership(GroupMembership membership, Long currentUserId) {
+    public ApiGroupMembership(IGroupMembership membership, Long currentUserId) {
         this.groupId = membership.getGroupId();
         this.role = membership.getRole();
         this.displayName = membership.getDisplayName();

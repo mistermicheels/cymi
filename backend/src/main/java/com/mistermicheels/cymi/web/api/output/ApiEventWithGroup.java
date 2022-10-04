@@ -2,7 +2,7 @@ package com.mistermicheels.cymi.web.api.output;
 
 import org.springframework.lang.Nullable;
 
-import com.mistermicheels.cymi.component.event.entity.Event;
+import com.mistermicheels.cymi.component.event.entity.IEventWithGroup;
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
 
 public class ApiEventWithGroup extends ApiEvent {
@@ -13,7 +13,7 @@ public class ApiEventWithGroup extends ApiEvent {
     @Nullable
     private GroupMembershipRole userRoleInGroup;
 
-    public ApiEventWithGroup(Event event) {
+    public ApiEventWithGroup(IEventWithGroup event) {
         super(event);
         this.groupId = event.getGroupId();
         this.groupName = event.getGroupName();

@@ -17,7 +17,7 @@ import com.mistermicheels.cymi.component.user.entity.User;
 
 @Entity
 @Table(name = "group_membership")
-public class GroupMembership implements GroupUserLink {
+public class GroupMembership implements GroupUserLink, IGroupMembership, IGroupMembershipWithGroup {
 
     @EmbeddedId
     private GroupUserLinkId groupUserLinkId;
@@ -70,6 +70,7 @@ public class GroupMembership implements GroupUserLink {
         return this.role;
     }
 
+    @Override
     public String getDisplayName() {
         return this.displayName;
     }

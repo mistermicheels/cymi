@@ -15,7 +15,7 @@ import com.mistermicheels.cymi.common.error.InvalidRequestException;
 
 @Entity
 @Table(name = "group_definition")
-public class Group {
+public class Group implements IGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +39,12 @@ public class Group {
         this.name = name;
     }
 
+    @Override
     public Long getId() {
         return this.id;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }

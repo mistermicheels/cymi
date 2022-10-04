@@ -21,7 +21,7 @@ import com.mistermicheels.cymi.component.user.entity.User;
 
 @Entity
 @Table(name = "event_response")
-public class EventResponse {
+public class EventResponse implements IEventResponse {
 
     @EmbeddedId
     private EventResponseId eventResponseId;
@@ -59,18 +59,22 @@ public class EventResponse {
         this.comment = comment;
     }
 
+    @Override
     public Long getEventId() {
         return this.eventResponseId.getEventId();
     }
 
+    @Override
     public Long getUserId() {
         return this.eventResponseId.getUserId();
     }
 
+    @Override
     public EventResponseStatus getStatus() {
         return this.status;
     }
 
+    @Override
     public Optional<String> getComment() {
         return Optional.ofNullable(this.comment);
     }

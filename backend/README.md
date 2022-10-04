@@ -44,6 +44,17 @@ After running the Gradle test task, we have:
 -   When defining user input, check required properties at runtime using `@NotNull` and explicitly mark optional properties as `@Nullable`
 -   Code dealing with library/framework classes should take care to check for null as needed
 
+### Returning entities from components
+
+For each entity, we define one or more interfaces that describe the shape of retrieved data and the methods that code outside of the entity's component should be able to call on the entity.
+When public component services are returning entities, they should use these interfaces in the return type rather than using the entity class itself.
+
+Benefits:
+
+-   Helps prevent the JPA "N+1 query" problem by making it harder to accidentally access fields that haven't been retrieved
+    -   Code inside the component still needs to be careful about this, but code outside of the component can simply rely on the compiler when using retrieved entities
+-   Helps prevent unintended changes or leakage of sensitive data by restricting the entity methods that can be used outside of the entity's component
+
 ### Package encapsulation for components
 
 -   Don't make classes in components public unless we need to

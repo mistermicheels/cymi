@@ -23,7 +23,7 @@ import com.mistermicheels.cymi.component.group.entity.Group;
 
 @Entity
 @Table(name = "event_definition")
-public class Event {
+public class Event implements IEvent, IEventWithGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -91,46 +91,59 @@ public class Event {
         }
     }
 
+    @Override
     public Long getId() {
         return this.id;
     }
 
+    @Override
     public Long getGroupId() {
+        // this will work without retrieving the entire group
+        // accessing other fields would cause the group to be fetched
         return this.group.getId();
     }
 
+    @Override
     public String getGroupName() {
         return this.group.getName();
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public ZonedDateTime getStartTimestamp() {
         return this.startTimestamp;
     }
 
+    @Override
     public ZonedDateTime getEndTimestamp() {
         return this.endTimestamp;
     }
 
+    @Override
     public String getLocation() {
         return this.location;
     }
 
+    @Override
     public Optional<String> getDescription() {
         return Optional.ofNullable(this.description);
     }
 
+    @Override
     public Integer getNumberYesResponses() {
         return this.numberYesResponses;
     }
 
+    @Override
     public Integer getNumberNoResponses() {
         return this.numberNoResponses;
     }
 
+    @Override
     public Integer getNumberMaybeResponses() {
         return this.numberMaybeResponses;
     }

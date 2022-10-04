@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
 import com.mistermicheels.cymi.component.event.entity.Event;
 import com.mistermicheels.cymi.component.event.entity.EventResponse;
+import com.mistermicheels.cymi.component.event.entity.IEvent;
+import com.mistermicheels.cymi.component.event.entity.IEventResponse;
+import com.mistermicheels.cymi.component.event.entity.IEventWithGroup;
 import com.mistermicheels.cymi.component.group.GroupService;
 import com.mistermicheels.cymi.component.group.entity.Group;
 import com.mistermicheels.cymi.component.user.UserService;
@@ -32,7 +35,7 @@ public class EventService {
         this.eventResponseRepository = eventResponseRepository;
     }
 
-    public Event createEvent(Long groupId, EventCreationDto eventData, Long currentUserId) {
+    public IEvent createEvent(Long groupId, EventCreationDto eventData, Long currentUserId) {
         this.groupService.checkCurrentUserAdmin(groupId, currentUserId);
         Group group = this.groupService.getReference(groupId);
         Event event = new Event(group, eventData);
@@ -62,13 +65,13 @@ public class EventService {
         return new InvalidRequestException("Invalid event ID");
     }
 
-    public Event findByIdOrThrow(Long id, Long currentUserId) {
+    public IEvent findByIdOrThrow(Long id, Long currentUserId) {
         Event event = this.repository.findById(id).orElseThrow(this::getInvalidIdException);
         this.groupService.checkCurrentUserMember(event.getGroupId(), currentUserId);
         return event;
     }
 
-    public Event findWithGroupByIdOrThrow(Long id, Long currentUserId) {
+    public IEventWithGroup findWithGroupByIdOrThrow(Long id, Long currentUserId) {
         Event event = this.repository.findWithGroupById(id)
                 .orElseThrow(this::getInvalidIdException);
 
@@ -76,21 +79,22 @@ public class EventService {
         return event;
     }
 
-    public List<Event> findUpcomingForGroup(Long groupId, Long currentUserId) {
+    public List<? extends IEvent> findUpcomingForGroup(Long groupId, Long currentUserId) {
         this.groupService.checkCurrentUserMember(groupId, currentUserId);
         return this.repository.findUpcomingByGroupId(groupId);
     }
 
-    public List<Event> findUpcomingWithGroupForUser(Long userId) {
+    public List<? extends IEventWithGroup> findUpcomingWithGroupForUser(Long userId) {
         return this.repository.findUpcomingWithGroupByUserId(userId);
     }
 
-    public List<EventResponse> findOwnResponsesForEvents(List<Long> eventIds, Long currentUserId) {
+    public List<? extends IEventResponse> findOwnResponsesForEvents(List<Long> eventIds,
+            Long currentUserId) {
         return this.eventResponseRepository
                 .findByEventResponseIdUserIdAndEventResponseIdEventIdIn(currentUserId, eventIds);
     }
 
-    public List<EventResponse> findResponsesForEvent(Long eventId, Long currentUserId) {
+    public List<? extends IEventResponse> findResponsesForEvent(Long eventId, Long currentUserId) {
         Event event = this.repository.findById(eventId)
                 .orElseThrow(() -> new InvalidRequestException("Invalid event ID"));
 

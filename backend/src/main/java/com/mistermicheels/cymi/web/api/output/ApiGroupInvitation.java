@@ -1,7 +1,7 @@
 package com.mistermicheels.cymi.web.api.output;
 
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
-import com.mistermicheels.cymi.component.group.entity.GroupInvitation;
+import com.mistermicheels.cymi.component.group.entity.IGroupInvitationWithUser;
 
 public class ApiGroupInvitation {
 
@@ -9,7 +9,7 @@ public class ApiGroupInvitation {
     private final GroupMembershipRole role;
     private final String email;
 
-    public ApiGroupInvitation(GroupInvitation invitation) {
+    public ApiGroupInvitation(IGroupInvitationWithUser invitation) {
         this.groupId = invitation.getGroupId();
         this.role = invitation.getRole();
         this.email = invitation.getUserEmail();

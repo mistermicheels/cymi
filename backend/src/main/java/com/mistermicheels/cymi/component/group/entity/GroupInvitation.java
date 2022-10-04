@@ -17,7 +17,8 @@ import com.mistermicheels.cymi.component.user.entity.User;
 
 @Entity
 @Table(name = "group_invitation")
-public class GroupInvitation implements GroupUserLink {
+public class GroupInvitation implements GroupUserLink, IGroupInvitation, IGroupInvitationWithGroup,
+        IGroupInvitationWithUser {
 
     @EmbeddedId
     private GroupUserLinkId groupUserLinkId;
@@ -61,6 +62,7 @@ public class GroupInvitation implements GroupUserLink {
         return this.groupUserLinkId.getUserId();
     }
 
+    @Override
     public String getUserEmail() {
         return this.user.getEmail();
     }

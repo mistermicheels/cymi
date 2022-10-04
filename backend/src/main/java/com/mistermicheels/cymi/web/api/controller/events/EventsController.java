@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mistermicheels.cymi.component.event.EventCreationDto;
 import com.mistermicheels.cymi.component.event.EventService;
-import com.mistermicheels.cymi.component.event.entity.Event;
-import com.mistermicheels.cymi.component.event.entity.EventResponse;
+import com.mistermicheels.cymi.component.event.entity.IEvent;
+import com.mistermicheels.cymi.component.event.entity.IEventResponse;
+import com.mistermicheels.cymi.component.event.entity.IEventWithGroup;
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
 import com.mistermicheels.cymi.component.group.GroupService;
-import com.mistermicheels.cymi.component.group.entity.GroupMembership;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembership;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.controller.events.input.CreateEventInput;
 import com.mistermicheels.cymi.web.api.controller.events.input.RespondInput;
@@ -50,7 +51,7 @@ public class EventsController {
         EventCreationDto eventData = new EventCreationDto(input.name, input.startTimestamp,
                 input.endTimestamp, input.location, input.description);
 
-        Event createdEvent = this.eventService.createEvent(input.groupId, eventData,
+        IEvent createdEvent = this.eventService.createEvent(input.groupId, eventData,
                 userDetails.getId());
 
         return new ApiSuccessResponse(createdEvent.getId());
@@ -66,7 +67,7 @@ public class EventsController {
     @GetMapping("/id/{id}")
     public ApiEventWithGroup getByIdOrThrow(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Event event = this.eventService.findWithGroupByIdOrThrow(id, userDetails.getId());
+        IEventWithGroup event = this.eventService.findWithGroupByIdOrThrow(id, userDetails.getId());
         ApiEventWithGroup apiEvent = new ApiEventWithGroup(event);
         this.includeOwnResponse(List.of(apiEvent), userDetails.getId());
         this.includeUserRoleInGroup(List.of(apiEvent), userDetails.getId());
@@ -76,14 +77,14 @@ public class EventsController {
     @GetMapping("/id/{id}/other_responses")
     public List<ApiEventResponse> getOtherResponsesForEventOrThrow(@PathVariable("id") Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Event event = this.eventService.findByIdOrThrow(id, userDetails.getId());
+        IEvent event = this.eventService.findByIdOrThrow(id, userDetails.getId());
 
-        List<GroupMembership> memberships = this.groupService
+        List<? extends IGroupMembership> memberships = this.groupService
                 .findMembershipsForGroup(event.getGroupId(), userDetails.getId());
 
-        Map<Long, EventResponse> responsesByUserId = this.eventService
+        Map<Long, IEventResponse> responsesByUserId = this.eventService
                 .findResponsesForEvent(id, userDetails.getId()).stream()
-                .collect(Collectors.toMap(EventResponse::getUserId, Function.identity()));
+                .collect(Collectors.toMap(IEventResponse::getUserId, Function.identity()));
 
         return memberships.stream()
                 .filter(membership -> membership.getUserId() != userDetails.getId())
@@ -119,9 +120,9 @@ public class EventsController {
     private void includeOwnResponse(List<? extends ApiEvent> apiEvents, Long currentUserId) {
         List<Long> eventIds = apiEvents.stream().map(ApiEvent::getId).collect(Collectors.toList());
 
-        Map<Long, EventResponse> ownResponsesByEventId = this.eventService
+        Map<Long, IEventResponse> ownResponsesByEventId = this.eventService
                 .findOwnResponsesForEvents(eventIds, currentUserId).stream()
-                .collect(Collectors.toMap(EventResponse::getEventId, Function.identity()));
+                .collect(Collectors.toMap(IEventResponse::getEventId, Function.identity()));
 
         for (ApiEvent apiEvent : apiEvents) {
             Long eventId = apiEvent.getId();
@@ -138,7 +139,7 @@ public class EventsController {
 
         Map<Long, GroupMembershipRole> userRolesByGroup = this.groupService
                 .findMembershipsOfUserInGroups(groupIds, currentUserId).stream()
-                .collect(Collectors.toMap(GroupMembership::getGroupId, GroupMembership::getRole));
+                .collect(Collectors.toMap(IGroupMembership::getGroupId, IGroupMembership::getRole));
 
         for (ApiEventWithGroup apiEvent : apiEvents) {
             Long groupId = apiEvent.getGroupId();

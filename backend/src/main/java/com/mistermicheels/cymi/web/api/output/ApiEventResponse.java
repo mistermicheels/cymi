@@ -1,9 +1,9 @@
 package com.mistermicheels.cymi.web.api.output;
 
 import com.mistermicheels.cymi.component.event.EventResponseStatus;
-import com.mistermicheels.cymi.component.event.entity.EventResponse;
+import com.mistermicheels.cymi.component.event.entity.IEventResponse;
 import com.mistermicheels.cymi.component.group.GroupMembershipRole;
-import com.mistermicheels.cymi.component.group.entity.GroupMembership;
+import com.mistermicheels.cymi.component.group.entity.IGroupMembership;
 
 public class ApiEventResponse {
 
@@ -13,8 +13,8 @@ public class ApiEventResponse {
     private final String userDisplayName;
     private final GroupMembershipRole userRoleInGroup;
 
-    public ApiEventResponse(EventResponse eventResponse,
-            GroupMembership correspondingUserMembership) {
+    public ApiEventResponse(IEventResponse eventResponse,
+            IGroupMembership correspondingUserMembership) {
         this.status = eventResponse.getStatus();
         this.comment = eventResponse.getComment().orElse(null);
         this.userId = correspondingUserMembership.getUserId();

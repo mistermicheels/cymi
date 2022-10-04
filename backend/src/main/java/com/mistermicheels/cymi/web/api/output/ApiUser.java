@@ -1,6 +1,6 @@
 package com.mistermicheels.cymi.web.api.output;
 
-import com.mistermicheels.cymi.component.user.entity.User;
+import com.mistermicheels.cymi.component.user.entity.IUser;
 
 public class ApiUser {
 
@@ -8,7 +8,7 @@ public class ApiUser {
     private final String email;
     private final String defaultDisplayName;
 
-    public ApiUser(User user) {
+    public ApiUser(IUser user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.defaultDisplayName = user.getDefaultDisplayName().get();

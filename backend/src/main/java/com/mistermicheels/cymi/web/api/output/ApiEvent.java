@@ -5,8 +5,8 @@ import java.time.ZonedDateTime;
 import org.springframework.lang.Nullable;
 
 import com.mistermicheels.cymi.component.event.EventResponseStatus;
-import com.mistermicheels.cymi.component.event.entity.Event;
-import com.mistermicheels.cymi.component.event.entity.EventResponse;
+import com.mistermicheels.cymi.component.event.entity.IEvent;
+import com.mistermicheels.cymi.component.event.entity.IEventResponse;
 
 public class ApiEvent {
 
@@ -26,7 +26,7 @@ public class ApiEvent {
     @Nullable
     private String ownComment;
 
-    public ApiEvent(Event event) {
+    public ApiEvent(IEvent event) {
         this.id = event.getId();
         this.name = event.getName();
         this.startTimestamp = event.getStartTimestamp();
@@ -38,7 +38,7 @@ public class ApiEvent {
         this.numberMaybeResponses = event.getNumberMaybeResponses();
     }
 
-    public void setOwnResponse(EventResponse response) {
+    public void setOwnResponse(IEventResponse response) {
         this.ownStatus = response.getStatus();
         this.ownComment = response.getComment().orElse(null);
     }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mistermicheels.cymi.component.user.UserService;
-import com.mistermicheels.cymi.component.user.entity.User;
+import com.mistermicheels.cymi.component.user.entity.IUser;
 import com.mistermicheels.cymi.config.security.CustomUserDetails;
 import com.mistermicheels.cymi.web.api.output.ApiUser;
 
@@ -24,7 +24,7 @@ public class CurrentUserController {
 
     @GetMapping()
     public ApiUser get(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = this.userService.findByIdOrThrow(userDetails.getId());
+        IUser user = this.userService.findByIdOrThrow(userDetails.getId());
         return new ApiUser(user);
     }
 

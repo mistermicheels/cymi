@@ -5,6 +5,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.mistermicheels.cymi.common.error.InvalidRequestException;
+import com.mistermicheels.cymi.component.user.entity.IUser;
 import com.mistermicheels.cymi.component.user.entity.User;
 
 @Service
@@ -43,7 +44,7 @@ public class UserService {
         return this.userAuthenticationService.getAuthenticatedUserId(sessionData);
     }
 
-    public User findByIdOrThrow(Long id) {
+    public IUser findByIdOrThrow(Long id) {
         return this.repository.findById(id).orElseThrow(
                 () -> new InvalidRequestException("There is no user with the specified ID"));
     }
@@ -52,7 +53,7 @@ public class UserService {
         return this.repository.getOne(id);
     }
 
-    public User findByEmailOrInviteNew(String email, String invitingGroupName) {
+    public IUser findByEmailOrInviteNew(String email, String invitingGroupName) {
         String emailLowerCase = email.toLowerCase();
 
         // any race conditions will be taken care of by the unique email index

@@ -16,7 +16,7 @@ import com.mistermicheels.cymi.common.error.InvalidRequestException;
 
 @Entity
 @Table(name = "user_account")
-public class User {
+public class User implements IUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,6 +69,7 @@ public class User {
         this.emailConfirmed = true;
     }
 
+    @Override
     public Long getId() {
         return this.id;
     }
@@ -77,6 +78,7 @@ public class User {
         this.id = id;
     }
 
+    @Override
     public String getEmail() {
         return this.email;
     }
@@ -85,6 +87,7 @@ public class User {
         return this.emailConfirmed;
     }
 
+    @Override
     public Optional<String> getDefaultDisplayName() {
         return Optional.ofNullable(this.defaultDisplayName);
     }
