@@ -95,9 +95,9 @@ public class UserSignupServiceTest {
     public void SignupSendsAndStoresEmailConfirmationTokenForNewEmail() {
         when(this.repositoryMock.findByEmail(this.email)).thenReturn(Optional.empty());
 
-        ZonedDateTime timeBeforeCall = ZonedDateTime.now();
+        ZonedDateTime timeBeforeCall = ZonedDateTime.now().minusSeconds(1);
         this.service.signUpUser(this.loginData, this.defaultDisplayName);
-        ZonedDateTime timeAferCall = ZonedDateTime.now();
+        ZonedDateTime timeAferCall = ZonedDateTime.now().plusSeconds(1);
 
         verify(this.emailConfirmationTokenRepositoryMock)
                 .save(this.confirmationTokenCaptor.capture());
@@ -149,7 +149,7 @@ public class UserSignupServiceTest {
 
     @Test
     public void EmailConfirmationFailsForExpiredToken() {
-        ZonedDateTime expirationTimestamp = ZonedDateTime.now();
+        ZonedDateTime expirationTimestamp = ZonedDateTime.now().minusSeconds(1);
 
         EmailConfirmationToken expiredToken = new EmailConfirmationToken(
                 this.emailConfirmationToken, this.userForConfirmationToken, expirationTimestamp);
